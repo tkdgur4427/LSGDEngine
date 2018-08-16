@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs
+/LSGDEngine/.vs/LSGDEngine/v15/ipch
+/LSGDEngine/.vs/LSGDEngine/v15/Browse.VC.db
+/LSGDEngine/.vs/LSGDEngine/v15/Browse.VC.opendb
