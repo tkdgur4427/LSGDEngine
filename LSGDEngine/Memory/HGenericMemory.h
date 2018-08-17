@@ -1,8 +1,6 @@
 #pragma once
 
-#define LSGD_DLL_EXPORT 
-
-class LSGD_DLL_EXPORT HGenericMemory
+class HGenericMemory
 {
 public:
 	// default alloc/dealloc

@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="HAllocator.h" />
     <ClInclude Include="HGenericMemory.h" />
   </ItemGroup>
   <ItemGroup>
