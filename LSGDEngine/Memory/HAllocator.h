@@ -6,6 +6,8 @@
 #if USE_STD_ALLOCATOR
 
 // std::allocator version for custom memory management with HGenericMemory
+// note that HStdAllocator is template class, so no need to mark as dll export
+
 template <class Type>
 class HStdAllocator
 {
