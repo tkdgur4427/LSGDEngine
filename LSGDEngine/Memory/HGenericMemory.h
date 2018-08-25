@@ -3,6 +3,13 @@
 class HGenericMemory
 {
 public:
+	template <class Type, typename ...Arguments>
+	static Type* AllocateObject(Arguments&&... InArguments)
+	{
+		void* NewObject = (void*)Allocate(sizeof(Type));
+		return new (NewObject) Type(std::forward<Arguments>(InArguments)...);
+	}
+
 	// default alloc/dealloc
 	static void* Allocate(int InSize, int InAlignment = 4);
 	static void Deallocate(void* InPointer);

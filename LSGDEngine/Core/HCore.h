@@ -16,5 +16,7 @@
 
 #endif
 
+#include "HAssert.h"
+
 // C++ reflections
 #include "HReflect.h"

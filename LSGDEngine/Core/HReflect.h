@@ -12,16 +12,38 @@ namespace lsgd { namespace reflect {
 	class HProperty : public HField
 	{
 	public:
+		explicit HProperty(int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+			: ArrayDim(InArrayDim)
+			, Offset(InOffset)
+			, ElementSize(InElementSize)
+			, PropertyLink(nullptr)
+		{
+			TotalSize = ElementSize * ArrayDim;
+		}
+
 		int32 ArrayDim;
+
+		int32 Offset;
+		int32 ElementSize;
+		int32 TotalSize;
 
 		// sibling property link
 		HProperty* PropertyLink;
 	};
 
+	template <class ClassType, class FieldType>
+	int32 StructOffsetOf(FieldType ClassType::* InClassField)
+	{
+		return (int8*)&((ClassType*)nullptr->*InClassField) - (int8*)nullptr;
+	}
+
 	class HStruct : public HField
 	{
 	public:
 		HStruct* SuperStruct;
+
+		template <typename FieldType>
+		void LinkProperty(int32 InOffset, int32 InElementSize, int32 InArrayDim = 1);
 
 		// struct's property link head
 		HProperty* PropertyLink;
@@ -70,7 +92,7 @@ namespace lsgd { namespace reflect {
 	class HClass : public HStruct
 	{
 	public:
-		explicit HClass(const string& InName)			
+		explicit HClass(const string& InName)
 		{
 			Name = InName;
 		}
@@ -119,5 +141,11 @@ namespace lsgd { namespace reflect {
 	public:
 		HStruct* Struct;
 	};
+
+	template <typename FieldType>
+	void HStruct::LinkProperty(int32 InOffset, int32 InElementSize, int32 InArrayDim)
+	{
+
+	}
 }
 }

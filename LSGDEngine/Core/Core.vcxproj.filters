@@ -4,6 +4,9 @@
     <Filter Include="Reflect">
       <UniqueIdentifier>{0679c4c7-5b74-4514-8e85-6711cedb0637}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Log">
+      <UniqueIdentifier>{6c67c0f5-da1d-451f-8aa6-a31fe29e1ded}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -16,9 +19,16 @@
     <ClInclude Include="HTypeDatabase.h">
       <Filter>Reflect</Filter>
     </ClInclude>
+    <ClInclude Include="HAssert.h" />
+    <ClInclude Include="HLogger.h">
+      <Filter>Log</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="HLogger_spd.cpp">
+      <Filter>Log</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

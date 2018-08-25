@@ -66,11 +66,21 @@ namespace lsgd
 	template <class Type>
 	using weak_ptr = std::weak_ptr<Type>;
 
-	//// forward
-	//template <class Type>
-	//using forward = std::forward<Type>;
+	// remove_reference
+	template<class Type>
+	using remove_reference = typename std::remove_reference_t<Type>::type;
 
-	//// move
-	//template <class Type>
-	//using move = std::move<Type>;
+	// forward
+	template<class Type>
+	constexpr Type&& forward(remove_reference<Type>& Arg)
+	{	
+		return (static_cast<Type&&>(Arg));
+	}
+
+	// move
+	template<class Type>
+	constexpr remove_reference<Type>&& move(Type&& Arg)
+	{	
+		return (static_cast<remove_reference<Type>&&>(Arg));
+	}
 }

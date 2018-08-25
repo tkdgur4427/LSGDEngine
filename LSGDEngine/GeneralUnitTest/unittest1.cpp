@@ -3,6 +3,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#include "../Memory/HMemoryPCH.h"
 #include "../Core/HCore.h"
 #include "../Core/HTypeDatabase.h"
 #include "../Core/HReflect.h"
