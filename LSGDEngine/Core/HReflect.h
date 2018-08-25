@@ -70,19 +70,24 @@ namespace lsgd { namespace reflect {
 	class HClass : public HStruct
 	{
 	public:
+		explicit HClass(const string& InName)			
+		{
+			Name = InName;
+		}
+
 		HClass* ClassWithin;
 		void* ClassDefaultObject;
 
 		hash_map<string, HFunction> FunctionMap;
 		mutable hash_map<string, HFunction> SuperFunctionMap;
 
-		array<HNativeFunctionLookup> NativeFunctionLookup;
+		vector<HNativeFunctionLookup> NativeFunctionLookup;
 	};
 
 	class HEnum : public HField
 	{
 	public:
-		array<pair<string, int64>> Names;
+		vector<pair<string, int64>> Names;
 		static hash_map<string, HEnum*> AllEnumNames;
 	};
 

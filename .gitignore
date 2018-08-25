@@ -9,3 +9,6 @@
 /LSGDEngine/.vs/config
 /LSGDEngine/Memory/x64/Debug
 /LSGDEngine/x64/Debug
+/LSGDEngine/Core/Debug
+/LSGDEngine/GeneralUnitTest/Debug
+/LSGDEngine/Memory/Debug

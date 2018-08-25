@@ -13,8 +13,12 @@
     </ClInclude>
     <ClInclude Include="HTypeOverrides.h" />
     <ClInclude Include="HCorePCH.h" />
+    <ClInclude Include="HTypeDatabase.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
+    <ClCompile Include="Core.cpp" />
   </ItemGroup>
 </Project>

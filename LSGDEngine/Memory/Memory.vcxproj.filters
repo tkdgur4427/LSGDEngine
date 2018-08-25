@@ -4,6 +4,8 @@
     <ClInclude Include="HAllocator.h" />
     <ClInclude Include="HGenericMemory.h" />
     <ClInclude Include="HMemoryPCH.h" />
+    <ClInclude Include="HDeleter.h" />
+    <ClInclude Include="HMakeMethods.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HMemoryPCH.cpp" />

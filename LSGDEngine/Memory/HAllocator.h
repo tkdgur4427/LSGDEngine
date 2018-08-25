@@ -13,7 +13,7 @@ class HStdAllocator
 {
 public:
 	typedef size_t size_type;
-	typedef ptrdiff_t difference_type;
+	typedef int difference_type;
 	typedef Type* pointer;
 	typedef const Type* const_pointer;
 	typedef Type& reference;
@@ -25,7 +25,7 @@ public:
 
 	pointer allocate(size_type InSize, const void* = 0)
 	{
-		return HGenericMemory::Allocate(InSize);
+		return (Type*)HGenericMemory::Allocate(InSize);
 	}
 
 	void deallocate(void* InPointer, size_type)
@@ -38,8 +38,9 @@ public:
 
 	HStdAllocator<value_type>& operator=(const HStdAllocator&) { return *this; }
 
-	void construct(pointer p, const value_type& val) { new ((pointer)p) value_type(val); }
-	void destroy(pointer p) { p->~value_type(); }
+	// temporary just disable this not compatible
+	//void construct(pointer p, const value_type& val) { new ((pointer)p) value_type(val); }
+	//void destroy(pointer p) { p->~value_type(); }
 
 	size_type max_size() const { return size_t(-1); }
 

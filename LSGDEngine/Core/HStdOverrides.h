@@ -2,6 +2,8 @@
 
 // include custom allocator
 #include "../Memory/HAllocator.h"
+#include "../Memory/HDeleter.h"
+#include "../Memory/HMakeMethods.h"
 
 // include std libraries
 #include <string>
@@ -23,7 +25,7 @@ namespace lsgd
 
 	// array
 	template <class ValueType>
-	using array = std::vector<ValueType, HStdAllocator<ValueType>>;
+	using vector = std::vector<ValueType, HStdAllocator<ValueType>>;
 
 	// hash_map
 	template <class KeyType, class ValueType, class Hash = std::hash<KeyType>, class KeyEqual = std::equal_to<KeyType>>
@@ -32,4 +34,43 @@ namespace lsgd
 	// pair
 	template <class KeyType, class ValueType>
 	using pair = std::pair<KeyType, ValueType>;
+
+	// unique_ptr
+	template <class Type, class Deleter = HStdDeleter<Type>>
+	using unique_ptr = std::unique_ptr<Type, Deleter>;
+		
+	// make_unique
+	template <typename Type, typename... Arguments>
+	unique_ptr<Type> make_unique(Arguments&&... InArguments)
+	{
+		/*
+			study note
+				- in this case : HMakeUnique<Type>(InArguments);
+				- error C3520 : parameter pack must be expanded in this context 
+		*/
+		return HMakeUnique<Type>(InArguments...);
+	}
+
+	// shared_ptr
+	template <class Type>
+	using shared_ptr = std::shared_ptr<Type>;
+
+	// make_shared
+	template <typename Type, typename... Arguments>
+	shared_ptr<Type> make_shared(Arguments&&... InArguments)
+	{
+		return HMakeShared<Type>(InArguments...);
+	}
+
+	// weak_ptr
+	template <class Type>
+	using weak_ptr = std::weak_ptr<Type>;
+
+	//// forward
+	//template <class Type>
+	//using forward = std::forward<Type>;
+
+	//// move
+	//template <class Type>
+	//using move = std::move<Type>;
 }
