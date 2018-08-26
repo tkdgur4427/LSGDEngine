@@ -6,3 +6,5 @@
 
 #include "HStdOverrides.h"
 
+#include "HAssert.h"
+

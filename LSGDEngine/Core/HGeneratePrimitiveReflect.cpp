@@ -1,0 +1,14 @@
+#include "HCorePCH.h"
+#include "HGeneratePrimitiveReflect.h"
+#include "HReflectImplement.h"
+
+// declare basic primitive types and register types
+IMPLEMENT_PRIMITIVE_TYPE(int8)
+IMPLEMENT_PRIMITIVE_TYPE(int16)
+IMPLEMENT_PRIMITIVE_TYPE(int32)
+IMPLEMENT_PRIMITIVE_TYPE(int64)
+
+IMPLEMENT_PRIMITIVE_TYPE(uint8)
+IMPLEMENT_PRIMITIVE_TYPE(uint16)
+IMPLEMENT_PRIMITIVE_TYPE(uint32)
+IMPLEMENT_PRIMITIVE_TYPE(uint64)

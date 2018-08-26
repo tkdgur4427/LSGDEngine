@@ -51,6 +51,12 @@ namespace lsgd
 		return HMakeUnique<Type>(InArguments...);
 	}
 
+	template <typename BaseType, typename Type, typename... Arguments>
+	unique_ptr<BaseType> make_unique(Arguments&&... InArguments)
+	{
+		return HMakeUnique<BaseType, Type>(InArguments...);
+	}
+
 	// shared_ptr
 	template <class Type>
 	using shared_ptr = std::shared_ptr<Type>;
@@ -60,6 +66,12 @@ namespace lsgd
 	shared_ptr<Type> make_shared(Arguments&&... InArguments)
 	{
 		return HMakeShared<Type>(InArguments...);
+	}
+
+	template <typename BaseType, typename Type, typename... Arguments>
+	shared_ptr<BaseType> make_shared(Arguments&&... InArguments)
+	{
+		return HMakeShared<BaseType, Type>(InArguments...);
 	}
 
 	// weak_ptr

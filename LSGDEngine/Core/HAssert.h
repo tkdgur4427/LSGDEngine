@@ -1,12 +1,8 @@
 #pragma once
 
-#include "HLogger.h"
+extern void Crash();
+extern void LogError(const lsgd::string& message);
+extern void Log(const lsgd::string& message);
 
-inline void Crash()
-{
-	*((int*)0) = 3;
-}
-
-#define check(condition) if(!condition) { lsgd::log::HAsyncLogger::GetSingleton()->LogError(#condition); Crash(); }
-
-#define debug(message) lsgd::log::HAsyncLogger::GetSingleton()->Log(#message);
+#define check(condition) if(!(condition)) { LogError(#condition); Crash(); }
+#define debug(message) Log(#message);

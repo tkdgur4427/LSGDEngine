@@ -7,6 +7,9 @@
     <Filter Include="Log">
       <UniqueIdentifier>{6c67c0f5-da1d-451f-8aa6-a31fe29e1ded}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Guid">
+      <UniqueIdentifier>{876fb7a6-f0ad-4267-97bf-cc43066addca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -23,6 +26,18 @@
     <ClInclude Include="HLogger.h">
       <Filter>Log</Filter>
     </ClInclude>
+    <ClInclude Include="HGuid.h">
+      <Filter>Guid</Filter>
+    </ClInclude>
+    <ClInclude Include="HReflectDeclare.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
+    <ClInclude Include="HReflectImplement.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
+    <ClInclude Include="HGeneratePrimitiveReflect.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -30,5 +45,12 @@
     <ClCompile Include="HLogger_spd.cpp">
       <Filter>Log</Filter>
     </ClCompile>
+    <ClCompile Include="HGuid_crossguid.cpp">
+      <Filter>Guid</Filter>
+    </ClCompile>
+    <ClCompile Include="HGeneratePrimitiveReflect.cpp">
+      <Filter>Reflect</Filter>
+    </ClCompile>
+    <ClCompile Include="HAssert.cpp" />
   </ItemGroup>
 </Project>

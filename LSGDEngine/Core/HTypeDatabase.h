@@ -1,16 +1,29 @@
 #pragma once
 
+#include "HGuid.h"
 #include "HReflect.h"
 
 namespace lsgd { namespace reflect {
 
-	// primitive types
-	template <class Type>
-	class HPrimitiveType
+	// primitive type interface
+	class HPrimitiveTypeBase
 	{
 	public:
+		HPrimitiveTypeBase()
+			: Guid(HGuid::CreateGuid())
+		{}
+
+		string PrimitiveName;
+		HGuid Guid;
 	};
 
+	// primitive types
+	template <class Type>
+	class HPrimitiveType : public HPrimitiveTypeBase
+	{
+	public:
+		typedef Type PrimitiveType;
+	};
 
 	// post-process class reflection data
 	struct HPostProcessClassData
@@ -26,6 +39,29 @@ namespace lsgd { namespace reflect {
 		{
 			static HTypeDatabase TypeDatabase;
 			return &TypeDatabase;
+		}
+
+		template <class Type>
+		void AddPrimitiveType(const string& InName)
+		{
+			check(!ExistPrimitiveType(InName));
+
+			unique_ptr<HPrimitiveTypeBase> NewPrimitiveType = make_unique<HPrimitiveTypeBase, HPrimitiveType<Type>>();
+			NewPrimitiveType->PrimitiveName = InName;
+
+			PrimitiveTypes.push_back(move(NewPrimitiveType));
+		}
+
+		bool ExistPrimitiveType(const string& InName)
+		{
+			for (auto& PrimitiveType : PrimitiveTypes)
+			{
+				if (PrimitiveType->PrimitiveName == InName)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		void AddClassType(const string& InName, const string& InSuperClassName)
@@ -90,13 +126,11 @@ namespace lsgd { namespace reflect {
 		// temporary data - after processing class data, it will removes all data
 		vector<HPostProcessClassData> PostProcessClassDataList;
 
+		// primitive types
+		vector<unique_ptr<HPrimitiveTypeBase>> PrimitiveTypes;
+
 	protected:
 		HTypeDatabase() {}
 	};
 }
 }
-
-#define DECLARE_CLASS_TYPE(ClassType, SuperClassType)	\
-	static lsgd::string GetClassName() { return #ClassType; }	\
-
-#define IMPLEMENT_CLASS_TYPE(ClassType, SuperClassType)

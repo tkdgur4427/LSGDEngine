@@ -22,20 +22,27 @@
     <ClInclude Include="HAssert.h" />
     <ClInclude Include="HCore.h" />
     <ClInclude Include="HCorePCH.h" />
+    <ClInclude Include="HGeneratePrimitiveReflect.h" />
+    <ClInclude Include="HGuid.h" />
     <ClInclude Include="HLogger.h" />
     <ClInclude Include="HReflect.h" />
+    <ClInclude Include="HReflectDeclare.h" />
+    <ClInclude Include="HReflectImplement.h" />
     <ClInclude Include="HStdOverrides.h" />
     <ClInclude Include="HTypeDatabase.h" />
     <ClInclude Include="HTypeOverrides.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="HAssert.cpp" />
     <ClCompile Include="HCorePCH.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HCorePCH.h</PrecompiledHeaderFile>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="HGeneratePrimitiveReflect.cpp" />
+    <ClCompile Include="HGuid_crossguid.cpp" />
     <ClCompile Include="HLogger_spd.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -45,7 +52,7 @@
     <ProjectGuid>{5C43060A-B2E6-4A5D-ABE2-20439F3D900F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Core</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

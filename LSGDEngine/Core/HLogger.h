@@ -10,6 +10,8 @@ namespace lsgd { namespace log {
 			return &Logger;
 		}
 
+		struct LoggerInstance {};
+
 		template <typename... Arguments>
 		void Log(const string& InStr, Arguments&&... InArguments);
 
@@ -23,6 +25,8 @@ namespace lsgd { namespace log {
 		{
 			CreateLoggerInstance();
 		}
+
+		unique_ptr<LoggerInstance> Instance;
 	};
 }
 }
