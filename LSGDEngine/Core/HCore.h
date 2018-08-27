@@ -20,6 +20,8 @@
 
 #include "HAssert.h"
 
+#include "HGuid.h"
+
 // C++ reflections
 #include "HReflect.h"
 

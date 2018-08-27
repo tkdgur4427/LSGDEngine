@@ -2,6 +2,8 @@
 
 namespace lsgd { namespace reflect {
 
+	class HPrimitiveTypeBase;
+
 	class HField
 	{
 	public:
@@ -116,11 +118,13 @@ namespace lsgd { namespace reflect {
 	class HNumberProperty : public HProperty
 	{
 	public:
+		HPrimitiveTypeBase* Primitive;
 	};
 
 	class HBoolProperty : public HProperty
 	{
 	public:
+		HPrimitiveTypeBase* Primitive;
 	};
 
 	class HEnumProperty : public HProperty

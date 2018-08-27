@@ -25,6 +25,7 @@
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
     <ClInclude Include="HGuid.h" />
     <ClInclude Include="HLogger.h" />
+    <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HReflect.h" />
     <ClInclude Include="HReflectDeclare.h" />
     <ClInclude Include="HReflectImplement.h" />

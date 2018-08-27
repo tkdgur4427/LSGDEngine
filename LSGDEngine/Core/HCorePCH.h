@@ -8,3 +8,5 @@
 
 #include "HAssert.h"
 
+#include "HGuid.h"
+

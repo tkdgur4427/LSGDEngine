@@ -7,6 +7,7 @@
 
 // include std libraries
 #include <string>
+#include <array>
 #include <vector>
 #include <unordered_map>
 
@@ -23,9 +24,13 @@ namespace lsgd
 	// wstring
 	using wstring = std::basic_string<wchar_t>;
 
-	// array
+	// vector
 	template <class ValueType>
 	using vector = std::vector<ValueType, HStdAllocator<ValueType>>;
+
+	// array
+	template <class ValueType, int Size>
+	using array = std::array<ValueType, Size>;
 
 	// hash_map
 	template <class KeyType, class ValueType, class Hash = std::hash<KeyType>, class KeyEqual = std::equal_to<KeyType>>

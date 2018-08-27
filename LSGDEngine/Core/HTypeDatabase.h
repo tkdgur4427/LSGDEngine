@@ -1,29 +1,9 @@
 #pragma once
 
-#include "HGuid.h"
 #include "HReflect.h"
+#include "HPrimitiveType.h"
 
 namespace lsgd { namespace reflect {
-
-	// primitive type interface
-	class HPrimitiveTypeBase
-	{
-	public:
-		HPrimitiveTypeBase()
-			: Guid(HGuid::CreateGuid())
-		{}
-
-		string PrimitiveName;
-		HGuid Guid;
-	};
-
-	// primitive types
-	template <class Type>
-	class HPrimitiveType : public HPrimitiveTypeBase
-	{
-	public:
-		typedef Type PrimitiveType;
-	};
 
 	// post-process class reflection data
 	struct HPostProcessClassData
@@ -46,10 +26,12 @@ namespace lsgd { namespace reflect {
 		{
 			check(!ExistPrimitiveType(InName));
 
-			unique_ptr<HPrimitiveTypeBase> NewPrimitiveType = make_unique<HPrimitiveTypeBase, HPrimitiveType<Type>>();
-			NewPrimitiveType->PrimitiveName = InName;
+			unique_ptr<HPrimitiveType> NewPrimitiveType = lsgd::make_unique<HPrimitiveType>(InName, HPrimitiveTypeImpl<Type>::GetGuid());
 
-			PrimitiveTypes.emplace_back(move(NewPrimitiveType));
+			// add mapper from guid to primitive type
+			GuidToPrimitiveTypes.insert({ NewPrimitiveType->Guid, (int32)PrimitiveTypes.size() });
+
+			PrimitiveTypes.push_back(move(NewPrimitiveType));
 		}
 
 		bool ExistPrimitiveType(const string& InName)
@@ -127,7 +109,10 @@ namespace lsgd { namespace reflect {
 		vector<HPostProcessClassData> PostProcessClassDataList;
 
 		// primitive types
-		vector<unique_ptr<HPrimitiveTypeBase>> PrimitiveTypes;
+		vector<unique_ptr<HPrimitiveType>> PrimitiveTypes;
+
+		// primitive type mapper
+		hash_map<HGuid, int32> GuidToPrimitiveTypes;
 
 	protected:
 		HTypeDatabase() {}

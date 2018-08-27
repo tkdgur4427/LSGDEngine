@@ -38,6 +38,9 @@
     <ClInclude Include="HGeneratePrimitiveReflect.h">
       <Filter>Reflect</Filter>
     </ClInclude>
+    <ClInclude Include="HPrimitiveType.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
