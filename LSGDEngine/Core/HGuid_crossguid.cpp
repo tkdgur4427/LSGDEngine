@@ -3,7 +3,11 @@
 
 // cross guid
 #include "../../ThirdParty/crossguid/guid.hpp"
+
+#if _WINDOWS
+#define GUID_WINDOWS
 #include "../../ThirdParty/crossguid/guid.cpp"
+#endif
 
 using namespace lsgd;
 
@@ -12,7 +16,7 @@ struct GuidInstance_crossguid : public HGuid::GuidInstance
 	GuidInstance_crossguid()
 		: HGuid::GuidInstance()
 	{
-		//Value = xg::newGuid();
+		Value = xg::newGuid();
 	}
 
 	string ToString()

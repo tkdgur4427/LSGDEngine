@@ -48,6 +48,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Memory\Memory.vcxproj">
+      <Project>{a159f7e8-c56b-441d-b361-e04e00ec2012}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{5C43060A-B2E6-4A5D-ABE2-20439F3D900F}</ProjectGuid>

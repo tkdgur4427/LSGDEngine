@@ -169,9 +169,6 @@
       <Project>{5c43060a-b2e6-4a5d-abe2-20439f3d900f}</Project>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
-    <ProjectReference Include="..\Memory\Memory.vcxproj">
-      <Project>{a159f7e8-c56b-441d-b361-e04e00ec2012}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
