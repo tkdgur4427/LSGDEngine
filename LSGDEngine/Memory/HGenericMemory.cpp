@@ -4,15 +4,17 @@
 #define USE_TEMP_ALLOC_DEALLOC 1
 
 #if USE_TEMP_ALLOC_DEALLOC
+
 // for temporary wrapper implementation
 void* TempAllocate(int InSize)
 {
-	return new char[InSize];
+	void* NewPointer = malloc(InSize);
+	return NewPointer;
 }
 
 void TempDeallocate(void* InPointer)
 {
-	delete InPointer;
+	free(InPointer);
 }
 #endif
 

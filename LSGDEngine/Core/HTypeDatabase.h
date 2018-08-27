@@ -49,7 +49,7 @@ namespace lsgd { namespace reflect {
 			unique_ptr<HPrimitiveTypeBase> NewPrimitiveType = make_unique<HPrimitiveTypeBase, HPrimitiveType<Type>>();
 			NewPrimitiveType->PrimitiveName = InName;
 
-			PrimitiveTypes.push_back(move(NewPrimitiveType));
+			PrimitiveTypes.emplace_back(move(NewPrimitiveType));
 		}
 
 		bool ExistPrimitiveType(const string& InName)

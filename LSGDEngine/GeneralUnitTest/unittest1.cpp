@@ -3,11 +3,13 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-#include "../Memory/HMemoryPCH.h"
 #include "../Core/HCore.h"
 
 using namespace lsgd;
 using namespace lsgd::reflect;
+
+// std allocator override test
+#include <vector>
 
 namespace GeneralUnitTest
 {		

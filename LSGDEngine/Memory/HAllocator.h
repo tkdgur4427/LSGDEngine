@@ -23,9 +23,9 @@ public:
 	HStdAllocator() {}
 	HStdAllocator(const HStdAllocator&) {}
 
-	pointer allocate(size_type InSize, const void* = 0)
+	pointer allocate(size_type n, const void* = 0)
 	{
-		return (Type*)HGenericMemory::Allocate(InSize);
+		return (Type*)HGenericMemory::Allocate(n * sizeof(Type));
 	}
 
 	void deallocate(void* InPointer, size_type)

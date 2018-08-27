@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Memory/HMemoryPCH.h"
+
 // type overrides
 #include "HTypeOverrides.h"
 
