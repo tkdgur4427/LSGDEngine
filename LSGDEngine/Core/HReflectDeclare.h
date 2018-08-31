@@ -5,11 +5,14 @@
 // register primitive types
 #define DECLARE_PRIMITIVE_TYPE(PrimitiveType)	\
 	template <>	\
-	class HPrimitiveTypeImpl<PrimitiveType> : public HPrimitiveTypeImplBase	\
+	class HPrimitiveTypeHelper<PrimitiveType>	\
 	{	\
 	public:	\
 		static bool IsPrimitiveType() { return true; }	\
 		static HGuid GetGuid() { static HGuid Guid = HGuid::CreateGuid(); return Guid;}	\
+		static bool IsNumber() { return IsNumberHelper<PrimitiveType>::Value; } \
+		static bool IsBoolean() { return IsBooleanHelper<PrimitiveType>::Value; } \
+		static bool IsString() { return IsStringHelper<PrimitiveType>::Value; } \
 	};	\
 	class HStatic##PrimitiveType	\
 	{	\

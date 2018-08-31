@@ -55,5 +55,8 @@
       <Filter>Reflect</Filter>
     </ClCompile>
     <ClCompile Include="HAssert.cpp" />
+    <ClCompile Include="HReflect.cpp">
+      <Filter>Reflect</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

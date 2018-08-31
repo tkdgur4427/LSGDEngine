@@ -26,7 +26,7 @@ namespace lsgd { namespace reflect {
 		{
 			check(!ExistPrimitiveType(InName));
 
-			unique_ptr<HPrimitiveType> NewPrimitiveType = lsgd::make_unique<HPrimitiveType>(InName, HPrimitiveTypeImpl<Type>::GetGuid());
+			unique_ptr<HPrimitiveType> NewPrimitiveType = lsgd::make_unique<HPrimitiveType>(InName, HPrimitiveTypeHelper<Type>::GetGuid());
 
 			// add mapper from guid to primitive type
 			GuidToPrimitiveTypes.insert({ NewPrimitiveType->Guid, (int32)PrimitiveTypes.size() });
@@ -44,6 +44,55 @@ namespace lsgd { namespace reflect {
 				}
 			}
 			return false;
+		}
+
+		string FindPrimitiveTypeName(const HGuid& InGuid) const
+		{
+			for (auto& PrimitiveType : PrimitiveTypes)
+			{
+				if (PrimitiveType->Guid == InGuid)
+				{
+					return PrimitiveType->PrimitiveName;
+				}
+			}
+			return string();
+		}
+
+		template <typename Type>
+		unique_ptr<HProperty> CreatePrimitiveProperty(const string& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const
+		{
+			unique_ptr<HProperty> NewProperty;
+			if (HPrimitiveTypeHelper<Type>::IsNumber())
+			{
+				string PrimitiveTypeName = FindPrimitiveTypeName(HPrimitiveTypeHelper<Type>::GetGuid());
+				NewProperty = make_unique<HProperty, HNumberProperty>(PrimitiveTypeName, InVariableName, InOffset, InSize, InArrayDim);
+			}
+			else if (HPrimitiveTypeHelper<Type>::IsBoolean())
+			{
+				NewProperty = make_unique<HProperty, HBoolProperty>(InVariableName, InOffset, InSize, InArrayDim);
+			}
+			else if (HPrimitiveTypeHelper<Type>::IsString())
+			{
+				// @todo...
+				//NewProperty = make_shared<HProperty, HStringProperty>(InOffset, InSize, InArrayDim);
+			}
+			
+			//...
+
+			return NewProperty;
+		}
+
+		template <typename Type>
+		unique_ptr<HProperty> CreatePropertyByType(const string& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const
+		{
+			// first handling primitive type
+			if (HPrimitiveTypeHelper<Type>::IsPrimitiveType())
+			{
+				return move(CreatePrimitiveProperty<Type>(InVariableName, InOffset, InSize, InArrayDim));
+			}
+
+			// second ...		
+			return nullptr;
 		}
 
 		void AddClassType(const string& InName, const string& InSuperClassName)
@@ -92,14 +141,16 @@ namespace lsgd { namespace reflect {
 		template <class ClassType, class FieldType>
 		void AddClassField(const string& InFieldName, FieldType ClassType::*InField)
 		{
-			string ClassName = ClassType::GetName();
+			string ClassName = ClassType::GetClassName();
 			check(ExistClass(ClassName));
 
 			int32 ClassIndex = GetClassIndex(ClassName);
 			int32 FieldOffset = (int32)StructOffsetOf<ClassType, FieldType>(InField);
-			int32 FieldSize = sizeof(FieldType);
+			int32 FieldSize = sizeof(FieldType);			
 
-			Classes[ClassIndex]->LinkProperty(FieldOffset, FieldSize);
+			// create property
+			unique_ptr<HProperty> NewProperty = move(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+			Classes[ClassIndex]->AddProperty(NewProperty);
 		}
 
 		// generated class types

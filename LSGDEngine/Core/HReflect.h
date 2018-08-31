@@ -7,18 +7,21 @@ namespace lsgd { namespace reflect {
 	class HField
 	{
 	public:
-		HField* Next;
+		explicit HField(const string& InName)
+			: Name(InName)
+		{}
+
 		string Name;
 	};
 
 	class HProperty : public HField
 	{
 	public:
-		explicit HProperty(int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
-			: ArrayDim(InArrayDim)
+		explicit HProperty(const string& InName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+			: HField(InName)
+			, ArrayDim(InArrayDim)
 			, Offset(InOffset)
-			, ElementSize(InElementSize)
-			, PropertyLink(nullptr)
+			, ElementSize(InElementSize)			
 		{
 			TotalSize = ElementSize * ArrayDim;
 		}
@@ -28,9 +31,6 @@ namespace lsgd { namespace reflect {
 		int32 Offset;
 		int32 ElementSize;
 		int32 TotalSize;
-
-		// sibling property link
-		HProperty* PropertyLink;
 	};
 
 	template <class ClassType, class FieldType>
@@ -42,13 +42,19 @@ namespace lsgd { namespace reflect {
 	class HStruct : public HField
 	{
 	public:
+		HStruct(const string& InName)
+			: HField(InName)
+		{}
+
 		HStruct* SuperStruct;
+				
+	protected:
+		friend class HTypeDatabase;
 
-		template <typename FieldType>
-		void LinkProperty(int32 InOffset, int32 InElementSize, int32 InArrayDim = 1);
+		void AddProperty(unique_ptr<HProperty>& InProperty);
 
-		// struct's property link head
-		HProperty* PropertyLink;
+		// properties
+		vector<unique_ptr<HProperty>> Properties;
 	};
 
 	class HFunction;
@@ -95,8 +101,8 @@ namespace lsgd { namespace reflect {
 	{
 	public:
 		explicit HClass(const string& InName)
+			: HStruct(InName)
 		{
-			Name = InName;
 		}
 
 		HClass* ClassWithin;
@@ -118,13 +124,28 @@ namespace lsgd { namespace reflect {
 	class HNumberProperty : public HProperty
 	{
 	public:
-		HPrimitiveTypeBase* Primitive;
+		HNumberProperty(const string& InPrimitiveName, const string& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
+			, PrimitiveName(InPrimitiveName)
+		{}
+
+		string PrimitiveName;
 	};
 
 	class HBoolProperty : public HProperty
 	{
 	public:
-		HPrimitiveTypeBase* Primitive;
+		HBoolProperty(const string& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
+		{}
+	};
+
+	class HStringProperty : public HProperty
+	{
+	public:
+		HStringProperty(const string& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
+		{}
 	};
 
 	class HEnumProperty : public HProperty
@@ -145,11 +166,5 @@ namespace lsgd { namespace reflect {
 	public:
 		HStruct* Struct;
 	};
-
-	template <typename FieldType>
-	void HStruct::LinkProperty(int32 InOffset, int32 InElementSize, int32 InArrayDim)
-	{
-
-	}
 }
 }

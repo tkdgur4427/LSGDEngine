@@ -11,6 +11,14 @@ using namespace lsgd::reflect;
 // std allocator override test
 #include <vector>
 
+class A
+{
+public:
+	DECLARE_CLASS_TYPE(A, );
+
+	double ADouble;
+};
+
 namespace GeneralUnitTest
 {		
 	TEST_CLASS(UnitTest1)
@@ -20,7 +28,8 @@ namespace GeneralUnitTest
 		TEST_METHOD(TestMethod1)
 		{
 			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();
-			TypeDB->AddClassType("Super", "SuperSuper");
+			TypeDB->AddClassType("A", "");
+			TypeDB->AddClassField<A, double>("ADouble", &A::ADouble);
 		}
 
 	};
