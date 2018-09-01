@@ -82,6 +82,12 @@ namespace lsgd { namespace reflect {
 			{
 				// processing function input types
 				auto TupleTypes = HMakeTuple(&HTypeDatabaseUtils::GetTypeDescriptor<ParamTypes>()...);
+				auto ArrayTypes = ToFixedArray(TupleTypes);
+
+				for (int32 Index = 0; Index < ArrayTypes.size(); ++Index)
+				{
+					Result.InputTypes.push_back(ArrayTypes[Index]);
+				}
 			}
 
 			return Result;

@@ -112,23 +112,23 @@ namespace lsgd
 	using HTuple = std::tuple<Types...>;
 
 	// tuple element
-	template <uint32 Index, class Type>
+	template <size_t Index, class Type>
 	using HTupleElement = std::tuple_element<Index, Type>;
 	
 	// get
-	template <uint32 Index, class... Types>
+	template <size_t Index, class... Types>
 	typename HTupleElement<Index, HTuple<Types...> >::type&	HGet(HTuple<Types...>& InTuple)
 	{
 		return std::get<Index, Types...>(InTuple);
 	}
 
-	template <uint32 Index, class... Types>
+	template <size_t Index, class... Types>
 	typename HTupleElement<Index, HTuple<Types...> >::type&& HGet(HTuple<Types...>&& InTuple)
 	{
 		return std::get<Index, Types...>(InTuple);
 	}
 
-	template <uint32 Index, class... Types>
+	template <size_t Index, class... Types>
 	typename HTupleElement<Index, HTuple<Types...> >::type const& HGet(const HTuple<Types...>& InTuple)
 	{
 		return std::get<Index, Types...>(InTuple);
@@ -141,17 +141,17 @@ namespace lsgd
 		return std::make_tuple(std::forward<Types>(InArguments)...);
 	}
 
-	template <class Type, Type... Values>
-	using HIntegerSequencer = std::integer_sequence<Type, Values...>;
+	template <typename Type, Type... Values>
+	using HIntegerSequence = std::integer_sequence<Type, Values...>;
 
-	template <class Type, Type Num>
+	template <typename Type, Type Num>
 	using HMakeIndexSequence = std::make_index_sequence<Num>;
 
 	//-------------------------------------------------------------------------
 	// custom implementations for dependent std library above
 
-	template <typename Type, uint32 Num, typename... Types, uint32... Indices>
-	void TupleToFixedArray(HFixedArray<Type, Num>& OutFixedArray, HTuple<Types...>& InTuple, HIntegerSequencer<Indices...>)
+	template <typename Type, size_t Num, typename... Types, size_t... Indices>
+	void TupleToFixedArray(HFixedArray<Type, Num>& OutFixedArray, HTuple<Types...>& InTuple, HIntegerSequence<size_t, Indices...>)
 	{
 		OutFixedArray = { static_cast<Type>(HGet<Indices>(InTuple))... };
 	}
