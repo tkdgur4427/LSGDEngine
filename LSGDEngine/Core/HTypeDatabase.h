@@ -8,6 +8,60 @@ namespace lsgd { namespace reflect {
 	class HProperty;
 	class HClass;
 
+	// type descriptor stored in HTypeDatabase
+	class HTypeDescriptor
+	{
+	public:
+		HTypeDescriptor()
+			: PrimitiveType(nullptr)
+			, ClassType(nullptr)
+		{}
+
+		// note that these type is just raw pointer (
+		//	- all instances related to type is cached in HTypeDatabase and never be released!
+
+		// if type is not primitive type, it will be nullptr;
+		const class HPrimitiveType* PrimitiveType;
+
+		// if type is not class type, it will be nullptr;
+		const class HClass* ClassType;
+	};
+
+	// function decompose result
+	struct HFunctionDecomposeResult
+	{
+		HFunctionDecomposeResult()
+			: IsClassFunction(false)
+			, IsConst(false)
+		{}
+
+		HTypeDescriptor OutputType;
+		HArray<HTypeDescriptor> InputTypes;
+
+		// only valid when IsClassFunction == true
+		HTypeDescriptor ClassType;
+
+		// function properties
+		bool IsClassFunction;
+		bool IsConst;	// note that it is only valid when IsClassFunction == true
+	};
+
+	// function decomposer
+	struct HFunctionDecomposerBase
+	{
+		template <typename ReturnType>
+		HTypeDescriptor ExtractOutputType() const;
+
+		template <typename... ParamTypes>
+		HArray<HTypeDescriptor> ExtractInputTypes() const;
+
+		template <typename ClassType>
+		HTypeDescriptor ExtractClassType() const;
+	};
+
+	template <class FunctionType>
+	struct HFunctionDecomposer : public HFunctionDecomposerBase {};
+
 	// post-process class reflection data
 	struct HPostProcessClassData
 	{	
@@ -39,9 +93,13 @@ namespace lsgd { namespace reflect {
 		void AddClassType(const HString& InName, const HString& InSuperClassName);
 		bool ExistClass(const HString& InClassName);
 		int32 GetClassIndex(const HString& InClassName);
+		const HClass* GetClass(const HString& InClassName);
 
 		template <class ClassType, class FieldType>
 		void AddClassField(const HString& InFieldName, FieldType ClassType::*InField);
+
+		template <class ClassType, class ReturnType, class... ParamTypes>
+		void AddClassMethod(const HString& InMethodName, ReturnType(ClassType::*InMethod)(ParamTypes...));
 
 		// generated class types
 		HArray<unique_ptr<HClass>> Classes;
@@ -65,6 +123,85 @@ namespace lsgd { namespace reflect {
 		void LinkProperty(int32 InClassIndex, unique_ptr<HProperty>& InProperty);
 	};
 
+	// function decomposer implementations
+
+	template <typename ReturnType>
+	HTypeDescriptor HFunctionDecomposerBase::ExtractOutputType() const
+	{
+		return HTypeDatabaseUtils::GetTypeDescriptor<ReturnType>();
+	}
+
+	template <typename... ParamTypes>
+	HArray<HTypeDescriptor> HFunctionDecomposerBase::ExtractInputTypes() const
+	{
+		HArray<HTypeDescriptor> Result;
+		if (sizeof...(ParamTypes) > 0)
+		{
+			// processing function input types
+			auto TupleTypes = HMakeTuple(&HTypeDatabaseUtils::GetTypeDescriptor<ParamTypes>()...);
+			auto ArrayTypes = ToFixedArray<HTypeDescriptor>(TupleTypes);
+
+			for (uint32 Index = 0; Index < ArrayTypes.size(); ++Index)
+			{
+				Result.push_back(ArrayTypes[Index]);
+			}
+		}
+
+		return Result;
+	}
+
+	template <typename ClassType>
+	HTypeDescriptor HFunctionDecomposerBase::ExtractClassType() const
+	{
+		return HTypeDatabaseUtils::GetTypeDescriptor<ClassType>();
+	}
+
+	template <typename ResultType, typename ...ParamTypes>
+	struct HFunctionDecomposer<ResultType(*)(ParamTypes...)> : public HFunctionDecomposerBase
+	{
+		HFunctionDecomposeResult Decompose()
+		{
+			HFunctionDecomposeResult Result;
+			Result.OutputType = ExtractOutputType<ResultType>();
+			Result.InputTypes = ExtractInputTypes<ParamTypes...>();
+
+			return Result;
+		}
+	};
+
+	template <typename ClassType, typename ResultType, typename ...ParamTypes>
+	struct HFunctionDecomposer<ResultType(ClassType::*)(ParamTypes...)> : public HFunctionDecomposerBase
+	{
+		HFunctionDecomposeResult Decompose()
+		{
+			HFunctionDecomposeResult Result;
+			Result.OutputType = ExtractOutputType<ResultType>();
+			Result.InputTypes = ExtractInputTypes<ParamTypes...>();
+			Result.ClassType = ExtractClassType<ClassType>();
+
+			Result.IsClassFunction = true;
+
+			return Result;
+		}
+	};
+
+	template <typename ClassType, typename ResultType, typename ...ParamTypes>
+	struct HFunctionDecomposer<ResultType(ClassType::*)(ParamTypes...) const> : public HFunctionDecomposerBase
+	{
+		HFunctionDecomposeResult Decompose()
+		{
+			HFunctionDecomposeResult Result;
+			Result.OutputType = ExtractOutputType<ResultType>();
+			Result.InputTypes = ExtractInputTypes<ParamTypes...>();
+			Result.ClassType = ExtractClassType<ClassType>();
+
+			Result.IsClassFunction = true;
+			Result.IsConst = true;
+
+			return Result;
+		}
+	};
+
 	// template method implementations
 
 	template<typename Type>
@@ -74,8 +211,11 @@ namespace lsgd { namespace reflect {
 		{
 			return FindPrimitiveTypeName(HPrimitiveTypeHelper<Type>::GetGuid());
 		}
+		
+		// by default, fall into getting class name (@todo fix this)
+		//return Type::GetClassName();
 
-		// ...
+		return HString();
 	}
 
 	template <class Type>
@@ -146,6 +286,12 @@ namespace lsgd { namespace reflect {
 		// create property
 		unique_ptr<HProperty> NewProperty = move(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
 		LinkProperty(ClassIndex, NewProperty);
+	}
+
+	template <class ClassType, class ReturnType, class... ParamTypes>
+	void HTypeDatabase::AddClassMethod(const HString& InMethodName, ReturnType(ClassType::*InMethod)(ParamTypes...))
+	{
+		HFunctionDecomposeResult Result = HFunctionDecomposer<decltype(InMethod)>().Decompose();
 	}
 }
 }

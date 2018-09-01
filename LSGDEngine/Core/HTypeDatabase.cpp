@@ -84,6 +84,11 @@ int32 HTypeDatabase::GetClassIndex(const HString& InClassName)
 	return -1;
 }
 
+const HClass* HTypeDatabase::GetClass(const HString& InClassName)
+{
+	return Classes[GetClassIndex(InClassName)].get();
+}
+
 void HTypeDatabase::LinkProperty(int32 InClassIndex, unique_ptr<HProperty>& InProperty)
 {
 	Classes[InClassIndex]->AddProperty(InProperty);

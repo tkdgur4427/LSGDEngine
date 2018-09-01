@@ -14,6 +14,12 @@ HTypeDescriptor HTypeDatabaseUtils::GetTypeDescriptor(const HString& InTypeName)
 		Result.PrimitiveType = HTypeDatabase::GetSingleton()->GetPrimitiveType(InTypeName);
 	}
 
+	// get class type
+	else if (HTypeDatabase::GetSingleton()->ExistClass(InTypeName))
+	{
+		Result.ClassType = HTypeDatabase::GetSingleton()->GetClass(InTypeName);
+	}
+
 	// ...
 	//else if 
 

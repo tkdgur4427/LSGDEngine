@@ -153,14 +153,14 @@ namespace lsgd
 	template <typename Type, size_t Num, typename... Types, size_t... Indices>
 	void TupleToFixedArray(HFixedArray<Type, Num>& OutFixedArray, HTuple<Types...>& InTuple, HIntegerSequence<size_t, Indices...>)
 	{
-		OutFixedArray = { static_cast<Type>(HGet<Indices>(InTuple))... };
+		OutFixedArray = { *(static_cast<Type*>(HGet<Indices>(InTuple)))... };
 	}
 
 	template <typename Type, typename... Types>
 	auto ToFixedArray(HTuple<Types...>& InTuple) -> HFixedArray<Type, sizeof...(Types)>
 	{
 		HFixedArray<Type, sizeof...(Types)> Result;
-		TupleToFixedArray(Result, InTuple, HMakeIndexSequence<sizeof...(Types)>());
+		TupleToFixedArray(Result, InTuple, HMakeIndexSequence<size_t, sizeof...(Types)>());
 		return Result;
 	}
 }
