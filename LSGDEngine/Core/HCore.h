@@ -26,7 +26,7 @@
 #include "HReflect.h"
 
 // type data base
-#include "HTypeDatabase.h"
+#include "HTypeDatabaseUtils.h"
 
 // generate reflection data for primitive type
 #include "HGeneratePrimitiveReflect.h"

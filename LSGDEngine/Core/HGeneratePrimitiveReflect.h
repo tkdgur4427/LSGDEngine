@@ -19,7 +19,7 @@ namespace lsgd { namespace reflect {
 	DECLARE_PRIMITIVE_TYPE(float)
 	DECLARE_PRIMITIVE_TYPE(double)
 
-	DECLARE_PRIMITIVE_TYPE(string)
+	DECLARE_PRIMITIVE_TYPE(HString)
 
 }
 }

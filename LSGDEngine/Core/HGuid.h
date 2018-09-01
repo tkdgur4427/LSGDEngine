@@ -16,10 +16,10 @@ namespace lsgd {
 		struct GuidInstance {};
 
 		// methods
-		string ToString() const;
-		operator string() const;
+		HString ToString() const;
+		operator HString() const;
 
-		const array<uint8, 16>& ToArray() const;
+		const HFixedArray<uint8, 16>& ToArray() const;
 		void Swap(HGuid& other);
 		bool IsValid() const;
 

@@ -12,14 +12,14 @@ public:
 };
 
 template <typename... Arguments>
-void HAsyncLogger::Log(const string& InStr, Arguments&&... InArguments)
+void HAsyncLogger::Log(const HString& InStr, Arguments&&... InArguments)
 {
 	//SpdInstance* WeakInstance = (SpdInstance*)Instance.get();
 	//WeakInstance->ConsoleLog->info(InStr.c_str(), std::forward<Arguments>(InArguments)...);
 }
 
 template <typename... Arguments>
-void HAsyncLogger::LogError(const string& InStr, Arguments&&... InArguments)
+void HAsyncLogger::LogError(const HString& InStr, Arguments&&... InArguments)
 {
 	//SpdInstance* WeakInstance = (SpdInstance*)Instance.get();
 	//WeakInstance->ConsoleLog->info(InStr.c_str(), std::forward<Arguments>(InArguments)...);

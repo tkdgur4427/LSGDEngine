@@ -1,6 +1,6 @@
 #pragma once
 
-#include "HTypeDatabase.h"
+#include "HTypeDatabaseUtils.h"
 
 // note that it tries to register primitive type by static class instantiation
 #define IMPLEMENT_PRIMITIVE_TYPE(PrimitiveType)	\

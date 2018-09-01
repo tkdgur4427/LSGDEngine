@@ -2,22 +2,20 @@
 
 namespace lsgd { namespace reflect {
 
-	class HPrimitiveTypeBase;
-
 	class HField
 	{
 	public:
-		explicit HField(const string& InName)
+		explicit HField(const HString& InName)
 			: Name(InName)
 		{}
 
-		string Name;
+		HString Name;
 	};
 
 	class HProperty : public HField
 	{
 	public:
-		explicit HProperty(const string& InName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+		explicit HProperty(const HString& InName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HField(InName)
 			, ArrayDim(InArrayDim)
 			, Offset(InOffset)
@@ -42,7 +40,7 @@ namespace lsgd { namespace reflect {
 	class HStruct : public HField
 	{
 	public:
-		HStruct(const string& InName)
+		HStruct(const HString& InName)
 			: HField(InName)
 		{}
 
@@ -54,7 +52,7 @@ namespace lsgd { namespace reflect {
 		void AddProperty(unique_ptr<HProperty>& InProperty);
 
 		// properties
-		vector<unique_ptr<HProperty>> Properties;
+		HArray<unique_ptr<HProperty>> Properties;
 	};
 
 	class HFunction;
@@ -91,16 +89,29 @@ namespace lsgd { namespace reflect {
 		uint16 ReturnValueOffset;
 	};
 
+	// c++ native function object
+	class HNativeFunction : public HFunction
+	{
+	public:
+		void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn);
+	};
+
+	// script function object
+	class HScriptFunction : public HFunction
+	{
+	public:
+	};
+
 	struct HNativeFunctionLookup
 	{
-		string Name;
+		HString Name;
 		NativeFunction Pointer;
 	};
 
 	class HClass : public HStruct
 	{
 	public:
-		explicit HClass(const string& InName)
+		explicit HClass(const HString& InName)
 			: HStruct(InName)
 		{
 		}
@@ -108,34 +119,34 @@ namespace lsgd { namespace reflect {
 		HClass* ClassWithin;
 		void* ClassDefaultObject;
 
-		hash_map<string, HFunction> FunctionMap;
-		mutable hash_map<string, HFunction> SuperFunctionMap;
+		hash_map<HString, HFunction> FunctionMap;
+		mutable hash_map<HString, HFunction> SuperFunctionMap;
 
-		vector<HNativeFunctionLookup> NativeFunctionLookup;
+		HArray<HNativeFunctionLookup> NativeFunctionLookup;
 	};
 
 	class HEnum : public HField
 	{
 	public:
-		vector<pair<string, int64>> Names;
-		static hash_map<string, HEnum*> AllEnumNames;
+		HArray<pair<HString, int64>> Names;
+		static hash_map<HString, HEnum*> AllEnumNames;
 	};
 
 	class HNumberProperty : public HProperty
 	{
 	public:
-		HNumberProperty(const string& InPrimitiveName, const string& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+		HNumberProperty(const HString& InPrimitiveName, const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
 			, PrimitiveName(InPrimitiveName)
 		{}
 
-		string PrimitiveName;
+		HString PrimitiveName;
 	};
 
 	class HBoolProperty : public HProperty
 	{
 	public:
-		HBoolProperty(const string& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+		HBoolProperty(const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
 		{}
 	};
@@ -143,7 +154,7 @@ namespace lsgd { namespace reflect {
 	class HStringProperty : public HProperty
 	{
 	public:
-		HStringProperty(const string& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+		HStringProperty(const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
 		{}
 	};

@@ -13,10 +13,10 @@ namespace lsgd { namespace log {
 		struct LoggerInstance {};
 
 		template <typename... Arguments>
-		void Log(const string& InStr, Arguments&&... InArguments);
+		void Log(const HString& InStr, Arguments&&... InArguments);
 
 		template <typename... Arguments>
-		void LogError(const string& InStr, Arguments&&... InArguments);
+		void LogError(const HString& InStr, Arguments&&... InArguments);
 
 	protected:
 		void CreateLoggerInstance();

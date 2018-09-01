@@ -41,6 +41,12 @@
     <ClInclude Include="HPrimitiveType.h">
       <Filter>Reflect</Filter>
     </ClInclude>
+    <ClInclude Include="HNativeFunctionObject.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
+    <ClInclude Include="HTypeDatabaseUtils.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -56,6 +62,12 @@
     </ClCompile>
     <ClCompile Include="HAssert.cpp" />
     <ClCompile Include="HReflect.cpp">
+      <Filter>Reflect</Filter>
+    </ClCompile>
+    <ClCompile Include="HTypeDatabase.cpp">
+      <Filter>Reflect</Filter>
+    </ClCompile>
+    <ClCompile Include="HTypeDatabaseUtils.cpp">
       <Filter>Reflect</Filter>
     </ClCompile>
   </ItemGroup>

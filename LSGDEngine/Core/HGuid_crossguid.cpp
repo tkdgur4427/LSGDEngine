@@ -19,7 +19,7 @@ struct GuidInstance_crossguid : public HGuid::GuidInstance
 		Value = xg::newGuid();
 	}
 
-	string ToString()
+	HString ToString()
 	{
 		return Value.str();
 	}
@@ -40,7 +40,7 @@ HGuid::HGuid(const HGuid& other)
 	*this = other;
 }
 
-string HGuid::ToString() const
+HString HGuid::ToString() const
 {
 	GuidInstance_crossguid* CrossGuid = (GuidInstance_crossguid*)Value.get();
 	check(CrossGuid != nullptr);
@@ -48,12 +48,12 @@ string HGuid::ToString() const
 	return CrossGuid->ToString();
 }
 
-HGuid::operator string() const
+HGuid::operator HString() const
 {
 	return ToString();
 }
 
-const array<uint8, 16>& HGuid::ToArray() const
+const HFixedArray<uint8, 16>& HGuid::ToArray() const
 {
 	GuidInstance_crossguid* CrossGuid = (GuidInstance_crossguid*)Value.get();
 	return CrossGuid->Value.bytes();

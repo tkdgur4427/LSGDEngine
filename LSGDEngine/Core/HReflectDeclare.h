@@ -22,4 +22,4 @@
 	extern HStatic##PrimitiveType Static##PrimitiveType; 
 
 #define DECLARE_CLASS_TYPE(ClassType, SuperClassType)	\
-	static lsgd::string GetClassName() { return #ClassType; }	\
+	static lsgd::HString GetClassName() { return #ClassType; }	\

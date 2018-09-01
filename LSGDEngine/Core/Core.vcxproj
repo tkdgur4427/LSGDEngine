@@ -25,12 +25,14 @@
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
     <ClInclude Include="HGuid.h" />
     <ClInclude Include="HLogger.h" />
+    <ClInclude Include="HNativeFunctionObject.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HReflect.h" />
     <ClInclude Include="HReflectDeclare.h" />
     <ClInclude Include="HReflectImplement.h" />
     <ClInclude Include="HStdOverrides.h" />
     <ClInclude Include="HTypeDatabase.h" />
+    <ClInclude Include="HTypeDatabaseUtils.h" />
     <ClInclude Include="HTypeOverrides.h" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +51,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HReflect.cpp" />
+    <ClCompile Include="HTypeDatabase.cpp" />
+    <ClCompile Include="HTypeDatabaseUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Memory\Memory.vcxproj">

@@ -11,6 +11,9 @@
 #include <vector>
 #include <unordered_map>
 
+#include <tuple>
+#include <utility>
+
 // override std libraries with lsgd:: by type aliasing
 namespace lsgd
 {
@@ -19,18 +22,18 @@ namespace lsgd
 	using basic_string = std::basic_string<CharType, Traits, HStdAllocator<char>>;
 
 	// string
-	using string = std::basic_string<char>;
+	using HString = std::basic_string<char>;
 
 	// wstring
 	using wstring = std::basic_string<wchar_t>;
 
-	// vector
+	// HArray
 	template <class ValueType>
-	using vector = std::vector<ValueType, HStdAllocator<ValueType>>;
+	using HArray = std::vector<ValueType>;
 
 	// array
 	template <class ValueType, int Size>
-	using array = std::array<ValueType, Size>;
+	using HFixedArray = std::array<ValueType, Size>;
 
 	// hash_map
 	template <class KeyType, class ValueType, class Hash = std::hash<KeyType>, class KeyEqual = std::equal_to<KeyType>>
@@ -99,5 +102,65 @@ namespace lsgd
 	constexpr remove_reference<Type>&& move(Type&& Arg)
 	{	
 		return (static_cast<remove_reference<Type>&&>(Arg));
+	}
+
+	//-------------------------------------------------------------------------
+	// after this override type aliasing should add prefix 'H' denoting LSGDEngine
+
+	// tuple
+	template <class... Types>
+	using HTuple = std::tuple<Types...>;
+
+	// tuple element
+	template <uint32 Index, class Type>
+	using HTupleElement = std::tuple_element<Index, Type>;
+	
+	// get
+	template <uint32 Index, class... Types>
+	typename HTupleElement<Index, HTuple<Types...> >::type&	HGet(HTuple<Types...>& InTuple)
+	{
+		return std::get<Index, Types...>(InTuple);
+	}
+
+	template <uint32 Index, class... Types>
+	typename HTupleElement<Index, HTuple<Types...> >::type&& HGet(HTuple<Types...>&& InTuple)
+	{
+		return std::get<Index, Types...>(InTuple);
+	}
+
+	template <uint32 Index, class... Types>
+	typename HTupleElement<Index, HTuple<Types...> >::type const& HGet(const HTuple<Types...>& InTuple)
+	{
+		return std::get<Index, Types...>(InTuple);
+	}
+
+	// make tuple
+	template <class... Types>
+	HTuple<Types...> HMakeTuple(Types&&... InArguments)
+	{
+		return std::make_tuple(std::forward<Types>(InArguments)...);
+	}
+
+	template <class Type, Type... Values>
+	using HIntegerSequencer = std::integer_sequence<Type, Values...>;
+
+	template <class Type, Type Num>
+	using HMakeIndexSequence = std::make_index_sequence<Num>;
+
+	//-------------------------------------------------------------------------
+	// custom implementations for dependent std library above
+
+	template <typename Type, uint32 Num, typename... Types, uint32... Indices>
+	void TupleToFixedArray(HFixedArray<Type, Num>& OutFixedArray, HTuple<Types...>& InTuple, HIntegerSequencer<Indices...>)
+	{
+		OutFixedArray = { static_cast<Type>(HGet<Indices>(InTuple))... };
+	}
+
+	template <typename Type, typename... Types>
+	auto ToFixedArray(HTuple<Types...>& InTuple) -> HFixedArray<Type, sizeof...(Types)>
+	{
+		HFixedArray<Type, sizeof...(Types)> Result;
+		TupleToFixedArray(Result, InTuple, HMakeIndexSequence<sizeof...(Types)>());
+		return Result;
 	}
 }

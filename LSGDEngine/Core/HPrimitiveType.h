@@ -14,12 +14,12 @@ namespace lsgd { namespace reflect {
 	class HPrimitiveType
 	{
 	public:
-		HPrimitiveType(const string& InName, const HGuid& InGuid)
+		HPrimitiveType(const HString& InName, const HGuid& InGuid)
 			: PrimitiveName(InName)
 			, Guid(InGuid)
 		{}
 
-		string PrimitiveName;
+		HString PrimitiveName;
 		HGuid Guid;
 	};	
 
@@ -114,7 +114,7 @@ namespace lsgd { namespace reflect {
 	};
 
 	template <>
-	struct IsStringHelper<string>
+	struct IsStringHelper<HString>
 	{
 		static const bool Value = true;
 	};
