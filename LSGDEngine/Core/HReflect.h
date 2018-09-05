@@ -89,11 +89,17 @@ namespace lsgd { namespace reflect {
 		uint16 ReturnValueOffset;
 	};
 
+	// forward declaration for function object
+	class HNativeFunctionObject;
+
 	// c++ native function object
 	class HNativeFunction : public HFunction
 	{
 	public:
 		void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn);
+
+	protected:
+		unique_ptr<HNativeFunctionObject> NativeFunctionObject;
 	};
 
 	// script function object
