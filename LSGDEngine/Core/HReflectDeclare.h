@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HPrimitiveType.h"
+#include "HClassType.h"
 
 // register primitive types
 #define DECLARE_PRIMITIVE_TYPE(PrimitiveType)	\
@@ -21,5 +22,22 @@
 	};	\
 	extern HStatic##PrimitiveType Static##PrimitiveType; 
 
-#define DECLARE_CLASS_TYPE(ClassType, SuperClassType)	\
-	static lsgd::HString GetClassName() { return #ClassType; }	\
+#define GENERATE_CLASS_BODY(ClassType) \
+	static lsgd::HString GetClassName() { return #ClassType; }
+
+#define DECLARE_CLASS_TYPE(ClassType, ...) \
+	class ClassType; \
+	template <> \
+	struct HClassTypeHelper<ClassType> \
+	{ \
+		static bool IsClassType() { return true; } \
+		static lsgd::HString GetClassName() { return #ClassType; } \
+		static lsgd::HString GetBaseClassNames() { return lsgd::HString(); } \
+	}; \
+	class HStatic##ClassType \
+	{ \
+	public: \
+		HStatic##ClassType(); \
+	}; \
+	extern HStatic##ClassType Static##ClassType; 
+	

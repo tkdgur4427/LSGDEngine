@@ -30,3 +30,7 @@
 
 // generate reflection data for primitive type
 #include "HGeneratePrimitiveReflect.h"
+
+// reflection generation headers
+#include "HReflectDeclare.h"
+#include "HReflectImplement.h"

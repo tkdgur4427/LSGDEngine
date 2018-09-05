@@ -11,16 +11,19 @@ using namespace lsgd::reflect;
 // std allocator override test
 #include <vector>
 
+DECLARE_CLASS_TYPE(A)
 class A
 {
 public:
-	DECLARE_CLASS_TYPE(A, );
+	GENERATE_CLASS_BODY(A);
 
 	int TestMethod(int a) { return 0; }
 	int TestMethodConst(double a, float b) const { return 0; }
 
 	double ADouble;
 };
+
+IMPLEMENT_CLASS_TYPE(A);
 
 typedef int(*FunctionTest)(int, double);
 
@@ -32,8 +35,7 @@ namespace GeneralUnitTest
 		
 		TEST_METHOD(TestMethod1)
 		{
-			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();
-			TypeDB->AddClassType("A", "");
+			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();			
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);
 

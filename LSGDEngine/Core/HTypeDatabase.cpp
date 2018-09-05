@@ -93,3 +93,15 @@ void HTypeDatabase::LinkProperty(int32 InClassIndex, unique_ptr<HProperty>& InPr
 {
 	Classes[InClassIndex]->AddProperty(InProperty);
 }
+
+void HNativeFunctionObject::ProcessDecomposedData(const HFunctionDecomposeResult& InData)
+{
+	IsClassFunction = InData.IsClassFunction;
+	IsConst = InData.IsConst;
+
+	FunctionOutput.TypeDescriptor = InData.OutputType;
+	for (const HTypeDescriptor& Descriptor : InData.InputTypes)
+	{
+		FunctionInputs.push_back({ Descriptor });
+	}
+}

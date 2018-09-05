@@ -62,6 +62,110 @@ namespace lsgd { namespace reflect {
 	template <class FunctionType>
 	struct HFunctionDecomposer : public HFunctionDecomposerBase {};
 
+	// native function implementation
+	class HNativeFunctionObject
+	{
+	public:
+		explicit HNativeFunctionObject(const HString& InName)
+			: FunctionName(InName)
+			, IsClassFunction(false)
+			, IsConst(false)
+		{
+		}
+
+		// process decomposed data
+		void ProcessDecomposedData(const HFunctionDecomposeResult& InData);
+
+		// common method (decomposing function object type)
+		template <typename FunctionObjectType>
+		void DecomposeFunctionObjectCommon();
+
+		// decompose function object
+		virtual void DecomposeFunctionObject() {};
+
+		struct HFunctionInput
+		{
+			HTypeDescriptor TypeDescriptor;
+		};
+
+		struct HFunctionOutput
+		{
+			HTypeDescriptor TypeDescriptor;
+		};
+
+		// function name
+		HString FunctionName;
+
+		// function object properties
+		HArray<HFunctionInput> FunctionInputs;
+		HFunctionOutput FunctionOutput;
+
+		// function properties
+		bool IsClassFunction;
+		bool IsConst;
+	};
+
+	// base SFINAE for HNativeFunctionObjectImpl
+	template <typename Type>
+	class HNativeFunctionObjectImpl : public HNativeFunctionObject
+	{
+	protected:
+	};
+
+	// global function object or static function object
+	template <typename ReturnType, typename ...ParamTypes>
+	class HNativeFunctionObjectImpl<ReturnType(*)(ParamTypes...)> : public HNativeFunctionObject
+	{
+	public:
+		typedef ReturnType(*FunctionPointerType) (ParamTypes...);
+
+		explicit HNativeFunctionObjectImpl(const HString& InName, FunctionPointerType InFunction)
+			: HNativeFunctionObject(InName)
+			, FunctionPointer(InFunction)
+		{}
+
+		virtual void DecomposeFunctionObject() override;
+
+	protected:
+		FunctionPointerType FunctionPointer;
+	};
+
+	// class member method (non-const)
+	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
+	class HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)> : public HNativeFunctionObject
+	{
+	public:
+		typedef ReturnType(ClassType::*FunctionPointerType) (ParamTypes...);
+
+		explicit HNativeFunctionObjectImpl(const HString& InName, FunctionPointerType InFunction)
+			: HNativeFunctionObject(InName)
+			, FunctionPointer(InFunction)
+		{}
+
+		virtual void DecomposeFunctionObject() override;
+
+	protected:
+		FunctionPointerType FunctionPointer;
+	};
+
+	// class member method (const)
+	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
+	class HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...) const> : public HNativeFunctionObject
+	{
+	public:
+		typedef ReturnType(ClassType::*FunctionPointerType) (ParamTypes...) const;
+
+		explicit HNativeFunctionObjectImpl(const HString& InName, FunctionPointerType InFunction)
+			: HNativeFunctionObject(InName)
+			, FunctionPointer(InFunction)
+		{}
+
+		virtual void DecomposeFunctionObject() override;
+
+	protected:
+		FunctionPointerType FunctionPointer;
+	};
+
 	// post-process class reflection data
 	struct HPostProcessClassData
 	{	
@@ -98,8 +202,8 @@ namespace lsgd { namespace reflect {
 		template <class ClassType, class FieldType>
 		void AddClassField(const HString& InFieldName, FieldType ClassType::*InField);
 
-		template <class ClassType, class ReturnType, class... ParamTypes>
-		void AddClassMethod(const HString& InMethodName, ReturnType(ClassType::*InMethod)(ParamTypes...));
+		template <class ClassMethodType>
+		void AddClassMethod(const HString& InMethodName, ClassMethodType InMethod);
 
 		// generated class types
 		HArray<unique_ptr<HClass>> Classes;
@@ -128,7 +232,7 @@ namespace lsgd { namespace reflect {
 	template <typename ReturnType>
 	HTypeDescriptor HFunctionDecomposerBase::ExtractOutputType() const
 	{
-		return HTypeDatabaseUtils::GetTypeDescriptor<ReturnType>();
+		return HTypeDatabaseUtils::template GetTypeDescriptor<ReturnType>();
 	}
 
 	template <typename... ParamTypes>
@@ -138,7 +242,7 @@ namespace lsgd { namespace reflect {
 		if (sizeof...(ParamTypes) > 0)
 		{
 			// processing function input types
-			auto TupleTypes = HMakeTuple(&HTypeDatabaseUtils::GetTypeDescriptor<ParamTypes>()...);
+			auto TupleTypes = HMakeTuple(&HTypeDatabaseUtils::template GetTypeDescriptor<ParamTypes>()...);
 			auto ArrayTypes = ToFixedArray<HTypeDescriptor>(TupleTypes);
 
 			for (uint32 Index = 0; Index < ArrayTypes.size(); ++Index)
@@ -153,7 +257,15 @@ namespace lsgd { namespace reflect {
 	template <typename ClassType>
 	HTypeDescriptor HFunctionDecomposerBase::ExtractClassType() const
 	{
-		return HTypeDatabaseUtils::GetTypeDescriptor<ClassType>();
+		/*
+			ISO C++03 14.2/4
+				- when the name of a member template specialization appears after .or -> in a postfix expression, or after
+				nested-name-specifier in a qualified-id, and the postfix-expression or qualified-id explicitly depends on 
+				a template-parameter, the member template name must be prefixed by the keyword template
+				otherwise, the name is assumed to name a non-template
+		*/
+
+		return HTypeDatabaseUtils::template GetTypeDescriptor<ClassType>();
 	}
 
 	template <typename ResultType, typename ...ParamTypes>
@@ -202,6 +314,33 @@ namespace lsgd { namespace reflect {
 		}
 	};
 
+	template <typename FunctionObjectType>
+	void HNativeFunctionObject::DecomposeFunctionObjectCommon()
+	{
+		HFunctionDecomposeResult Result;
+		Result = HFunctionDecomposer<FunctionObjectType>().Decompose();
+
+		ProcessDecomposedData(Result);
+	}
+
+	template <typename ReturnType, typename ...ParamTypes>
+	void HNativeFunctionObjectImpl<ReturnType(*)(ParamTypes...)>::DecomposeFunctionObject()
+	{
+		DecomposeFunctionObjectCommon<FunctionPointerType>();
+	}
+
+	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
+	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::DecomposeFunctionObject()
+	{
+		DecomposeFunctionObjectCommon<FunctionPointerType>();
+	}
+
+	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
+	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...) const>::DecomposeFunctionObject()
+	{
+		DecomposeFunctionObjectCommon<FunctionPointerType>();
+	}
+
 	// template method implementations
 
 	template<typename Type>
@@ -211,10 +350,12 @@ namespace lsgd { namespace reflect {
 		{
 			return FindPrimitiveTypeName(HPrimitiveTypeHelper<Type>::GetGuid());
 		}
-		
-		// by default, fall into getting class name (@todo fix this)
-		//return Type::GetClassName();
 
+		if (HClassTypeHelper<Type>::IsClassType())
+		{
+			return HClassTypeHelper<Type>::template GetClassName();
+		}		
+		
 		return HString();
 	}
 
@@ -288,10 +429,11 @@ namespace lsgd { namespace reflect {
 		LinkProperty(ClassIndex, NewProperty);
 	}
 
-	template <class ClassType, class ReturnType, class... ParamTypes>
-	void HTypeDatabase::AddClassMethod(const HString& InMethodName, ReturnType(ClassType::*InMethod)(ParamTypes...))
+	template <class ClassMethodType>
+	void HTypeDatabase::AddClassMethod(const HString& InMethodName, ClassMethodType InMethod)
 	{
-		HFunctionDecomposeResult Result = HFunctionDecomposer<decltype(InMethod)>().Decompose();
+		unique_ptr<HNativeFunctionObject> NewNativeFunctionObject = lsgd::make_unique<HNativeFunctionObject, HNativeFunctionObjectImpl<ClassMethodType>>(InMethodName, InMethod);
+		NewNativeFunctionObject->DecomposeFunctionObject();
 	}
 }
 }

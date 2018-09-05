@@ -9,6 +9,10 @@
 void* TempAllocate(int InSize)
 {
 	void* NewPointer = malloc(InSize);
+
+	// clear the memory
+	std::memset(NewPointer, 0, InSize);
+
 	return NewPointer;
 }
 

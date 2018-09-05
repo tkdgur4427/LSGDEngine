@@ -20,12 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HAssert.h" />
+    <ClInclude Include="HClassType.h" />
     <ClInclude Include="HCore.h" />
     <ClInclude Include="HCorePCH.h" />
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
     <ClInclude Include="HGuid.h" />
     <ClInclude Include="HLogger.h" />
-    <ClInclude Include="HNativeFunctionObject.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HReflect.h" />
     <ClInclude Include="HReflectDeclare.h" />

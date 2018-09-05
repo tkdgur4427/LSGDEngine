@@ -41,10 +41,10 @@
     <ClInclude Include="HPrimitiveType.h">
       <Filter>Reflect</Filter>
     </ClInclude>
-    <ClInclude Include="HNativeFunctionObject.h">
+    <ClInclude Include="HTypeDatabaseUtils.h">
       <Filter>Reflect</Filter>
     </ClInclude>
-    <ClInclude Include="HTypeDatabaseUtils.h">
+    <ClInclude Include="HClassType.h">
       <Filter>Reflect</Filter>
     </ClInclude>
   </ItemGroup>
