@@ -147,13 +147,18 @@ namespace lsgd { namespace reflect {
 		{
 		}
 
+		void AddMethod(unique_ptr<HFunction>& InMethod);
+
 		HClass* ClassWithin;
 		void* ClassDefaultObject;
 
-		hash_map<HString, HFunction> FunctionMap;
-		mutable hash_map<HString, HFunction> SuperFunctionMap;
+		hash_map<HString, HFunction*> FunctionMap;
+		mutable hash_map<HString, HFunction*> SuperFunctionMap;
 
 		HArray<HNativeFunctionLookup> NativeFunctionLookup;
+
+		// real-container for method object
+		HArray<unique_ptr<HFunction>> Methods;
 	};
 
 	class HEnum : public HField

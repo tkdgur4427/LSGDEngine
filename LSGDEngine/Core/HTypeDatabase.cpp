@@ -122,6 +122,12 @@ void HTypeDatabase::LinkProperty(int32 InClassIndex, unique_ptr<HProperty>& InPr
 	Classes[InClassIndex]->AddProperty(InProperty);
 }
 
+void HTypeDatabase::LinkMethod(int32 InClassIndex, unique_ptr<HNativeFunctionObject>& InNativeFunctionObject)
+{
+	unique_ptr<HFunction> NewFunction = make_unique<HFunction, HNativeFunction>(InNativeFunctionObject);
+	Classes[InClassIndex]->AddMethod(NewFunction);
+}
+
 unique_ptr<HProperty> HTypeDatabase::CreatePrimitiveProperty(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim) const
 {
 	unique_ptr<HProperty> NewProperty;
@@ -163,9 +169,24 @@ void HNativeFunctionObject::ProcessDecomposedData(const HFunctionDecomposeResult
 	IsClassFunction = InData.IsClassFunction;
 	IsConst = InData.IsConst;
 
+	if (IsClassFunction)
+	{
+		// setting owner class for native function
+		Class = InData.ClassType;
+	}
+
 	FunctionOutput.TypeDescriptor = InData.OutputType;
 	for (const HTypeDescriptor& Descriptor : InData.InputTypes)
 	{
 		FunctionInputs.push_back({ Descriptor });
 	}
+}
+
+HString HNativeFunctionObject::GetClassName() const
+{ 
+	if (Class.ClassType != nullptr) 
+	{ 
+		return Class.ClassType->Name; 
+	} 
+	return HString(); 
 }

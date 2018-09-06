@@ -86,6 +86,8 @@ namespace lsgd { namespace reflect {
 		// decompose function object
 		virtual void DecomposeFunctionObject() {};
 
+		HString GetClassName() const;
+
 		struct HFunctionInput
 		{
 			HTypeDescriptor TypeDescriptor;
@@ -98,6 +100,9 @@ namespace lsgd { namespace reflect {
 
 		// function name
 		HString FunctionName;
+
+		// class type (only valid when IsClassFunction)
+		HTypeDescriptor Class;
 
 		// function object properties
 		HArray<HFunctionInput> FunctionInputs;
@@ -232,6 +237,8 @@ namespace lsgd { namespace reflect {
 
 		// methods to cut the dependency with HReflect.h
 		void LinkProperty(int32 InClassIndex, unique_ptr<HProperty>& InProperty);
+
+		void LinkMethod(int32 InClassIndex, unique_ptr<HNativeFunctionObject>& InNativeFunctionObject);
 	};
 
 	// function decomposer implementations
@@ -446,6 +453,9 @@ namespace lsgd { namespace reflect {
 	{
 		unique_ptr<HNativeFunctionObject> NewNativeFunctionObject = lsgd::make_unique<HNativeFunctionObject, HNativeFunctionObjectImpl<ClassMethodType>>(InMethodName, InMethod);
 		NewNativeFunctionObject->DecomposeFunctionObject();
+
+		int32 ClassIndex = GetClassIndex(NewNativeFunctionObject->GetClassName());
+		LinkMethod(ClassIndex, NewNativeFunctionObject);
 	}
 }
 }

@@ -12,6 +12,17 @@ void HStruct::AddProperty(unique_ptr<HProperty>& InProperty)
 	Properties.push_back(move(InProperty));
 }
 
+void HClass::AddMethod(unique_ptr<HFunction>& InMethod)
+{
+	HFunction* RawMethod = InMethod.get();
+
+	// add method
+	Methods.push_back(move(InMethod));
+
+	// add pointer to mapper
+	FunctionMap.insert({ RawMethod->Name, RawMethod });
+}
+
 HNativeFunction::HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject)
 	: HFunction(InNativeFunctionObject->FunctionName)
 {
@@ -36,10 +47,7 @@ void HNativeFunction::SetNativeFunctionObject(unique_ptr<HNativeFunctionObject>&
 	HProperty*& CurrFunctionInput = FunctionInputHead;
 	for (int32 ParamIndex = 0; ParamIndex < (int32)NativeFunctionObject->FunctionInputs.size(); ++ParamIndex)
 	{
-		HTypeDescriptor& TypeDescriptor = NativeFunctionObject->FunctionInputs[ParamIndex].TypeDescriptor;
-
-		AccParamNum++;
-		AccParamSize += TypeDescriptor.GetSize();
+		HTypeDescriptor& TypeDescriptor = NativeFunctionObject->FunctionInputs[ParamIndex].TypeDescriptor;		
 
 		// create parameter property		
 		HString ParamName = HString("Param") + ToString(ParamIndex);
@@ -52,6 +60,10 @@ void HNativeFunction::SetNativeFunctionObject(unique_ptr<HNativeFunctionObject>&
 
 		// add property to UStruct
 		AddProperty(NewProperty);
+
+		// last update accumulators
+		AccParamNum++;
+		AccParamSize += TypeDescriptor.GetSize();
 	}
 
 	ParamNum = AccParamNum;
