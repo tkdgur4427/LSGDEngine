@@ -17,6 +17,9 @@ namespace lsgd { namespace reflect {
 			, ClassType(nullptr)
 		{}
 
+		int32 GetSize() const;
+		unique_ptr<HProperty> CreateProperty(const HString& InVariableName, int32 InOffset = 0) const;
+
 		// note that these type is just raw pointer (
 		//	- all instances related to type is cached in HTypeDatabase and never be released!
 
@@ -191,8 +194,12 @@ namespace lsgd { namespace reflect {
 		template <typename Type>
 		unique_ptr<HProperty> CreatePrimitiveProperty(const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
 
+		unique_ptr<HProperty> CreatePrimitiveProperty(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
+
 		template <typename Type>
 		unique_ptr<HProperty> CreatePropertyByType(const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
+
+		unique_ptr<HProperty> CreatePropertyByName(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
 
 		void AddClassType(const HString& InName, const HString& InSuperClassName);
 		bool ExistClass(const HString& InClassName);
@@ -364,7 +371,12 @@ namespace lsgd { namespace reflect {
 	{
 		check(!ExistPrimitiveType(InName));
 
-		unique_ptr<HPrimitiveType> NewPrimitiveType = lsgd::make_unique<HPrimitiveType>(InName, HPrimitiveTypeHelper<Type>::GetGuid());
+		int32 PrimitiveTypeFlags = 0;
+		PrimitiveTypeFlags = HPrimitiveTypeHelper<Type>::IsNumber() ? (PrimitiveTypeFlags | EPrimitiveTypeFlags::Number) : PrimitiveTypeFlags;
+		PrimitiveTypeFlags = HPrimitiveTypeHelper<Type>::IsBoolean() ? (PrimitiveTypeFlags | EPrimitiveTypeFlags::Number) : PrimitiveTypeFlags;
+		PrimitiveTypeFlags = HPrimitiveTypeHelper<Type>::IsString() ? (PrimitiveTypeFlags | EPrimitiveTypeFlags::Number) : PrimitiveTypeFlags;
+
+		unique_ptr<HPrimitiveType> NewPrimitiveType = lsgd::make_unique<HPrimitiveType>(InName, HPrimitiveTypeHelper<Type>::GetGuid(), sizeof(Type), PrimitiveTypeFlags);
 
 		int32 NewIndex = (int32)PrimitiveTypes.size();
 

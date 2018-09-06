@@ -7,6 +7,34 @@
 using namespace lsgd;
 using namespace lsgd::reflect;
 
+int32 HTypeDescriptor::GetSize() const
+{
+	if (PrimitiveType != nullptr)
+	{
+		return PrimitiveType->Size;
+	}
+	if (ClassType != nullptr)
+	{
+		//... undefined yet	
+	}
+
+	return -1;
+}
+
+unique_ptr<HProperty> HTypeDescriptor::CreateProperty(const HString& InVariableName, int32 InOffset) const
+{
+	if (PrimitiveType != nullptr)
+	{		
+		return HTypeDatabase::GetSingleton()->CreatePrimitiveProperty(PrimitiveType->PrimitiveName, InVariableName, InOffset, PrimitiveType->Size);
+	}
+	else if (ClassType != nullptr)
+	{
+		// @todo
+	}
+
+	return nullptr;	
+}
+
 HTypeDatabase* HTypeDatabase::GetSingleton()
 {
 	static HTypeDatabase TypeDatabase;
@@ -92,6 +120,42 @@ const HClass* HTypeDatabase::GetClass(const HString& InClassName)
 void HTypeDatabase::LinkProperty(int32 InClassIndex, unique_ptr<HProperty>& InProperty)
 {
 	Classes[InClassIndex]->AddProperty(InProperty);
+}
+
+unique_ptr<HProperty> HTypeDatabase::CreatePrimitiveProperty(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim) const
+{
+	unique_ptr<HProperty> NewProperty;
+	const HPrimitiveType* FoundType = GetPrimitiveType(InTypeName);
+
+	if (FoundType->IsNumber())
+	{
+		NewProperty = make_unique<HProperty, HNumberProperty>(InTypeName, InVariableName, InOffset, InSize, InArrayDim);
+	}
+	else if (FoundType->IsBoolean())
+	{
+		NewProperty = make_unique<HProperty, HBoolProperty>(InVariableName, InOffset, InSize, InArrayDim);
+	}
+	else if (FoundType->IsString())
+	{
+		// @todo...
+		//NewProperty = make_shared<HProperty, HStringProperty>(InOffset, InSize, InArrayDim);
+	}
+
+	//...
+
+	return NewProperty;
+}
+
+unique_ptr<HProperty> HTypeDatabase::CreatePropertyByName(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim) const
+{
+	// first handling primitive type
+	if (ExistPrimitiveType(InTypeName))
+	{
+		return move(CreatePrimitiveProperty(InTypeName, InVariableName, InOffset, InSize, InArrayDim));
+	}
+
+	// second ...		
+	return nullptr;
 }
 
 void HNativeFunctionObject::ProcessDecomposedData(const HFunctionDecomposeResult& InData)

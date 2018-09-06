@@ -147,6 +147,12 @@ namespace lsgd
 	template <typename Type, Type Num>
 	using HMakeIndexSequence = std::make_index_sequence<Num>;
 
+	template <typename Type>
+	HString ToString(Type InVal)
+	{
+		return std::to_string(InVal);
+	}
+
 	//-------------------------------------------------------------------------
 	// custom implementations for dependent std library above
 

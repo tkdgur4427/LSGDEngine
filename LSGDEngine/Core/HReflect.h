@@ -19,7 +19,9 @@ namespace lsgd { namespace reflect {
 			: HField(InName)
 			, ArrayDim(InArrayDim)
 			, Offset(InOffset)
-			, ElementSize(InElementSize)			
+			, ElementSize(InElementSize)
+			, FunctionInputNext(nullptr)
+			, FunctionOutputNext(nullptr)
 		{
 			TotalSize = ElementSize * ArrayDim;
 		}
@@ -29,6 +31,14 @@ namespace lsgd { namespace reflect {
 		int32 Offset;
 		int32 ElementSize;
 		int32 TotalSize;
+
+		// additional linked list node properties by its usage
+		
+		// if it is nullptr, it doesn't related to HFunction
+		HProperty* FunctionInputNext;
+		HProperty* FunctionOutputNext;
+
+		//...
 	};
 
 	template <class ClassType, class FieldType>
@@ -76,17 +86,26 @@ namespace lsgd { namespace reflect {
 
 		HFrame* PrevFame;
 		HReturnParam* ReturnParam;
-	};
-
-	typedef void (*NativeFunction)(void* InContext, const HFrame& InStack, void* const OutReturn);
+	};	
 
 	class HFunction : public HStruct
 	{
 	public:
-		NativeFunction Func;
+		HFunction(const HString& InName)
+			: HStruct(InName)
+			, FunctionInputHead(nullptr)
+			, FunctionOutputHead(nullptr)
+		{}		
+
+		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) {}	
+
 		uint8 ParamNum;
 		uint16 ParamSize;
 		uint16 ReturnValueOffset;
+
+		// note that real-instance is managed by HStruct
+		HProperty* FunctionInputHead;
+		HProperty* FunctionOutputHead;
 	};
 
 	// forward declaration for function object
@@ -96,9 +115,15 @@ namespace lsgd { namespace reflect {
 	class HNativeFunction : public HFunction
 	{
 	public:
-		void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn);
+		explicit HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject);
+
+		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) override;
 
 	protected:
+		// construct native function object
+		void SetNativeFunctionObject(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject);
+
+		// native function object
 		unique_ptr<HNativeFunctionObject> NativeFunctionObject;
 	};
 
@@ -111,7 +136,7 @@ namespace lsgd { namespace reflect {
 	struct HNativeFunctionLookup
 	{
 		HString Name;
-		NativeFunction Pointer;
+		//NativeFunction Pointer;
 	};
 
 	class HClass : public HStruct

@@ -10,17 +10,33 @@ namespace lsgd { namespace reflect {
 		static HGuid GetGuid() { static HGuid Guid; return Guid; }
 	};
 
+	enum EPrimitiveTypeFlags 
+	{
+		Number = (1 << 0),
+		Boolean = (1 << 1),
+		String = (1 << 2),
+	};
+
 	// primitive type interface
 	class HPrimitiveType
 	{
 	public:
-		HPrimitiveType(const HString& InName, const HGuid& InGuid)
+		HPrimitiveType(const HString& InName, const HGuid& InGuid, int32 InSize, int32 InFlags)
 			: PrimitiveName(InName)
 			, Guid(InGuid)
+			, Size(InSize)
+			, PrimitiveTypeFlags(InFlags)
 		{}
+
+		bool IsNumber() const { return (PrimitiveTypeFlags & EPrimitiveTypeFlags::Number) > 0; }
+		bool IsBoolean() const { return (PrimitiveTypeFlags & EPrimitiveTypeFlags::Boolean) > 0; }
+		bool IsString() const { return (PrimitiveTypeFlags & EPrimitiveTypeFlags::String) > 0; }
 
 		HString PrimitiveName;
 		HGuid Guid;
+		int32 Size;
+
+		int32 PrimitiveTypeFlags;
 	};	
 
 	// number
