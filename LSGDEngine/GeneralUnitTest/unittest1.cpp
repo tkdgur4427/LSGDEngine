@@ -38,8 +38,6 @@ namespace GeneralUnitTest
 			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();			
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);
-
-			HTypeDatabaseUtils::DecomposeFunction<FunctionTest>();
 		}
 	};
 }

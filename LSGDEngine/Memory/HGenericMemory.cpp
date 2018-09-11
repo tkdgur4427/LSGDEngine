@@ -88,3 +88,13 @@ void* HGenericMemory::AllocateMemStack(int InSize, int InAlignment)
 	return Memory;
 #endif
 }
+
+void HGenericMemory::MemZero(void* Dest, int InValue, size_t InSize)
+{
+	memset(Dest, InValue, InSize);
+}
+
+void* HGenericMemory::MemCopy(void* Dest, void const* Src, size_t InSize)
+{
+	memcpy(Dest, Src, InSize);
+}

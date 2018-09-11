@@ -22,4 +22,8 @@ public:
 	static void PushMemMark(char* InName = nullptr);
 	static void PopMemMark();
 	static void* AllocateMemStack(int InSize, int InAlignment = 4);
+
+	// memory operations
+	static void MemZero(void* Dest, int InValue, size_t InSize);
+	static void* MemCopy(void* Dest, void const* Src, size_t InSize);
 };

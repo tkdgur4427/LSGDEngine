@@ -65,6 +65,48 @@ namespace lsgd { namespace reflect {
 	template <class FunctionType>
 	struct HFunctionDecomposer : public HFunctionDecomposerBase {};
 
+	// for high-flexibility, separate native function stacks
+	//	- the design is adapted from assembly process
+	struct HNativeFunctionFrame
+	{
+		enum 
+		{
+			StackSize = 128, // maximum 16 entries allowed (supposing each entry has 8 bytes)
+		};
+
+		uint8 StackStorage[StackSize];
+		int16 CurrOffset;
+
+		// parameter offset to retrieve
+		//	- @todo: we can optimize further by... something?
+		HArray<int16> ParamOffsets;
+		HArray<int16> ParamSizes;
+
+		HNativeFunctionFrame();
+
+		// set function frame data
+		template <class... ParamTypes>
+		void SetFrame(uint8* InClass, ParamTypes&&... Parameters);
+
+		// getting parameter by template function
+		template <typename Type>
+		Type GetParameter(int32 Index);
+
+		// getting class instance by template function
+		template <typename ClassType>
+		ClassType GetClass();
+
+	protected:
+		
+		// methods
+		//	- currently really simple management for stack frame for native function
+		//	- if we need, we need to make more solid way
+		void Push(uint8* Data, int16 DataSize);
+		void Pop(uint8* OutData, int16 DataSize);
+
+		uint16 GetTopOffset() const { return CurrOffset; }
+	};
+
 	// native function implementation
 	class HNativeFunctionObject
 	{
@@ -86,6 +128,10 @@ namespace lsgd { namespace reflect {
 		// decompose function object
 		virtual void DecomposeFunctionObject() {};
 
+		// call functions
+		void CallFunction(HNativeFunctionFrame& Frame, )
+
+		// utility functionalities
 		HString GetClassName() const;
 
 		struct HFunctionInput
@@ -327,6 +373,32 @@ namespace lsgd { namespace reflect {
 			return Result;
 		}
 	};
+		
+	template <class... ParamTypes>
+	void HNativeFunctionFrame::SetFrame(uint8* InClass, ParamTypes&&... Parameters)
+	{
+		// insert class instance pointer
+		Push(&InClass, sizeof(uint8*));
+
+		// insert parameters
+		int32 ParamNum = sizeof...(Parameters);
+		if (ParamNum)
+		{
+			
+		}
+	}
+		
+	template <typename Type>
+	Type HNativeFunctionFrame::GetParameter(int32 Index)
+	{
+
+	}
+		
+	template <typename ClassType>
+	ClassType HNativeFunctionFrame::GetClass()
+	{
+
+	}
 
 	template <typename FunctionObjectType>
 	void HNativeFunctionObject::DecomposeFunctionObjectCommon()

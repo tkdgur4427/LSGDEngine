@@ -190,3 +190,24 @@ HString HNativeFunctionObject::GetClassName() const
 	} 
 	return HString(); 
 }
+
+HNativeFunctionFrame::HNativeFunctionFrame()
+	: CurrOffset(0)
+{
+	// zeroify stack storage
+	HGenericMemory::MemZero(&StackStorage[0], 0, sizeof(uint8) * StackSize);
+}
+
+void HNativeFunctionFrame::Push(uint8* Data, int16 DataSize)
+{
+	check(CurrOffset + DataSize <= StackSize);
+	HGenericMemory::MemCopy(&StackStorage[CurrOffset], Data, DataSize);
+	CurrOffset += DataSize;
+}
+
+void HNativeFunctionFrame::Pop(uint8* OutData, int16 DataSize)
+{
+	check(CurrOffset - DataSize >= 0);
+	CurrOffset -= DataSize;
+	HGenericMemory::MemCopy(OutData, &StackStorage[CurrOffset], DataSize);
+}
