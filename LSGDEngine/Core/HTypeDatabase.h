@@ -220,7 +220,21 @@ namespace lsgd { namespace reflect {
 		{}
 
 		virtual void DecomposeFunctionObject() override;
-		virtual void CallFunction(HNativeFunctionFrame& Frame) override;
+
+		template <size_t... Indices>
+		void CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<size_t, Indices...>)
+		{
+			// get the class instance
+			ClassType* ClassInstance = Frame.GetClass<ClassType>();
+
+			// call class method
+			ReturnType Result = (ClassInstance->*FunctionPointer)(Frame.GetParameter<ParamTypes>(Indices)...);
+		}
+
+		virtual void CallFunction(HNativeFunctionFrame& Frame) override
+		{
+			CallFunctionImpl(Frame, HMakeIndexSequence<size_t, sizeof...(ParamTypes)>());
+		}
 
 	protected:
 		FunctionPointerType FunctionPointer;
@@ -459,7 +473,7 @@ namespace lsgd { namespace reflect {
 	template <typename Type>
 	Type HNativeFunctionFrame::GetParameter(int32 Index) const
 	{
-		check(Index < ParamOffsets.size());
+		check(Index < (int32)ParamOffsets.size());
 
 		int16 Offset = ParamOffsets[Index];
 		int16 Size = ParamSizes[Index];
@@ -509,11 +523,17 @@ namespace lsgd { namespace reflect {
 		DecomposeFunctionObjectCommon<FunctionPointerType>();
 	}
 
-	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
-	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::CallFunction(HNativeFunctionFrame& Frame)
-	{
+	//template <typename ClassType, typename ReturnType, typename... ParamTypes, int16... Indices>
+	//void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<int16, Indices...>)
+	//{
+	//	
+	//}
 
-	}
+	//template <typename ClassType, typename ReturnType, typename ...ParamTypes>
+	//void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::CallFunction(HNativeFunctionFrame& Frame)
+	//{
+	//	
+	//}
 
 	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
 	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...) const>::DecomposeFunctionObject()

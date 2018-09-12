@@ -119,6 +119,9 @@ namespace lsgd { namespace reflect {
 
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) override;
 
+		// temporary
+		HNativeFunctionObject* GetNativeFunctionObject() { return NativeFunctionObject.get(); }
+
 	protected:
 		// construct native function object
 		void SetNativeFunctionObject(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject);

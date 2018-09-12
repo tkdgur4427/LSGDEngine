@@ -17,7 +17,7 @@ class A
 public:
 	GENERATE_CLASS_BODY(A);
 
-	int TestMethod(int a) { return 0; }
+	int TestMethod(int a) { return a; }
 	int TestMethodConst(double a, float b) const { return 0; }
 
 	double ADouble;
@@ -39,16 +39,13 @@ namespace GeneralUnitTest
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);
 
-			lsgd::reflect::HNativeFunctionFrame Frame;
-			int Param0 = 124;
-			double Param1 = 2.3;
-			float Param2 = 1.1f;
-			Frame.SetFrame(nullptr, Param0, Param1, Param2);
+			A AInstance;
+			int Param0 = 10;
+			lsgd::reflect::HNativeFunction* Func0 = (lsgd::reflect::HNativeFunction*)(TypeDB->GetClass("A")->Methods[0].get());
 
-			uint8* ClassPtr = Frame.GetClass<uint8>();
-			int Param0Target = Frame.GetParameter<int>(0);
-			double Param1Target = Frame.GetParameter<double>(1);
-			float Param2Target = Frame.GetParameter<float>(2);
+			lsgd::reflect::HNativeFunctionFrame Frame;
+			Frame.SetFrame((uint8*)&AInstance, Param0);
+			Func0->GetNativeFunctionObject()->CallFunction(Frame);
 		}
 	};
 }
