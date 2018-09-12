@@ -74,6 +74,8 @@ namespace lsgd { namespace reflect {
 			StackSize = 128, // maximum 16 entries allowed (supposing each entry has 8 bytes)
 		};
 
+		HNativeFunctionFrame();
+
 		uint8 StackStorage[StackSize];
 		int16 CurrOffset;
 
@@ -82,7 +84,13 @@ namespace lsgd { namespace reflect {
 		HArray<int16> ParamOffsets;
 		HArray<int16> ParamSizes;
 
-		HNativeFunctionFrame();
+		// class reference offset and size
+		int16 ClassRefOffset;
+		int16 ClassRefSize;
+
+		// output offset and size
+		int16 OutputOffset;
+		int16 OutputSize;
 
 		// set function frame data
 		template <class... ParamTypes>
@@ -98,11 +106,11 @@ namespace lsgd { namespace reflect {
 
 		// getting parameter by template function
 		template <typename Type>
-		Type GetParameter(int32 Index);
+		Type GetParameter(int32 Index) const;
 
 		// getting class instance by template function
 		template <typename ClassType>
-		ClassType GetClass();
+		ClassType* GetClass() const;
 
 	protected:
 		// methods
@@ -143,7 +151,7 @@ namespace lsgd { namespace reflect {
 		virtual void DecomposeFunctionObject() {};
 
 		// call functions
-		//void CallFunction(HNativeFunctionFrame& Frame, )
+		virtual void CallFunction(HNativeFunctionFrame& Frame) {}
 
 		// utility functionalities
 		HString GetClassName() const;
@@ -193,6 +201,7 @@ namespace lsgd { namespace reflect {
 		{}
 
 		virtual void DecomposeFunctionObject() override;
+		virtual void CallFunction(HNativeFunctionFrame& Frame) override;
 
 	protected:
 		FunctionPointerType FunctionPointer;
@@ -211,6 +220,7 @@ namespace lsgd { namespace reflect {
 		{}
 
 		virtual void DecomposeFunctionObject() override;
+		virtual void CallFunction(HNativeFunctionFrame& Frame) override;
 
 	protected:
 		FunctionPointerType FunctionPointer;
@@ -229,6 +239,7 @@ namespace lsgd { namespace reflect {
 		{}
 
 		virtual void DecomposeFunctionObject() override;
+		virtual void CallFunction(HNativeFunctionFrame& Frame) override;
 
 	protected:
 		FunctionPointerType FunctionPointer;
@@ -405,6 +416,14 @@ namespace lsgd { namespace reflect {
 	template <class ParamType>
 	void HNativeFunctionFrame::PushParamRecursive(const ParamType& InParam)
 	{
+		// record the parameter size & offset
+		int16 Offset = GetTopOffset();
+		int16 Size = sizeof(ParamType);
+		
+		ParamOffsets.push_back(Offset);
+		ParamSizes.push_back(Size);
+
+		// push to the stack frame
 		PushByType(InParam);
 	}
 
@@ -424,6 +443,10 @@ namespace lsgd { namespace reflect {
 		// insert class instance pointer
 		PushReference(InClass);
 
+		// record class reference
+		ClassRefOffset = 0;
+		ClassRefSize = GetTopOffset();
+
 		// insert parameters
 		int32 ParamNum = sizeof...(Parameters);
 		if (ParamNum)
@@ -434,15 +457,29 @@ namespace lsgd { namespace reflect {
 	}
 		
 	template <typename Type>
-	Type HNativeFunctionFrame::GetParameter(int32 Index)
+	Type HNativeFunctionFrame::GetParameter(int32 Index) const
 	{
+		check(Index < ParamOffsets.size());
 
+		int16 Offset = ParamOffsets[Index];
+		int16 Size = ParamSizes[Index];
+		check(Size == sizeof(Type));
+
+		Type Result;
+		HGenericMemory::MemCopy((uint8*)&Result, &StackStorage[Offset], Size);
+		return Result;
 	}
 		
 	template <typename ClassType>
-	ClassType HNativeFunctionFrame::GetClass()
+	ClassType* HNativeFunctionFrame::GetClass() const
 	{
+		ClassType* ClassReference = nullptr;
+		
+		uintptr_t ClassPtr;
+		HGenericMemory::MemCopy((uint8*)&ClassPtr, &StackStorage[ClassRefOffset], ClassRefSize);
+		ClassReference = (ClassType*)ClassPtr;
 
+		return ClassReference;
 	}
 
 	template <typename FunctionObjectType>
@@ -460,6 +497,12 @@ namespace lsgd { namespace reflect {
 		DecomposeFunctionObjectCommon<FunctionPointerType>();
 	}
 
+	template <typename ReturnType, typename ...ParamTypes>
+	void HNativeFunctionObjectImpl<ReturnType(*)(ParamTypes...)>::CallFunction(HNativeFunctionFrame& Frame)
+	{
+		
+	}
+
 	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
 	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::DecomposeFunctionObject()
 	{
@@ -467,9 +510,21 @@ namespace lsgd { namespace reflect {
 	}
 
 	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
+	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::CallFunction(HNativeFunctionFrame& Frame)
+	{
+
+	}
+
+	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
 	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...) const>::DecomposeFunctionObject()
 	{
 		DecomposeFunctionObjectCommon<FunctionPointerType>();
+	}
+
+	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
+	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...) const>::CallFunction(HNativeFunctionFrame& Frame)
+	{
+
 	}
 
 	// template method implementations

@@ -44,6 +44,11 @@ namespace GeneralUnitTest
 			double Param1 = 2.3;
 			float Param2 = 1.1f;
 			Frame.SetFrame(nullptr, Param0, Param1, Param2);
+
+			uint8* ClassPtr = Frame.GetClass<uint8>();
+			int Param0Target = Frame.GetParameter<int>(0);
+			double Param1Target = Frame.GetParameter<double>(1);
+			float Param2Target = Frame.GetParameter<float>(2);
 		}
 	};
 }

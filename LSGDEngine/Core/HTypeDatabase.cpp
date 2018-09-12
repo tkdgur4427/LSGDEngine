@@ -193,6 +193,10 @@ HString HNativeFunctionObject::GetClassName() const
 
 HNativeFunctionFrame::HNativeFunctionFrame()
 	: CurrOffset(0)
+	, ClassRefOffset(0)
+	, ClassRefSize(0)
+	, OutputOffset(0)
+	, OutputSize(0)
 {
 	// zeroify stack storage
 	HGenericMemory::MemZero(&StackStorage[0], 0, sizeof(uint8) * StackSize);
