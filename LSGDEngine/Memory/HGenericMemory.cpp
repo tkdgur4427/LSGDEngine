@@ -96,5 +96,5 @@ void HGenericMemory::MemZero(void* Dest, int InValue, size_t InSize)
 
 void* HGenericMemory::MemCopy(void* Dest, void const* Src, size_t InSize)
 {
-	memcpy(Dest, Src, InSize);
+	return memcpy(Dest, Src, InSize);
 }

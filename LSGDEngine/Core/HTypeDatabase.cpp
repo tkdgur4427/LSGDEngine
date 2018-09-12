@@ -198,6 +198,18 @@ HNativeFunctionFrame::HNativeFunctionFrame()
 	HGenericMemory::MemZero(&StackStorage[0], 0, sizeof(uint8) * StackSize);
 }
 
+void HNativeFunctionFrame::PushReference(uint8*& InData)
+{
+	int16 DataSize = sizeof(uint8*);
+	check(CurrOffset + DataSize <= StackSize);
+
+	//@todo - need to find fancy way
+	uintptr_t CastedData = (uintptr_t)InData;
+
+	HGenericMemory::MemCopy(&StackStorage[CurrOffset], &CastedData, DataSize);
+	CurrOffset += DataSize;
+}
+
 void HNativeFunctionFrame::Push(uint8* Data, int16 DataSize)
 {
 	check(CurrOffset + DataSize <= StackSize);

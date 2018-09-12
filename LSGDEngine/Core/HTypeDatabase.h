@@ -88,6 +88,14 @@ namespace lsgd { namespace reflect {
 		template <class... ParamTypes>
 		void SetFrame(uint8* InClass, ParamTypes&&... Parameters);
 
+		// base function PushParamRecursive
+		template <class ParamType>
+		void PushParamRecursive(const ParamType& InParam);
+
+		// template recursive function PushParamRecursive
+		template <class ParamType, class... ParamTypes>
+		void PushParamRecursive(const ParamType& InParam, ParamTypes&&... InRestParams);
+
 		// getting parameter by template function
 		template <typename Type>
 		Type GetParameter(int32 Index);
@@ -97,10 +105,16 @@ namespace lsgd { namespace reflect {
 		ClassType GetClass();
 
 	protected:
-		
 		// methods
 		//	- currently really simple management for stack frame for native function
 		//	- if we need, we need to make more solid way
+		template <typename Type>
+		void PushByType(const Type& InValue);
+
+		template <typename Type>
+		Type PopByType();
+
+		void PushReference(uint8*& InData);
 		void Push(uint8* Data, int16 DataSize);
 		void Pop(uint8* OutData, int16 DataSize);
 
@@ -129,7 +143,7 @@ namespace lsgd { namespace reflect {
 		virtual void DecomposeFunctionObject() {};
 
 		// call functions
-		void CallFunction(HNativeFunctionFrame& Frame, )
+		//void CallFunction(HNativeFunctionFrame& Frame, )
 
 		// utility functionalities
 		HString GetClassName() const;
@@ -373,18 +387,49 @@ namespace lsgd { namespace reflect {
 			return Result;
 		}
 	};
+
+	template <typename Type>
+	void HNativeFunctionFrame::PushByType(const Type& InValue)
+	{
+		Push((uint8*)&InValue, sizeof(Type));
+	}
+
+	template <typename Type>
+	Type HNativeFunctionFrame::PopByType()
+	{
+		Type Result;
+		Pop((uint8*)&Result, sizeof(Type));
+		return Result;
+	}
+
+	template <class ParamType>
+	void HNativeFunctionFrame::PushParamRecursive(const ParamType& InParam)
+	{
+		PushByType(InParam);
+	}
+
+	template <class ParamType, class... ParamTypes>
+	void HNativeFunctionFrame::PushParamRecursive(const ParamType& InParam, ParamTypes&&... InRestParams)
+	{
+		// call base function
+		PushParamRecursive(InParam);
+
+		// call push parameter recursively
+		PushParamRecursive(InRestParams...);
+	}
 		
 	template <class... ParamTypes>
 	void HNativeFunctionFrame::SetFrame(uint8* InClass, ParamTypes&&... Parameters)
 	{
 		// insert class instance pointer
-		Push(&InClass, sizeof(uint8*));
+		PushReference(InClass);
 
 		// insert parameters
 		int32 ParamNum = sizeof...(Parameters);
 		if (ParamNum)
 		{
-			
+			// push parameter compile-time recursively
+			PushParamRecursive(Parameters...);
 		}
 	}
 		

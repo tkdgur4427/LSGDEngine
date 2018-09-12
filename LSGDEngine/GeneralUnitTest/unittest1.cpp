@@ -38,6 +38,12 @@ namespace GeneralUnitTest
 			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();			
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);
+
+			lsgd::reflect::HNativeFunctionFrame Frame;
+			int Param0 = 124;
+			double Param1 = 2.3;
+			float Param2 = 1.1f;
+			Frame.SetFrame(nullptr, Param0, Param1, Param2);
 		}
 	};
 }
