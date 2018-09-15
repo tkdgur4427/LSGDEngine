@@ -74,7 +74,7 @@ namespace lsgd { namespace reflect {
 			StackSize = 128, // maximum 16 entries allowed (supposing each entry has 8 bytes)
 		};
 
-		HNativeFunctionFrame();
+		HNativeFunctionFrame();		
 
 		uint8 StackStorage[StackSize];
 		int16 CurrOffset;
@@ -104,6 +104,10 @@ namespace lsgd { namespace reflect {
 		template <class ParamType, class... ParamTypes>
 		void PushParamRecursive(const ParamType& InParam, ParamTypes&&... InRestParams);
 
+		// push output param
+		template <class OutputType>
+		void PushOutput(const OutputType& InOutput);
+
 		// getting parameter by template function
 		template <typename Type>
 		Type GetParameter(int32 Index) const;
@@ -111,6 +115,10 @@ namespace lsgd { namespace reflect {
 		// getting class instance by template function
 		template <typename ClassType>
 		ClassType* GetClass() const;
+
+		// getting output
+		template <class OutputType>
+		OutputType GetOutput() const;
 
 	protected:
 		// methods
@@ -201,6 +209,11 @@ namespace lsgd { namespace reflect {
 		{}
 
 		virtual void DecomposeFunctionObject() override;
+
+		template <int16... Indices>
+		void CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<int16, Indices...>);
+
+
 		virtual void CallFunction(HNativeFunctionFrame& Frame) override;
 
 	protected:
@@ -221,20 +234,10 @@ namespace lsgd { namespace reflect {
 
 		virtual void DecomposeFunctionObject() override;
 
-		template <size_t... Indices>
-		void CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<size_t, Indices...>)
-		{
-			// get the class instance
-			ClassType* ClassInstance = Frame.GetClass<ClassType>();
+		template <int16... Indices>
+		void CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<int16, Indices...>);
 
-			// call class method
-			ReturnType Result = (ClassInstance->*FunctionPointer)(Frame.GetParameter<ParamTypes>(Indices)...);
-		}
-
-		virtual void CallFunction(HNativeFunctionFrame& Frame) override
-		{
-			CallFunctionImpl(Frame, HMakeIndexSequence<size_t, sizeof...(ParamTypes)>());
-		}
+		virtual void CallFunction(HNativeFunctionFrame& Frame) override;
 
 	protected:
 		FunctionPointerType FunctionPointer;
@@ -253,6 +256,10 @@ namespace lsgd { namespace reflect {
 		{}
 
 		virtual void DecomposeFunctionObject() override;
+
+		template <int16... Indices>
+		void CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<int16, Indices...>);
+
 		virtual void CallFunction(HNativeFunctionFrame& Frame) override;
 
 	protected:
@@ -450,6 +457,15 @@ namespace lsgd { namespace reflect {
 		// call push parameter recursively
 		PushParamRecursive(InRestParams...);
 	}
+
+	template <class OutputType>
+	void HNativeFunctionFrame::PushOutput(const OutputType& InOutput)
+	{
+		OutputOffset = GetTopOffset();
+		OutputSize = sizeof(OutputType);
+
+		PushByType(InOutput);
+	}
 		
 	template <class... ParamTypes>
 	void HNativeFunctionFrame::SetFrame(uint8* InClass, ParamTypes&&... Parameters)
@@ -496,6 +512,14 @@ namespace lsgd { namespace reflect {
 		return ClassReference;
 	}
 
+	template <class OutputType>
+	OutputType HNativeFunctionFrame::GetOutput() const
+	{
+		OutputType Result;
+		HGenericMemory::MemCopy((uint8*)&Result, &StackStorage[OutputOffset], OutputSize);
+		return Result;
+	}
+
 	template <typename FunctionObjectType>
 	void HNativeFunctionObject::DecomposeFunctionObjectCommon()
 	{
@@ -511,10 +535,21 @@ namespace lsgd { namespace reflect {
 		DecomposeFunctionObjectCommon<FunctionPointerType>();
 	}
 
+	template <typename ReturnType, typename... ParamTypes>
+	template <int16... Indices>
+	void HNativeFunctionObjectImpl<ReturnType(*)(ParamTypes...)>::CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<int16, Indices...>)
+	{
+		// call class method
+		ReturnType Result = (*FunctionPointer)(Frame.GetParameter<ParamTypes>(Indices)...);
+
+		// push output to the frame
+		Frame.PushOutput(Result);
+	}
+
 	template <typename ReturnType, typename ...ParamTypes>
 	void HNativeFunctionObjectImpl<ReturnType(*)(ParamTypes...)>::CallFunction(HNativeFunctionFrame& Frame)
 	{
-		
+		CallFunctionImpl(Frame, HMakeIntegerSequence<int16, sizeof...(ParamTypes)>());
 	}
 
 	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
@@ -523,17 +558,25 @@ namespace lsgd { namespace reflect {
 		DecomposeFunctionObjectCommon<FunctionPointerType>();
 	}
 
-	//template <typename ClassType, typename ReturnType, typename... ParamTypes, int16... Indices>
-	//void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<int16, Indices...>)
-	//{
-	//	
-	//}
+	template <typename ClassType, typename ReturnType, typename... ParamTypes>
+	template <int16... Indices>
+	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<int16, Indices...>)
+	{
+		// get the class instance
+		ClassType* ClassInstance = Frame.GetClass<ClassType>();
 
-	//template <typename ClassType, typename ReturnType, typename ...ParamTypes>
-	//void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::CallFunction(HNativeFunctionFrame& Frame)
-	//{
-	//	
-	//}
+		// call class method
+		ReturnType Result = (ClassInstance->*FunctionPointer)(Frame.GetParameter<ParamTypes>(Indices)...);
+
+		// push output to the frame
+		Frame.PushOutput(Result);
+	}
+
+	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
+	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...)>::CallFunction(HNativeFunctionFrame& Frame)
+	{
+		CallFunctionImpl(Frame, HMakeIntegerSequence<int16, sizeof...(ParamTypes)>());
+	}
 
 	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
 	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...) const>::DecomposeFunctionObject()
@@ -541,10 +584,24 @@ namespace lsgd { namespace reflect {
 		DecomposeFunctionObjectCommon<FunctionPointerType>();
 	}
 
+	template <typename ClassType, typename ReturnType, typename... ParamTypes>
+	template <int16... Indices>
+	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...) const>::CallFunctionImpl(HNativeFunctionFrame& Frame, HIntegerSequence<int16, Indices...>)
+	{
+		// get the class instance
+		ClassType* ClassInstance = Frame.GetClass<ClassType>();
+
+		// call class method
+		ReturnType Result = (ClassInstance->*FunctionPointer)(Frame.GetParameter<ParamTypes>(Indices)...);
+
+		// push output to the frame
+		Frame.PushOutput(Result);
+	}
+
 	template <typename ClassType, typename ReturnType, typename ...ParamTypes>
 	void HNativeFunctionObjectImpl<ReturnType(ClassType::*)(ParamTypes...) const>::CallFunction(HNativeFunctionFrame& Frame)
 	{
-
+		CallFunctionImpl(Frame, HMakeIntegerSequence<int16, sizeof...(ParamTypes)>());
 	}
 
 	// template method implementations

@@ -23,16 +23,15 @@ void HClass::AddMethod(unique_ptr<HFunction>& InMethod)
 	FunctionMap.insert({ RawMethod->Name, RawMethod });
 }
 
-HNativeFunction::HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject)
-	: HFunction(InNativeFunctionObject->FunctionName)
+HNativeFunction::HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject, const HStruct* InOwner)
+	: HFunction(InNativeFunctionObject->FunctionName, InOwner)
 {
 	SetNativeFunctionObject(InNativeFunctionObject);
 }
 
 void HNativeFunction::CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn)
 {
-	// call function with Stack~
-	// @todo
+	//@todo - need to implement
 }
 
 void HNativeFunction::SetNativeFunctionObject(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject)

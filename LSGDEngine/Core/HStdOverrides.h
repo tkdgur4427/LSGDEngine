@@ -145,7 +145,7 @@ namespace lsgd
 	using HIntegerSequence = std::integer_sequence<Type, Values...>;
 
 	template <typename Type, Type Num>
-	using HMakeIndexSequence = std::make_index_sequence<Num>;
+	using HMakeIntegerSequence = std::make_integer_sequence<Type, Num>;
 
 	template <typename Type>
 	HString ToString(Type InVal)
@@ -166,7 +166,7 @@ namespace lsgd
 	auto ToFixedArray(HTuple<Types...>& InTuple) -> HFixedArray<Type, sizeof...(Types)>
 	{
 		HFixedArray<Type, sizeof...(Types)> Result;
-		TupleToFixedArray(Result, InTuple, HMakeIndexSequence<size_t, sizeof...(Types)>());
+		TupleToFixedArray(Result, InTuple, HMakeIntegerSequence<size_t, sizeof...(Types)>());
 		return Result;
 	}
 }

@@ -76,6 +76,11 @@ namespace lsgd { namespace reflect {
 		HReturnParam* Next;
 	};
 
+	/*
+		Universal HFunction's Frame
+			- for script execution
+			- @todo design & implement
+	*/
 	class HFrame
 	{
 	public:
@@ -91,14 +96,22 @@ namespace lsgd { namespace reflect {
 	class HFunction : public HStruct
 	{
 	public:
-		HFunction(const HString& InName)
+		HFunction(const HString& InName, const HStruct* InOwner = nullptr)
 			: HStruct(InName)
+			, Owner(InOwner)
 			, FunctionInputHead(nullptr)
 			, FunctionOutputHead(nullptr)
 		{}		
 
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) {}	
 
+		// direct function call
+
+		// owner class
+		//	- if == 0, it is just global or local function (not member function)
+		const HStruct* const Owner;
+
+		// function properties
 		uint8 ParamNum;
 		uint16 ParamSize;
 		uint16 ReturnValueOffset;
@@ -115,11 +128,10 @@ namespace lsgd { namespace reflect {
 	class HNativeFunction : public HFunction
 	{
 	public:
-		explicit HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject);
-
+		explicit HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject, const HStruct* InOwner = nullptr);
+				
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) override;
-
-		// temporary
+		
 		HNativeFunctionObject* GetNativeFunctionObject() { return NativeFunctionObject.get(); }
 
 	protected:
@@ -134,12 +146,6 @@ namespace lsgd { namespace reflect {
 	class HScriptFunction : public HFunction
 	{
 	public:
-	};
-
-	struct HNativeFunctionLookup
-	{
-		HString Name;
-		//NativeFunction Pointer;
 	};
 
 	class HClass : public HStruct
@@ -157,8 +163,6 @@ namespace lsgd { namespace reflect {
 
 		hash_map<HString, HFunction*> FunctionMap;
 		mutable hash_map<HString, HFunction*> SuperFunctionMap;
-
-		HArray<HNativeFunctionLookup> NativeFunctionLookup;
 
 		// real-container for method object
 		HArray<unique_ptr<HFunction>> Methods;

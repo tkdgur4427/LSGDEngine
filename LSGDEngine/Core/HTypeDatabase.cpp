@@ -124,8 +124,9 @@ void HTypeDatabase::LinkProperty(int32 InClassIndex, unique_ptr<HProperty>& InPr
 
 void HTypeDatabase::LinkMethod(int32 InClassIndex, unique_ptr<HNativeFunctionObject>& InNativeFunctionObject)
 {
-	unique_ptr<HFunction> NewFunction = make_unique<HFunction, HNativeFunction>(InNativeFunctionObject);
-	Classes[InClassIndex]->AddMethod(NewFunction);
+	HClass* OwnerClass = Classes[InClassIndex].get();
+	unique_ptr<HFunction> NewFunction = make_unique<HFunction, HNativeFunction>(InNativeFunctionObject, OwnerClass);
+	OwnerClass->AddMethod(NewFunction);
 }
 
 unique_ptr<HProperty> HTypeDatabase::CreatePrimitiveProperty(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim) const
