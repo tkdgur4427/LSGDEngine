@@ -22,6 +22,9 @@
 
 #include "HGuid.h"
 
+// custom container
+#include "HVariadicStack.h"
+
 // C++ reflections
 #include "HReflect.h"
 

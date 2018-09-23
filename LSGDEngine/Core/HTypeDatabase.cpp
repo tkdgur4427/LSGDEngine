@@ -193,38 +193,33 @@ HString HNativeFunctionObject::GetClassName() const
 }
 
 HNativeFunctionFrame::HNativeFunctionFrame()
-	: CurrOffset(0)
+	: HVariadicStack()
 	, ClassRefOffset(0)
 	, ClassRefSize(0)
 	, OutputOffset(0)
 	, OutputSize(0)
 {
-	// zeroify stack storage
-	HGenericMemory::MemZero(&StackStorage[0], 0, sizeof(uint8) * StackSize);
 }
 
-void HNativeFunctionFrame::PushReference(uint8*& InData)
+void HNativeFunctionFrame::SetFrame(HDirectFunctionCallFrame& InFrame, HArray<HProperty*> InParameters)
 {
-	int16 DataSize = sizeof(uint8*);
-	check(CurrOffset + DataSize <= StackSize);
+	// pop the value in reverse order
+	uint8 DataBuffer[256];
+	for (int16 Index = (int16)(InParameters.size() - 1); Index >= 0; --Index)
+	{
+		HProperty* Property = InParameters[Index];
+		
+		// pop the value from input frame
+		InFrame.Pop(DataBuffer, Property->ElementSize);
 
-	//@todo - need to find fancy way
-	uintptr_t CastedData = (uintptr_t)InData;
+		// push the value to the output frame
+		Push(DataBuffer, Property->ElementSize);
+	}
 
-	HGenericMemory::MemCopy(&StackStorage[CurrOffset], &CastedData, DataSize);
-	CurrOffset += DataSize;
-}
+	// pop the class reference and push it to the output frame
+	uint8* ClassReference;
+	InFrame.PopReference(ClassReference);
+	PushReference(ClassReference);
 
-void HNativeFunctionFrame::Push(uint8* Data, int16 DataSize)
-{
-	check(CurrOffset + DataSize <= StackSize);
-	HGenericMemory::MemCopy(&StackStorage[CurrOffset], Data, DataSize);
-	CurrOffset += DataSize;
-}
-
-void HNativeFunctionFrame::Pop(uint8* OutData, int16 DataSize)
-{
-	check(CurrOffset - DataSize >= 0);
-	CurrOffset -= DataSize;
-	HGenericMemory::MemCopy(OutData, &StackStorage[CurrOffset], DataSize);
+	check(InFrame.GetTopOffset() == 0);
 }

@@ -1,11 +1,18 @@
 #pragma once
 
 #include "HPrimitiveType.h"
+#include "HClassType.h"
+
+// variadic stack
+#include "HVariadicStack.h"
+using namespace lsgd::container;
 
 namespace lsgd { namespace reflect {
 
 	// forward declaration
 	class HProperty;
+	class HNumberProperty;
+	class HBoolProperty;
 	class HClass;
 
 	// type descriptor stored in HTypeDatabase
@@ -65,19 +72,13 @@ namespace lsgd { namespace reflect {
 	template <class FunctionType>
 	struct HFunctionDecomposer : public HFunctionDecomposerBase {};
 
+	struct HDirectFunctionCallFrame;
+
 	// for high-flexibility, separate native function stacks
 	//	- the design is adapted from assembly process
-	struct HNativeFunctionFrame
+	struct HNativeFunctionFrame : public HVariadicStack<128>
 	{
-		enum 
-		{
-			StackSize = 128, // maximum 16 entries allowed (supposing each entry has 8 bytes)
-		};
-
 		HNativeFunctionFrame();		
-
-		uint8 StackStorage[StackSize];
-		int16 CurrOffset;
 
 		// parameter offset to retrieve
 		//	- @todo: we can optimize further by... something?
@@ -91,6 +92,9 @@ namespace lsgd { namespace reflect {
 		// output offset and size
 		int16 OutputOffset;
 		int16 OutputSize;
+
+		// set parameter by property
+		void SetFrame(HDirectFunctionCallFrame& InFrame, HArray<HProperty*> InParameters);
 
 		// set function frame data
 		template <class... ParamTypes>
@@ -119,22 +123,6 @@ namespace lsgd { namespace reflect {
 		// getting output
 		template <class OutputType>
 		OutputType GetOutput() const;
-
-	protected:
-		// methods
-		//	- currently really simple management for stack frame for native function
-		//	- if we need, we need to make more solid way
-		template <typename Type>
-		void PushByType(const Type& InValue);
-
-		template <typename Type>
-		Type PopByType();
-
-		void PushReference(uint8*& InData);
-		void Push(uint8* Data, int16 DataSize);
-		void Pop(uint8* OutData, int16 DataSize);
-
-		uint16 GetTopOffset() const { return CurrOffset; }
 	};
 
 	// native function implementation
@@ -420,20 +408,6 @@ namespace lsgd { namespace reflect {
 		}
 	};
 
-	template <typename Type>
-	void HNativeFunctionFrame::PushByType(const Type& InValue)
-	{
-		Push((uint8*)&InValue, sizeof(Type));
-	}
-
-	template <typename Type>
-	Type HNativeFunctionFrame::PopByType()
-	{
-		Type Result;
-		Pop((uint8*)&Result, sizeof(Type));
-		return Result;
-	}
-
 	template <class ParamType>
 	void HNativeFunctionFrame::PushParamRecursive(const ParamType& InParam)
 	{
@@ -496,7 +470,7 @@ namespace lsgd { namespace reflect {
 		check(Size == sizeof(Type));
 
 		Type Result;
-		HGenericMemory::MemCopy((uint8*)&Result, &StackStorage[Offset], Size);
+		HGenericMemory::MemCopy((uint8*)&Result, &Storage[Offset], Size);
 		return Result;
 	}
 		
@@ -506,7 +480,7 @@ namespace lsgd { namespace reflect {
 		ClassType* ClassReference = nullptr;
 		
 		uintptr_t ClassPtr;
-		HGenericMemory::MemCopy((uint8*)&ClassPtr, &StackStorage[ClassRefOffset], ClassRefSize);
+		HGenericMemory::MemCopy((uint8*)&ClassPtr, &Storage[ClassRefOffset], ClassRefSize);
 		ClassReference = (ClassType*)ClassPtr;
 
 		return ClassReference;
@@ -516,7 +490,7 @@ namespace lsgd { namespace reflect {
 	OutputType HNativeFunctionFrame::GetOutput() const
 	{
 		OutputType Result;
-		HGenericMemory::MemCopy((uint8*)&Result, &StackStorage[OutputOffset], OutputSize);
+		HGenericMemory::MemCopy((uint8*)&Result, &Storage[OutputOffset], OutputSize);
 		return Result;
 	}
 

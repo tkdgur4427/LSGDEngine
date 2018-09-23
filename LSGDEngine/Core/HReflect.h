@@ -1,5 +1,8 @@
 #pragma once
 
+#include "HVariadicStack.h"
+using namespace lsgd::container;
+
 namespace lsgd { namespace reflect {
 
 	class HField
@@ -96,15 +99,16 @@ namespace lsgd { namespace reflect {
 	/*
 		HFunction's direct stack frame
 			- before implementing HFrame, native direct call frame is replaced by this frame structure
+			- the layout for HDirectFunctionCallFrame (the order is important!)
+			  ---------------------
+			  Class Reference (if not class method, == 0)
+			  Parameters
+			  ReturnValue
+			  ---------------------
 	*/
-	struct HDirectFunctionCallFrame
+	struct HDirectFunctionCallFrame : public HVariadicStack<256>
 	{
-		enum
-		{
-			StackSize = 1024, // 1KB
-		};
-
-		uint8 StackStorage[StackSize];
+		
 	};
 
 	class HFunction : public HStruct
@@ -120,8 +124,14 @@ namespace lsgd { namespace reflect {
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) {}	
 
 		// direct function call
-		template <typename ReturnType, typename... ParamTypes>
-		ReturnType Invoke(ParamTypes&&... Parameters) { /*@todo...*/ return ReturnType(); }
+		template <typename... ParamTypes>
+		void Invoke(ParamTypes&&... Parameters);
+
+		template <typename ClassType, typename... ParamTypes>
+		void Invoke(ClassType* InClassValue, ParamTypes&&... InParams);
+
+		// virtual method invoke call variation
+		virtual void Invoke(HDirectFunctionCallFrame& InvokeFrame) {}
 
 		// owner class
 		//	- if == 0, it is just global or local function (not member function)
@@ -135,6 +145,14 @@ namespace lsgd { namespace reflect {
 		// note that real-instance is managed by HStruct
 		HProperty* FunctionInputHead;
 		HProperty* FunctionOutputHead;
+
+	protected:
+		template <typename... ParamTypes/*, int16... Indices*/>
+		void SetParameters(HDirectFunctionCallFrame& RefFrame, ParamTypes&&... InParameters/*, HIntegerSequence<int16, Indices...>*/);
+
+		// validate parameter and push the value into the frame
+		template <typename ParamType>
+		int16 PushParameter(HDirectFunctionCallFrame& RefFrame/*, int16 PropertyIndex*/, ParamType&& InParameter);
 	};
 
 	// forward declaration for function object
@@ -147,6 +165,7 @@ namespace lsgd { namespace reflect {
 		explicit HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject, const HStruct* InOwner = nullptr);
 				
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) override;
+		virtual void Invoke(HDirectFunctionCallFrame& InvokeFrame);
 
 		HNativeFunctionObject* GetNativeFunctionObject() { return NativeFunctionObject.get(); }
 
@@ -236,5 +255,50 @@ namespace lsgd { namespace reflect {
 	public:
 		HStruct* Struct;
 	};
+
+	template <typename... ParamTypes>
+	void HFunction::Invoke(ParamTypes&&... Parameters)
+	{
+		check(Owner == nullptr);
+		return Invoke(nullptr, Parameters...);
+	}
+
+	template <typename... ParamTypes/*, int16... Indices*/>
+	void HFunction::SetParameters(HDirectFunctionCallFrame& RefFrame, ParamTypes&&... InParameters/*, HIntegerSequence<int16, Indices...>*/)
+	{
+		// dummy for initializer list to trigger 'PushParameter'
+		int16 DummyTriggerArray = { PushParameter(RefFrame/*, Indices*/, InParameters)... };
+	}
+
+	template <typename ClassType, typename... ParamTypes>
+	void HFunction::Invoke(ClassType* InClassValue, ParamTypes&&... InParams)
+	{
+		HDirectFunctionCallFrame Frame;
+
+		// insert class reference
+		uint8* ClassReference = (uint8*)InClassValue;
+		Frame.PushReference(ClassReference);
+
+		// push parameters
+		SetParameters(Frame, InParams.../*, HMakeIntegerSequence<int16, sizeof...(ParamTypes)>()*/);
+
+		// invoke
+		Invoke(Frame);
+	}
+
+	template <typename ParamType>
+	int16 HFunction::PushParameter(HDirectFunctionCallFrame& RefFrame/*, int16 PropertyIndex*/, ParamType&& InParameter)
+	{
+		//HProperty* Property = FunctionInputHead;
+		//for (int16 Index = 0; Index < PropertyIndex; ++Index)
+		//{
+		//	Property = Property->FunctionInputNext;
+		//}
+		//check(Property->ElementSize == sizeof(InParameter));
+
+		RefFrame.PushByType<ParamType>(InParameter);
+
+		return 0;
+	}
 }
 }
