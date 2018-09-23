@@ -91,7 +91,21 @@ namespace lsgd { namespace reflect {
 
 		HFrame* PrevFame;
 		HReturnParam* ReturnParam;
-	};	
+	};
+
+	/*
+		HFunction's direct stack frame
+			- before implementing HFrame, native direct call frame is replaced by this frame structure
+	*/
+	struct HDirectFunctionCallFrame
+	{
+		enum
+		{
+			StackSize = 1024, // 1KB
+		};
+
+		uint8 StackStorage[StackSize];
+	};
 
 	class HFunction : public HStruct
 	{
@@ -101,11 +115,13 @@ namespace lsgd { namespace reflect {
 			, Owner(InOwner)
 			, FunctionInputHead(nullptr)
 			, FunctionOutputHead(nullptr)
-		{}		
+		{}
 
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) {}	
 
 		// direct function call
+		template <typename ReturnType, typename... ParamTypes>
+		ReturnType Invoke(ParamTypes&&... Parameters) { /*@todo...*/ return ReturnType(); }
 
 		// owner class
 		//	- if == 0, it is just global or local function (not member function)
@@ -131,7 +147,7 @@ namespace lsgd { namespace reflect {
 		explicit HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject, const HStruct* InOwner = nullptr);
 				
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) override;
-		
+
 		HNativeFunctionObject* GetNativeFunctionObject() { return NativeFunctionObject.get(); }
 
 	protected:

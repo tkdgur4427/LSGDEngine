@@ -10,6 +10,9 @@
     <Filter Include="Guid">
       <UniqueIdentifier>{876fb7a6-f0ad-4267-97bf-cc43066addca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{2627029f-0e57-441e-bac8-ce565c01fc2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -46,6 +49,9 @@
     </ClInclude>
     <ClInclude Include="HClassType.h">
       <Filter>Reflect</Filter>
+    </ClInclude>
+    <ClInclude Include="HVariadicStack.h">
+      <Filter>Containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

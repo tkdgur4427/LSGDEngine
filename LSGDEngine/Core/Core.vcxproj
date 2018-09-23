@@ -34,6 +34,7 @@
     <ClInclude Include="HTypeDatabase.h" />
     <ClInclude Include="HTypeDatabaseUtils.h" />
     <ClInclude Include="HTypeOverrides.h" />
+    <ClInclude Include="HVariadicStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
