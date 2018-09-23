@@ -47,7 +47,7 @@ namespace GeneralUnitTest
 			Frame.SetFrame((uint8*)&AInstance, Param0);
 			Func0->GetNativeFunctionObject()->CallFunction(Frame);
 
-			TypeDB->GetClass("A")->Methods[0]->Invoke(&AInstance, Param0);
+			int Output = TypeDB->GetClass("A")->Methods[0]->Invoke<int>(&AInstance, Param0);
 		}
 	};
 }

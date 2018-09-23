@@ -108,7 +108,31 @@ namespace lsgd { namespace reflect {
 	*/
 	struct HDirectFunctionCallFrame : public HVariadicStack<256>
 	{
-		
+		HDirectFunctionCallFrame()
+			: HVariadicStack<256>()
+			, OutputOffset(0)
+			, OutputSize(0)
+		{}
+
+		void PushOutput(uint8* Output, int16 InSize)
+		{
+			int16 Offset = GetTopOffset();
+			Push(Output, InSize);
+			OutputOffset = Offset;
+			OutputSize = InSize;
+		}
+
+		template <typename Type>
+		Type PopOutput()
+		{
+			check(OutputSize == sizeof(Type));
+			Type Output;
+			Pop((uint8*)&Output, OutputSize);
+			return Output;
+		}
+
+		int16 OutputOffset;
+		int16 OutputSize;
 	};
 
 	class HFunction : public HStruct
@@ -123,15 +147,15 @@ namespace lsgd { namespace reflect {
 
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) {}	
 
-		// direct function call
-		template <typename... ParamTypes>
-		void Invoke(ParamTypes&&... Parameters);
-
-		template <typename ClassType, typename... ParamTypes>
-		void Invoke(ClassType* InClassValue, ParamTypes&&... InParams);
+		/*
+			if HFunction is not member function, InClassValue should be nullptr
+				- @todo need to make separate void* InClassValue deleted version
+		*/
+		template <typename ReturnType, typename... ParamTypes>
+		ReturnType Invoke(void* InClassValue, ParamTypes&&... InParams);
 
 		// virtual method invoke call variation
-		virtual void Invoke(HDirectFunctionCallFrame& InvokeFrame) {}
+		virtual void InvokeInner(HDirectFunctionCallFrame& InvokeFrame) {}
 
 		// owner class
 		//	- if == 0, it is just global or local function (not member function)
@@ -165,7 +189,7 @@ namespace lsgd { namespace reflect {
 		explicit HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject, const HStruct* InOwner = nullptr);
 				
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) override;
-		virtual void Invoke(HDirectFunctionCallFrame& InvokeFrame);
+		virtual void InvokeInner(HDirectFunctionCallFrame& InvokeFrame);
 
 		HNativeFunctionObject* GetNativeFunctionObject() { return NativeFunctionObject.get(); }
 
@@ -256,13 +280,6 @@ namespace lsgd { namespace reflect {
 		HStruct* Struct;
 	};
 
-	template <typename... ParamTypes>
-	void HFunction::Invoke(ParamTypes&&... Parameters)
-	{
-		check(Owner == nullptr);
-		return Invoke(nullptr, Parameters...);
-	}
-
 	template <typename... ParamTypes/*, int16... Indices*/>
 	void HFunction::SetParameters(HDirectFunctionCallFrame& RefFrame, ParamTypes&&... InParameters/*, HIntegerSequence<int16, Indices...>*/)
 	{
@@ -270,8 +287,8 @@ namespace lsgd { namespace reflect {
 		int16 DummyTriggerArray = { PushParameter(RefFrame/*, Indices*/, InParameters)... };
 	}
 
-	template <typename ClassType, typename... ParamTypes>
-	void HFunction::Invoke(ClassType* InClassValue, ParamTypes&&... InParams)
+	template <typename ReturnType, typename... ParamTypes>
+	ReturnType HFunction::Invoke(void* InClassValue, ParamTypes&&... InParams)
 	{
 		HDirectFunctionCallFrame Frame;
 
@@ -283,7 +300,9 @@ namespace lsgd { namespace reflect {
 		SetParameters(Frame, InParams.../*, HMakeIntegerSequence<int16, sizeof...(ParamTypes)>()*/);
 
 		// invoke
-		Invoke(Frame);
+		InvokeInner(Frame);
+
+		return Frame.PopOutput<ReturnType>();
 	}
 
 	template <typename ParamType>

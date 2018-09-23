@@ -34,7 +34,7 @@ void HNativeFunction::CallFunction(void* InContext, const HFrame& InStack, void*
 	//@todo - need to implement
 }
 
-void HNativeFunction::Invoke(HDirectFunctionCallFrame& InvokeFrame)
+void HNativeFunction::InvokeInner(HDirectFunctionCallFrame& InvokeFrame)
 {
 	// generate input parameter property lists
 	HArray<HProperty*> ParameterProperties;
@@ -50,6 +50,13 @@ void HNativeFunction::Invoke(HDirectFunctionCallFrame& InvokeFrame)
 
 	// call the function
 	NativeFunctionObject->CallFunction(NativeFrame);
+
+	// add output to InvokeFrame
+	int16 OutputSize;
+	uint8 OutputBuffer[256];
+	NativeFrame.GetOutput(OutputBuffer, OutputSize);
+
+	InvokeFrame.PushOutput(OutputBuffer, OutputSize);
 }
 
 void HNativeFunction::SetNativeFunctionObject(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject)

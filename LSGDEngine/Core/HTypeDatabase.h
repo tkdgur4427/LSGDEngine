@@ -100,6 +100,10 @@ namespace lsgd { namespace reflect {
 		template <class... ParamTypes>
 		void SetFrame(uint8* InClass, ParamTypes&&... Parameters);
 
+		void PushParameter(uint8* InData, int16 InDataSize);
+
+		void SetClass(uint8* InClassReference);
+
 		// base function PushParamRecursive
 		template <class ParamType>
 		void PushParamRecursive(const ParamType& InParam);
@@ -119,6 +123,8 @@ namespace lsgd { namespace reflect {
 		// getting class instance by template function
 		template <typename ClassType>
 		ClassType* GetClass() const;
+
+		void GetOutput(uint8* OutData, int16& OutSize);
 
 		// getting output
 		template <class OutputType>

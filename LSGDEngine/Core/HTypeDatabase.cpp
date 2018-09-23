@@ -201,25 +201,64 @@ HNativeFunctionFrame::HNativeFunctionFrame()
 {
 }
 
+void HNativeFunctionFrame::PushParameter(uint8* InData, int16 InDataSize)
+{
+	int16 Offset = GetTopOffset();
+
+	// push parameter
+	Push(InData, InDataSize);
+
+	ParamOffsets.push_back(Offset);
+	ParamSizes.push_back(InDataSize);
+}
+
+void HNativeFunctionFrame::SetClass(uint8* InClassReference)
+{
+	int16 Offset = GetTopOffset();
+
+	// add class reference
+	PushReference(InClassReference);
+
+	ClassRefOffset = Offset;
+	ClassRefSize = GetTopOffset() - Offset;
+}
+
 void HNativeFunctionFrame::SetFrame(HDirectFunctionCallFrame& InFrame, HArray<HProperty*> InParameters)
 {
 	// pop the value in reverse order
 	uint8 DataBuffer[256];
+	int16 CurrOffset = 0;
+
 	for (int16 Index = (int16)(InParameters.size() - 1); Index >= 0; --Index)
 	{
 		HProperty* Property = InParameters[Index];
 		
 		// pop the value from input frame
-		InFrame.Pop(DataBuffer, Property->ElementSize);
-
-		// push the value to the output frame
-		Push(DataBuffer, Property->ElementSize);
+		InFrame.Pop(&DataBuffer[CurrOffset], Property->ElementSize);
+		CurrOffset += Property->ElementSize;
 	}
 
 	// pop the class reference and push it to the output frame
 	uint8* ClassReference;
-	InFrame.PopReference(ClassReference);
-	PushReference(ClassReference);
+	InFrame.PopReference(ClassReference);	
 
 	check(InFrame.GetTopOffset() == 0);
+
+	// set the class reference
+	SetClass(ClassReference);
+
+	// add parameter in order
+	CurrOffset = 0;
+	for (HProperty* ParamProperty : InParameters)
+	{
+		// push the value to the output frame
+		PushParameter(&DataBuffer[CurrOffset], ParamProperty->ElementSize);
+		CurrOffset += ParamProperty->ElementSize;
+	}
+}
+
+void HNativeFunctionFrame::GetOutput(uint8* OutData, int16& OutSize)
+{
+	HGenericMemory::MemCopy(OutData, &Storage[OutputOffset], OutputSize);
+	OutSize = OutputSize;
 }
