@@ -4,6 +4,9 @@
 // reflect
 #include "HReflect.h"
 
+//@todo... so many dependencies exists!
+#include "HTypeDatabaseUtils.h"
+
 using namespace lsgd;
 using namespace lsgd::reflect;
 
@@ -132,7 +135,11 @@ void HTypeDatabase::LinkMethod(int32 InClassIndex, unique_ptr<HNativeFunctionObj
 unique_ptr<HProperty> HTypeDatabase::CreatePrimitiveProperty(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim) const
 {
 	unique_ptr<HProperty> NewProperty;
-	const HPrimitiveType* FoundType = GetPrimitiveType(InTypeName);
+
+	unique_ptr<HTypeDescriptor> NewDescriptor = make_unique<HTypeDescriptor>(HTypeDatabaseUtils::GetTypeDescriptor(InTypeName));
+	check(NewDescriptor->PrimitiveType != nullptr);
+
+	const HPrimitiveType* FoundType = NewDescriptor->PrimitiveType;
 
 	if (FoundType->IsNumber())
 	{
@@ -148,7 +155,8 @@ unique_ptr<HProperty> HTypeDatabase::CreatePrimitiveProperty(const HString& InTy
 		//NewProperty = make_shared<HProperty, HStringProperty>(InOffset, InSize, InArrayDim);
 	}
 
-	//...
+	// move the type descriptor instance (note that unique_ptr)
+	NewProperty->TypeDescriptor = move(NewDescriptor);
 
 	return NewProperty;
 }

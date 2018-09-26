@@ -5,6 +5,8 @@ using namespace lsgd::container;
 
 namespace lsgd { namespace reflect {
 
+	class HTypeDescriptor;
+
 	class HField
 	{
 	public:
@@ -28,6 +30,9 @@ namespace lsgd { namespace reflect {
 		{
 			TotalSize = ElementSize * ArrayDim;
 		}
+
+		// type descriptor
+		unique_ptr<HTypeDescriptor> TypeDescriptor;
 
 		int32 ArrayDim;
 
@@ -239,10 +244,7 @@ namespace lsgd { namespace reflect {
 	public:
 		HNumberProperty(const HString& InPrimitiveName, const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
-			, PrimitiveName(InPrimitiveName)
 		{}
-
-		HString PrimitiveName;
 	};
 
 	class HBoolProperty : public HProperty
