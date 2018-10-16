@@ -27,6 +27,7 @@ namespace lsgd { namespace reflect {
 			, ElementSize(InElementSize)
 			, FunctionInputNext(nullptr)
 			, FunctionOutputNext(nullptr)
+			, bDynamicProperty(false)
 		{
 			TotalSize = ElementSize * ArrayDim;
 		}
@@ -39,6 +40,23 @@ namespace lsgd { namespace reflect {
 		int32 Offset;
 		int32 ElementSize;
 		int32 TotalSize;
+
+		// whether the property is dynamic size or not
+		bool bDynamicProperty;
+
+		// to handling dynamic property, need one more indirection to point real data
+		//	- note that only valid data structure, if bDynamicProperty == 1
+		//	- at initialization time, it is not valid data
+		//		- when it is going to serialize, it becomes valid
+		struct HDynamicPropertyData
+		{
+			HDynamicPropertyData() 
+				: Offset(-1), Size(-1)
+			{}
+			int32 Offset;
+			int32 Size;
+		};
+		HDynamicPropertyData DynamicPropertyData;
 
 		// additional linked list node properties by its usage
 		
@@ -260,14 +278,19 @@ namespace lsgd { namespace reflect {
 	public:
 		HStringProperty(const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
-		{}
+		{
+			// note that string property is dynamic property
+			bDynamicProperty = true;
+		}
 	};
 
 	class HEnumProperty : public HProperty
 	{
 	public:
 		HEnum* Enum;
-		HNumberProperty* UnderlyingProperty;
+		
+		// note that actual enum property value is number
+		HNumberProperty UnderlyingProperty;
 	};
 
 	class HClassProperty : public HProperty

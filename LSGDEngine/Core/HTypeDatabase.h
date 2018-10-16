@@ -13,6 +13,7 @@ namespace lsgd { namespace reflect {
 	class HProperty;
 	class HNumberProperty;
 	class HBoolProperty;
+	class HStringProperty;
 	class HClass;
 
 	// type descriptor stored in HTypeDatabase
@@ -614,6 +615,13 @@ namespace lsgd { namespace reflect {
 
 		unique_ptr<HPrimitiveType> NewPrimitiveType = lsgd::make_unique<HPrimitiveType>(InName, HPrimitiveTypeHelper<Type>::GetGuid(), sizeof(Type), PrimitiveTypeFlags);
 
+		// create dynamic properties for HString
+		if ((PrimitiveTypeFlags & EPrimitiveTypeFlags::String) != 0)
+		{			
+			// note that currently, only supporting char string!
+			NewPrimitiveType->DynamicProperties.Size = HDynamicPrimitiveProperties::CountSize + sizeof(char);
+		}
+
 		int32 NewIndex = (int32)PrimitiveTypes.size();
 
 		// add mapper from guid to primitive type
@@ -640,8 +648,7 @@ namespace lsgd { namespace reflect {
 		}
 		else if (HPrimitiveTypeHelper<Type>::IsString())
 		{
-			// @todo...
-			//NewProperty = make_shared<HProperty, HStringProperty>(InOffset, InSize, InArrayDim);
+			NewProperty = make_unique<HProperty, HStringProperty>(InVariableName, InOffset, InSize, InArrayDim);
 		}
 
 		//...

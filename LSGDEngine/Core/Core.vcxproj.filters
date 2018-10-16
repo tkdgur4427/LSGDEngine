@@ -13,6 +13,9 @@
     <Filter Include="Containers">
       <UniqueIdentifier>{2627029f-0e57-441e-bac8-ce565c01fc2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CoreObject">
+      <UniqueIdentifier>{78762ea4-237a-45c0-aced-26cb8ffbb7d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />

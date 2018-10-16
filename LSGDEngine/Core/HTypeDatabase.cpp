@@ -151,8 +151,7 @@ unique_ptr<HProperty> HTypeDatabase::CreatePrimitiveProperty(const HString& InTy
 	}
 	else if (FoundType->IsString())
 	{
-		// @todo...
-		//NewProperty = make_shared<HProperty, HStringProperty>(InOffset, InSize, InArrayDim);
+		NewProperty = make_unique<HProperty, HStringProperty>(InVariableName, InOffset, InSize, InArrayDim);
 	}
 
 	// move the type descriptor instance (note that unique_ptr)

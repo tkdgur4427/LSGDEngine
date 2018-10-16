@@ -17,6 +17,18 @@ namespace lsgd { namespace reflect {
 		String = (1 << 2),
 	};
 
+	// handling dynamic size for primitive types (not static types)
+	struct HDynamicPrimitiveProperties
+	{
+		enum { CountSize = sizeof(int64), };
+
+		int64 GetTypeSize() const { return Size - CountSize; }
+
+		// sizeof(Type) + CountSize
+		// if Type is 'char', 1 byte + 8 bytes (for int64)
+		int64 Size;
+	};
+
 	// primitive type interface
 	class HPrimitiveType
 	{
@@ -32,11 +44,22 @@ namespace lsgd { namespace reflect {
 		bool IsBoolean() const { return (PrimitiveTypeFlags & EPrimitiveTypeFlags::Boolean) > 0; }
 		bool IsString() const { return (PrimitiveTypeFlags & EPrimitiveTypeFlags::String) > 0; }
 
+		int64 GetTotalSize() const { if (IsString()) { return DynamicProperties.Size; } return (int64)Size; }
+		int32 GetTypeSize() const { if (IsString()) { return (int32)DynamicProperties.GetTypeSize(); } return Size; }
+
 		HString PrimitiveName;
 		HGuid Guid;
-		int32 Size;
-
 		int32 PrimitiveTypeFlags;
+
+		union 
+		{
+			int32 Size;
+
+			/*
+				used for HString currently
+			*/
+			HDynamicPrimitiveProperties DynamicProperties;
+		};
 	};	
 
 	// number
