@@ -16,6 +16,9 @@
     <Filter Include="CoreObject">
       <UniqueIdentifier>{78762ea4-237a-45c0-aced-26cb8ffbb7d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Name">
+      <UniqueIdentifier>{c9cfab15-f0bf-4e8d-82e9-f8c636ae8740}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -56,6 +59,10 @@
     <ClInclude Include="HVariadicStack.h">
       <Filter>Containers</Filter>
     </ClInclude>
+    <ClInclude Include="HName.h">
+      <Filter>Name</Filter>
+    </ClInclude>
+    <ClInclude Include="HCString.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -78,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="HTypeDatabaseUtils.cpp">
       <Filter>Reflect</Filter>
+    </ClCompile>
+    <ClCompile Include="HName.cpp">
+      <Filter>Name</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
