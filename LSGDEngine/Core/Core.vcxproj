@@ -28,6 +28,7 @@
     <ClInclude Include="HLogger.h" />
     <ClInclude Include="HCString.h" />
     <ClInclude Include="HName.h" />
+    <ClInclude Include="HObject.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HReflect.h" />
     <ClInclude Include="HReflectDeclare.h" />
@@ -54,6 +55,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HName.cpp" />
+    <ClCompile Include="HObject.cpp" />
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HTypeDatabase.cpp" />
     <ClCompile Include="HTypeDatabaseUtils.cpp" />

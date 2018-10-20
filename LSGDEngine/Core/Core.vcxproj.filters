@@ -63,6 +63,9 @@
       <Filter>Name</Filter>
     </ClInclude>
     <ClInclude Include="HCString.h" />
+    <ClInclude Include="HObject.h">
+      <Filter>CoreObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -88,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="HName.cpp">
       <Filter>Name</Filter>
+    </ClCompile>
+    <ClCompile Include="HObject.cpp">
+      <Filter>CoreObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -12,3 +12,5 @@
 
 #include "HGuid.h"
 
+#include "HName.h"
+
