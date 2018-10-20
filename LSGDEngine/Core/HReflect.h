@@ -237,8 +237,11 @@ namespace lsgd { namespace reflect {
 			: HStruct(InName)
 		{
 		}
-
+		
 		void AddMethod(unique_ptr<HFunction>& InMethod);
+
+		// get the total size of HClass memory layout
+		uint32 GetTotalSize() const;
 
 		HClass* ClassWithin;
 		void* ClassDefaultObject;

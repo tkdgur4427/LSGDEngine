@@ -23,6 +23,22 @@ void HClass::AddMethod(unique_ptr<HFunction>& InMethod)
 	FunctionMap.insert({ RawMethod->Name, RawMethod });
 }
 
+uint32 HClass::GetTotalSize() const
+{
+	uint32 TotalSize = 0;
+
+	// accumulate all properties which the HClass have
+	for (const unique_ptr<HProperty>& Property : Properties)
+	{
+		TotalSize += Property->TotalSize;
+	}
+
+	// @todo: accumulate its base class's properties
+	// ...
+
+	return TotalSize;
+}
+
 HNativeFunction::HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject, const HStruct* InOwner)
 	: HFunction(InNativeFunctionObject->FunctionName, InOwner)
 {
