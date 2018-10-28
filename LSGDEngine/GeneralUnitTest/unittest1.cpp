@@ -35,6 +35,14 @@ namespace GeneralUnitTest
 		
 		TEST_METHOD(TestMethod1)
 		{
+			reflect::HReflectionContext ReflectionContext;
+			HArray<uint32> Array;
+			Array.push_back(1);
+			Array.push_back(2);
+			Array.push_back(3);
+
+			ReflectionContext << Array;
+
 			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();			
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);

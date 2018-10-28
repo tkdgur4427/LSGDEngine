@@ -37,3 +37,6 @@
 // reflection generation headers
 #include "HReflectDeclare.h"
 #include "HReflectImplement.h"
+
+// reflection context
+#include "HReflectionContext.h"

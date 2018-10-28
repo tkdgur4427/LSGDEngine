@@ -246,8 +246,8 @@ namespace lsgd { namespace reflect {
 		HClass* ClassWithin;
 		void* ClassDefaultObject;
 
-		hash_map<HString, HFunction*> FunctionMap;
-		mutable hash_map<HString, HFunction*> SuperFunctionMap;
+		HHashMap<HString, HFunction*> FunctionMap;
+		mutable HHashMap<HString, HFunction*> SuperFunctionMap;
 
 		// real-container for method object
 		HArray<unique_ptr<HFunction>> Methods;
@@ -257,7 +257,7 @@ namespace lsgd { namespace reflect {
 	{
 	public:
 		HArray<pair<HString, int64>> Names;
-		static hash_map<HString, HEnum*> AllEnumNames;
+		static HHashMap<HString, HEnum*> AllEnumNames;
 	};
 
 	class HNumberProperty : public HProperty

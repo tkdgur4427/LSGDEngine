@@ -37,7 +37,7 @@ namespace lsgd
 
 	// hash_map
 	template <class KeyType, class ValueType, class Hash = std::hash<KeyType>, class KeyEqual = std::equal_to<KeyType>>
-	using hash_map = std::unordered_map<KeyType, ValueType, Hash, KeyEqual, HStdAllocator<std::pair<const KeyType, ValueType>>>;
+	using HHashMap = std::unordered_map<KeyType, ValueType, Hash, KeyEqual, HStdAllocator<std::pair<const KeyType, ValueType>>>;
 
 	// pair
 	template <class KeyType, class ValueType>
@@ -171,9 +171,67 @@ namespace lsgd
 	}		
 }
 
+// reflection context declarations
+
+// forward declaration
 namespace lsgd { namespace reflect {
 
-	class HReflectionContext& operator<<(HReflectionContext& InContext, HString& Value);
+	class HReflectionContext;
 
+} }
+
+// helper methods
+extern bool IsLoading(lsgd::reflect::HReflectionContext& InContext);
+extern bool IsSaving(lsgd::reflect::HReflectionContext& InContext);
+
+// operator << overloading for HReflectionContext
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, uint32& Value);
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HString& Value);
+
+template <class ElementType>
+lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HArray<ElementType>& Value)
+{
+	uint32 Num = Value.size();
+	InContext << Num;
+
+	if (IsLoading(InContext))
+	{
+		Value.resize(Num);
+	}
+
+	for (auto& Element : Value)
+	{
+		InContext << Element;
+	}
+
+	return InContext;
 }
+
+template <class KeyType, class ValueType>
+lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HHashMap<KeyType, ValueType>& Value)
+{
+	uint32 Num = Value.size();
+	InContext << Num;
+
+	if (IsLoading(InContext))
+	{
+		for (uint32 Index = 0; Index < Num; ++Index)
+		{
+			KeyType Key;
+			ValueType Value;
+			InContext << Key << Value;
+
+			// add to hash_map
+			Value.insert(Key, Value);
+		}
+	}
+	else
+	{
+		for (auto& Element : Value)
+		{
+			InContext << Element.first << Element.second;
+		}
+	}
+
+	return InContext;
 }

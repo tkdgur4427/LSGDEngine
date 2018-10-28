@@ -22,7 +22,7 @@ namespace lsgd
 		void InitializeProperties();
 				
 		HObject* Object;
-		HClass* Class;
+		reflect::HClass* Class;
 		
 		// validation attributes
 		uint32 TotalSize;
@@ -48,7 +48,7 @@ namespace lsgd
 		HObject(HObjectInitializer& InObjectInitializer);
 
 		// virtual methods
-		void Serialize(HReflectionContext* InContext) {}
+		void Serialize(reflect::HReflectionContext* InContext) {}
 	};
 
 	//@todo - need to make separate thread local storage; for now, just temporary
@@ -60,7 +60,7 @@ namespace lsgd
 	HObjectType* AllocateHObject()
 	{
 		// get the HClass type with template parameter, HObjectType
-		HTypeDescriptor ClassType = HTypeDatabaseUtils::GetTypeDescriptor<HObjectType>();
+		reflect::HTypeDescriptor ClassType = reflect::HTypeDatabaseUtils::GetTypeDescriptor<HObjectType>();
 		check(ClassType.ClassType != nullptr);
 
 		// try to allocate HObject		

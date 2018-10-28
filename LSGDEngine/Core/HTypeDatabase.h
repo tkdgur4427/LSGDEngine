@@ -314,10 +314,10 @@ namespace lsgd { namespace reflect {
 		HArray<unique_ptr<HPrimitiveType>> PrimitiveTypes;
 
 		// primitive type mapper by guid
-		hash_map<HGuid, int32> GuidToPrimitiveTypes;
+		HHashMap<HGuid, int32> GuidToPrimitiveTypes;
 
 		// primitive type mapper by name
-		hash_map<HString, int32> NameToPrimitiveTypes;
+		HHashMap<HString, int32> NameToPrimitiveTypes;
 
 	protected:
 		HTypeDatabase() {}
