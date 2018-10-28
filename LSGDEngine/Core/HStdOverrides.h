@@ -168,5 +168,12 @@ namespace lsgd
 		HFixedArray<Type, sizeof...(Types)> Result;
 		TupleToFixedArray(Result, InTuple, HMakeIntegerSequence<size_t, sizeof...(Types)>());
 		return Result;
-	}
+	}		
+}
+
+namespace lsgd { namespace reflect {
+
+	class HReflectionContext& operator<<(HReflectionContext& InContext, HString& Value);
+
+}
 }

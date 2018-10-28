@@ -6,6 +6,7 @@
 // forward declarations
 namespace lsgd { namespace reflect {
 	class HClass;
+	class HReflectionContext;
 } }
 
 namespace lsgd
@@ -22,9 +23,7 @@ namespace lsgd
 				
 		HObject* Object;
 		HClass* Class;
-
-
-
+		
 		// validation attributes
 		uint32 TotalSize;
 	};
@@ -42,11 +41,14 @@ namespace lsgd
 		// class definition
 		reflect::HClass* Class;
 	};
-
+	
 	class HObject : public HCoreObject
 	{
 	public:
 		HObject(HObjectInitializer& InObjectInitializer);
+
+		// virtual methods
+		void Serialize(HReflectionContext* InContext) {}
 	};
 
 	//@todo - need to make separate thread local storage; for now, just temporary

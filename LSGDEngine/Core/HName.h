@@ -65,9 +65,11 @@ namespace lsgd
 	{
 	public:
 		HName();
-		HName(const char* InName);
+		HName(const char* InName);		
 
 		int32 NameEntryIndex;
 		int32 Number;
+
+		friend class reflect::HReflectionContext& operator<<(reflect::HReflectionContext& InContext, HName& Value);
 	};
 }

@@ -33,6 +33,7 @@
     <ClInclude Include="HReflect.h" />
     <ClInclude Include="HReflectDeclare.h" />
     <ClInclude Include="HReflectImplement.h" />
+    <ClInclude Include="HReflectionContext.h" />
     <ClInclude Include="HStdOverrides.h" />
     <ClInclude Include="HTypeDatabase.h" />
     <ClInclude Include="HTypeDatabaseUtils.h" />
@@ -57,6 +58,7 @@
     <ClCompile Include="HName.cpp" />
     <ClCompile Include="HObject.cpp" />
     <ClCompile Include="HReflect.cpp" />
+    <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HTypeDatabase.cpp" />
     <ClCompile Include="HTypeDatabaseUtils.cpp" />
   </ItemGroup>

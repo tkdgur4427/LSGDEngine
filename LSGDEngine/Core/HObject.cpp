@@ -20,7 +20,7 @@ void HObjectInitializer::InitializeProperties()
 	check(Object != nullptr && Class != nullptr);
 
 	// start to initialize properties
-
+	//@todo - use the CDO and initialize the properties
 }
 
 HCoreObject::HCoreObject()

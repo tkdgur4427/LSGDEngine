@@ -1,5 +1,6 @@
 #include "HCorePCH.h"
 #include "HName.h"
+#include "HReflectionContext.h"
 
 using namespace lsgd;
 
@@ -98,4 +99,18 @@ HName::HName()
 HName::HName(const char* InName)
 {
 	HNameEntryManager::GetSingleton().AddNameEntry(InName, 0, NameEntryIndex, Number);
+}
+
+reflect::HReflectionContext& operator<<(reflect::HReflectionContext& InContext, HName& Value)
+{
+	if (InContext.IsSaving())
+	{
+		
+	}
+	else
+	{
+
+	}
+
+	return InContext;
 }

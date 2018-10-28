@@ -19,6 +19,9 @@
     <Filter Include="Name">
       <UniqueIdentifier>{c9cfab15-f0bf-4e8d-82e9-f8c636ae8740}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Reflect\Context">
+      <UniqueIdentifier>{d0b6651c-c9a6-4007-b0c5-5e7f78885808}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -66,6 +69,9 @@
     <ClInclude Include="HObject.h">
       <Filter>CoreObject</Filter>
     </ClInclude>
+    <ClInclude Include="HReflectionContext.h">
+      <Filter>Reflect\Context</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -95,5 +101,6 @@
     <ClCompile Include="HObject.cpp">
       <Filter>CoreObject</Filter>
     </ClCompile>
+    <ClCompile Include="HStdOverrides.cpp" />
   </ItemGroup>
 </Project>
