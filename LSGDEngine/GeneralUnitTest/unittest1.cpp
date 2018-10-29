@@ -43,6 +43,13 @@ namespace GeneralUnitTest
 
 			ReflectionContext << Array;
 
+			HHashMap<uint32, uint32> HashMap;
+			HashMap.insert({ 1,1 });
+			HashMap.insert({ 2,2 });
+			HashMap.insert({ 3,3 });
+
+			ReflectionContext << HashMap;
+
 			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();			
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);

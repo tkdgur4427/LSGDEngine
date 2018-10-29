@@ -72,6 +72,10 @@
     <ClInclude Include="HReflectionContext.h">
       <Filter>Reflect\Context</Filter>
     </ClInclude>
+    <ClInclude Include="HTMPHelper.h" />
+    <ClInclude Include="HNumericTypeHelper.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -102,5 +106,6 @@
       <Filter>CoreObject</Filter>
     </ClCompile>
     <ClCompile Include="HStdOverrides.cpp" />
+    <ClCompile Include="HTypeOverride.cpp" />
   </ItemGroup>
 </Project>

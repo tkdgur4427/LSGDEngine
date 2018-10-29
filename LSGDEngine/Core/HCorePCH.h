@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HTMPHelper.h"
+
 #include "HTypeOverrides.h"
 
 #include "../Memory/HMemoryPCH.h"

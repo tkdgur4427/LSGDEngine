@@ -30,11 +30,13 @@
     <ClInclude Include="HName.h" />
     <ClInclude Include="HObject.h" />
     <ClInclude Include="HPrimitiveType.h" />
+    <ClInclude Include="HNumericTypeHelper.h" />
     <ClInclude Include="HReflect.h" />
     <ClInclude Include="HReflectDeclare.h" />
     <ClInclude Include="HReflectImplement.h" />
     <ClInclude Include="HReflectionContext.h" />
     <ClInclude Include="HStdOverrides.h" />
+    <ClInclude Include="HTMPHelper.h" />
     <ClInclude Include="HTypeDatabase.h" />
     <ClInclude Include="HTypeDatabaseUtils.h" />
     <ClInclude Include="HTypeOverrides.h" />
@@ -61,6 +63,7 @@
     <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HTypeDatabase.cpp" />
     <ClCompile Include="HTypeDatabaseUtils.cpp" />
+    <ClCompile Include="HTypeOverride.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Memory\Memory.vcxproj">

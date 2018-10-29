@@ -12,7 +12,6 @@
 #include <unordered_map>
 
 #include <tuple>
-#include <utility>
 
 // override std libraries with lsgd:: by type aliasing
 namespace lsgd
@@ -86,22 +85,18 @@ namespace lsgd
 	template <class Type>
 	using weak_ptr = std::weak_ptr<Type>;
 
-	// remove_reference
-	template<class Type>
-	using remove_reference = typename std::remove_reference_t<Type>::type;
-
 	// forward
 	template<class Type>
-	constexpr Type&& forward(remove_reference<Type>& Arg)
+	constexpr Type&& forward(HRemoveReference<Type>& Arg)
 	{	
 		return (static_cast<Type&&>(Arg));
 	}
 
 	// move
 	template<class Type>
-	constexpr remove_reference<Type>&& move(Type&& Arg)
+	constexpr HRemoveReference<Type>&& move(Type&& Arg)
 	{	
-		return (static_cast<remove_reference<Type>&&>(Arg));
+		return (static_cast<HRemoveReference<Type>&&>(Arg));
 	}
 
 	//-------------------------------------------------------------------------
@@ -168,7 +163,7 @@ namespace lsgd
 		HFixedArray<Type, sizeof...(Types)> Result;
 		TupleToFixedArray(Result, InTuple, HMakeIntegerSequence<size_t, sizeof...(Types)>());
 		return Result;
-	}		
+	}
 }
 
 // reflection context declarations
@@ -185,8 +180,43 @@ extern bool IsLoading(lsgd::reflect::HReflectionContext& InContext);
 extern bool IsSaving(lsgd::reflect::HReflectionContext& InContext);
 
 // operator << overloading for HReflectionContext
-extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, uint32& Value);
 extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HString& Value);
+
+template <class KeyType, class ValueType>
+lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::pair<KeyType, ValueType>& Value)
+{
+	KeyType KeyInstance;
+	ValueType ValueInstance;
+	if (InContext.IsSaving())
+	{
+		KeyInstance = Value.first;
+		ValueInstance = Value.second;
+		InContext << KeyInstance << ValueInstance;
+	}
+	else
+	{
+		InContext << KeyInstance << ValueInstance;
+		Value.first = KeyInstance;
+		Value.second = ValueInstance;
+	}
+
+	return InContext;
+}
+
+template <class ElementType, uint32 Count>
+lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HFixedArray<ElementType, Count>& Value)
+{
+	uint32 Num = Value.size();
+	InContext << Num;
+	check(Num <= Count);
+
+	for (auto& Element : Value)
+	{
+		InContext << Element;
+	}
+
+	return InContext;
+}
 
 template <class ElementType>
 lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HArray<ElementType>& Value)
@@ -213,23 +243,25 @@ lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext&
 	uint32 Num = Value.size();
 	InContext << Num;
 
+	lsgd::pair<KeyType, ValueType> PairInstance;
 	if (IsLoading(InContext))
 	{
 		for (uint32 Index = 0; Index < Num; ++Index)
 		{
-			KeyType Key;
-			ValueType Value;
-			InContext << Key << Value;
+			InContext << PairInstance;
 
 			// add to hash_map
-			Value.insert(Key, Value);
+			Value.insert(PairInstance);
 		}
 	}
 	else
 	{
 		for (auto& Element : Value)
 		{
-			InContext << Element.first << Element.second;
+			PairInstance.first = Element.first;
+			PairInstance.second = Element.second;
+
+			InContext << PairInstance;
 		}
 	}
 

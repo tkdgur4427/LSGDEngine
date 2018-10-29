@@ -35,10 +35,3 @@ HReflectionContext& operator<<(HReflectionContext& InContext, HString& Value)
 
 	return InContext;
 }
-
-HReflectionContext& operator<<(HReflectionContext& InContext, uint32& Value)
-{
-	InContext.Serialize(&Value, sizeof(Value));
-	return InContext;
-}
-
