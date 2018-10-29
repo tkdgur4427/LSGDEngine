@@ -1,17 +1,12 @@
 #include "HCorePCH.h"
 #include "HTypeOverrides.h"
+#include "HReflectionContextImplementMacro.h"
 
-// primitive type helper
-#include "HPrimitiveType.h"
-
-// reflection context
-#include "HReflectionContext.h"
-
-using namespace lsgd;
-using namespace lsgd::reflect;
-
-HReflectionContext SerializeHelper(HReflectionContext& InContext, void* InPointer, int64 InSize)
-{
-	InContext.Serialize(InPointer, InSize);
-	return InContext;
-}
+IMPLEMENT_REFLECTION_CONTEXT_BASE_TYPE(int8);
+IMPLEMENT_REFLECTION_CONTEXT_BASE_TYPE(int16);
+IMPLEMENT_REFLECTION_CONTEXT_BASE_TYPE(int32);
+IMPLEMENT_REFLECTION_CONTEXT_BASE_TYPE(int64);
+IMPLEMENT_REFLECTION_CONTEXT_BASE_TYPE(uint8);
+IMPLEMENT_REFLECTION_CONTEXT_BASE_TYPE(uint16);
+IMPLEMENT_REFLECTION_CONTEXT_BASE_TYPE(uint32);
+IMPLEMENT_REFLECTION_CONTEXT_BASE_TYPE(uint64);

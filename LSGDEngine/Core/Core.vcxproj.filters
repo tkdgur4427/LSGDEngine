@@ -76,6 +76,15 @@
     <ClInclude Include="HNumericTypeHelper.h">
       <Filter>Reflect</Filter>
     </ClInclude>
+    <ClInclude Include="HStringTypeHelper.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
+    <ClInclude Include="HReflectionContextDeclareMacro.h">
+      <Filter>Reflect\Context</Filter>
+    </ClInclude>
+    <ClInclude Include="HReflectionContextImplementMacro.h">
+      <Filter>Reflect\Context</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />

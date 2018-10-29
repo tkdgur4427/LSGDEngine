@@ -35,7 +35,10 @@
     <ClInclude Include="HReflectDeclare.h" />
     <ClInclude Include="HReflectImplement.h" />
     <ClInclude Include="HReflectionContext.h" />
+    <ClInclude Include="HReflectionContextDeclareMacro.h" />
+    <ClInclude Include="HReflectionContextImplementMacro.h" />
     <ClInclude Include="HStdOverrides.h" />
+    <ClInclude Include="HStringTypeHelper.h" />
     <ClInclude Include="HTMPHelper.h" />
     <ClInclude Include="HTypeDatabase.h" />
     <ClInclude Include="HTypeDatabaseUtils.h" />

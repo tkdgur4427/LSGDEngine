@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HNumericTypeHelper.h"
+#include "HStringTypeHelper.h"
 
 namespace lsgd { namespace reflect {
 
@@ -63,18 +64,5 @@ namespace lsgd { namespace reflect {
 			HDynamicPrimitiveProperties DynamicProperties;
 		};
 	};	
-
-	// string
-	template <class Type>
-	struct IsStringHelper
-	{
-		static const bool Value = false;
-	};
-
-	template <>
-	struct IsStringHelper<lsgd::HString>
-	{
-		static const bool Value = true;
-	};
 }
 }

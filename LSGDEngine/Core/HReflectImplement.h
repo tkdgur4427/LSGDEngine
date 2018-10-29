@@ -2,6 +2,11 @@
 
 #include "HTypeDatabaseUtils.h"
 
+// for << operator overloading
+#include "HReflectionContext.h"
+
+#include "HStringTypeHelper.h"
+
 // note that it tries to register primitive type by static class instantiation
 #define IMPLEMENT_PRIMITIVE_TYPE(PrimitiveType)	\
 	HStatic##PrimitiveType::HStatic##PrimitiveType()	\
