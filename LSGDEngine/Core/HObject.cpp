@@ -62,7 +62,7 @@ namespace lsgd
 		ObjectInitializer.Class = InClass;
 
 		// note that we didn't trigger any class constructor, just naive allocation happens
-		HObject* AllocatedObject = new (HGenericMemory::Allocate(ObjectInitializer.TotalSize))HObject(ObjectInitializer);
+		HObject* AllocatedObject = new (HGenericMemory::Allocate(ObjectInitializer.RealSize))HObject(ObjectInitializer);
 		return AllocatedObject;
 	}
 }

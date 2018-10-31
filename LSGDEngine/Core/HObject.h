@@ -29,6 +29,7 @@ namespace lsgd
 		
 		// validation attributes
 		uint32 TotalSize;
+		uint32 RealSize;
 	};
 
 	class HCoreObject
@@ -81,10 +82,13 @@ namespace lsgd
 			LObjectInitializer.Package = GTransientPackage;
 		}
 
+		// set the real class size
+		LObjectInitializer.RealSize = sizeof(HObjectType);
+
 		// try to allocate HObject
 		HObject* NewObject = AllocateHObjectInternal(LObjectInitializer, ClassType.ClassType);
 		check(NewObject != nullptr);
-		check(LObjectInitializer.TotalSize == sizeof(HObjectType));
+		//check(LObjectInitializer.TotalSize == sizeof(HObjectType));
 		check(LObjectInitializer.Object == NewObject);
 
 		// trigger constructor
