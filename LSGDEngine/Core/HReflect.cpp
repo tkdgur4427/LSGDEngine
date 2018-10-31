@@ -23,7 +23,7 @@ void HStruct::AddProperty(unique_ptr<HProperty>& InProperty)
 	Properties.push_back(move(InProperty));
 }
 
-void HStruct::SerializeProperties(HReflectionContext& InContext, uint8* OutData)
+void HStruct::SerializeProperties(HReflectionContext& InContext, uint8* OutData) const
 {
 	for (auto& Property : Properties)
 	{

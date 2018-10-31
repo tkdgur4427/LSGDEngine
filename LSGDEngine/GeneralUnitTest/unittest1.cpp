@@ -39,11 +39,10 @@ namespace GeneralUnitTest
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);
 			
-			A AInstance;
-			AInstance.Class = (HClass*)HTypeDatabaseUtils::GetTypeDescriptor<A>().ClassType;
+			A* AInstance = AllocateHObject<A>();
 
 			HReflectionContext Context;
-			AInstance.Serialize(Context);
+			AInstance->Serialize(Context);
 
 			int Param0 = 10;
 			lsgd::reflect::HNativeFunction* Func0 = (lsgd::reflect::HNativeFunction*)(TypeDB->GetClass("A")->Methods[0].get());

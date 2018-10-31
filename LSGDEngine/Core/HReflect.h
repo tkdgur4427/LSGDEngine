@@ -83,7 +83,7 @@ namespace lsgd { namespace reflect {
 			: HField(InName)
 		{}		
 
-		void SerializeProperties(HReflectionContext& InContext, uint8* OutData);
+		void SerializeProperties(HReflectionContext& InContext, uint8* OutData) const;
 
 		HStruct* SuperStruct;
 				

@@ -23,7 +23,7 @@ namespace lsgd
 		void Reset();
 				
 		HObject* Object;
-		reflect::HClass* Class;
+		const reflect::HClass* Class;
 
 		HPackage* Package;
 		
@@ -42,13 +42,13 @@ namespace lsgd
 		// object's unique name
 		HName Name;
 		// class definition
-		reflect::HClass* Class;
+		const reflect::HClass* Class;
 	};
 
 	//@todo - need to make separate thread local storage; for now, just temporary
 	extern thread_local HObjectInitializer LObjectInitializer;
 
-	extern HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, reflect::HClass* InClass);
+	extern HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, const reflect::HClass* InClass);
 	
 	class HObject : public HCoreObject
 	{
@@ -63,7 +63,7 @@ namespace lsgd
 	};	
 	
 	// forward declaration
-	extern class HPackage* GTranscientPackage;
+	extern class HPackage* GTransientPackage;
 
 	template <typename HObjectType>
 	HObjectType* AllocateHObject(class HPackage* InPackage = nullptr)
@@ -82,7 +82,7 @@ namespace lsgd
 		}
 
 		// try to allocate HObject
-		HObject* NewObject = AllocateHObjectInternal(LObjectInitializer, ClassType.ClassType, InPackage);
+		HObject* NewObject = AllocateHObjectInternal(LObjectInitializer, ClassType.ClassType);
 		check(NewObject != nullptr);
 		check(LObjectInitializer.TotalSize == sizeof(HObjectType));
 		check(LObjectInitializer.Object == NewObject);
