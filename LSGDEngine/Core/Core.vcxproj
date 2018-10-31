@@ -25,10 +25,14 @@
     <ClInclude Include="HCorePCH.h" />
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
     <ClInclude Include="HGuid.h" />
+    <ClInclude Include="HLinker.h" />
+    <ClInclude Include="HLinkerLoad.h" />
+    <ClInclude Include="HLinkerSave.h" />
     <ClInclude Include="HLogger.h" />
     <ClInclude Include="HCString.h" />
     <ClInclude Include="HName.h" />
     <ClInclude Include="HObject.h" />
+    <ClInclude Include="HPackage.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HNumericTypeHelper.h" />
     <ClInclude Include="HReflect.h" />
@@ -62,6 +66,7 @@
     </ClCompile>
     <ClCompile Include="HName.cpp" />
     <ClCompile Include="HObject.cpp" />
+    <ClCompile Include="HPackage.cpp" />
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HTypeDatabase.cpp" />

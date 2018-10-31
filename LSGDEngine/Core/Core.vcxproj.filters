@@ -85,6 +85,18 @@
     <ClInclude Include="HReflectionContextImplementMacro.h">
       <Filter>Reflect\Context</Filter>
     </ClInclude>
+    <ClInclude Include="HLinkerLoad.h">
+      <Filter>CoreObject</Filter>
+    </ClInclude>
+    <ClInclude Include="HLinker.h">
+      <Filter>CoreObject</Filter>
+    </ClInclude>
+    <ClInclude Include="HLinkerSave.h">
+      <Filter>CoreObject</Filter>
+    </ClInclude>
+    <ClInclude Include="HPackage.h">
+      <Filter>CoreObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -116,5 +128,8 @@
     </ClCompile>
     <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HTypeOverride.cpp" />
+    <ClCompile Include="HPackage.cpp">
+      <Filter>CoreObject</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

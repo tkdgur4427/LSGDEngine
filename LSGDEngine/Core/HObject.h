@@ -13,16 +13,19 @@ namespace lsgd
 {
 	// forward declarations
 	class HObject;
+	class HPackage;
 
 	class HObjectInitializer
 	{
 	public:
 		HObjectInitializer();
 
-		void InitializeProperties();
+		void Reset();
 				
 		HObject* Object;
 		reflect::HClass* Class;
+
+		HPackage* Package;
 		
 		// validation attributes
 		uint32 TotalSize;
@@ -54,33 +57,48 @@ namespace lsgd
 
 		// virtual methods
 		virtual void Serialize(reflect::HReflectionContext& InContext);
+
+		// outer object
+		class HPackage* Package;
 	};	
+	
+	// forward declaration
+	extern class HPackage* GTranscientPackage;
 
 	template <typename HObjectType>
-	HObjectType* AllocateHObject()
+	HObjectType* AllocateHObject(class HPackage* InPackage = nullptr)
 	{
 		// get the HClass type with template parameter, HObjectType
 		reflect::HTypeDescriptor ClassType = reflect::HTypeDatabaseUtils::GetTypeDescriptor<HObjectType>();
 		check(ClassType.ClassType != nullptr);
 
-		// try to allocate HObject		
-		HObject* NewObject = AllocateHObjectInternal(LObjectInitializer, ClassType.ClassType);
+		// set the package
+		LObjectInitializer.Package = InPackage;
+
+		// when there is no package, set the GTranscientPackage
+		if (LObjectInitializer.Package == nullptr)
+		{
+			LObjectInitializer.Package = GTransientPackage;
+		}
+
+		// try to allocate HObject
+		HObject* NewObject = AllocateHObjectInternal(LObjectInitializer, ClassType.ClassType, InPackage);
 		check(NewObject != nullptr);
 		check(LObjectInitializer.TotalSize == sizeof(HObjectType));
 		check(LObjectInitializer.Object == NewObject);
 
 		// trigger constructor
 		// @todo : need to support arbitrary number of constructor parameters forwarding
-		new (NewObject) HObjectType();
-
-		// initialize properties binded in HClass
-		LObjectInitializer.InitializeProperties();
+		new (NewObject) HObjectType();		
 
 		// set the class to NewObject
 		NewObject->Class = LObjectInitializer.Class;
 
 		// generate unique object name
 		NewObject->GenerateName();
+
+		// reset the ObjectInitializer
+		LObjectInitializer.Reset();
 
 		// @todo - need to dynamic RTTI checking for whether this class is derived or not
 		return (HObjectType*)NewObject;

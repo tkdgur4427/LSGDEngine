@@ -13,16 +13,14 @@ HObjectInitializer::HObjectInitializer()
 	: Object(nullptr)
 	, Class(nullptr)
 	, TotalSize(0)
+	, Package(nullptr)
 {
 
 }
 
-void HObjectInitializer::InitializeProperties()
+void HObjectInitializer::Reset()
 {
-	check(Object != nullptr && Class != nullptr);
-
-	// start to initialize properties
-	//@todo - use the CDO and initialize the properties
+	Package = nullptr;
 }
 
 HCoreObject::HCoreObject()
