@@ -12,7 +12,7 @@ using namespace lsgd::reflect;
 #include <vector>
 
 DECLARE_CLASS_TYPE(A)
-class A
+class A : public lsgd::HObject
 {
 public:
 	GENERATE_CLASS_BODY(A);
@@ -35,26 +35,16 @@ namespace GeneralUnitTest
 		
 		TEST_METHOD(TestMethod1)
 		{
-			reflect::HReflectionContext ReflectionContext;
-			HArray<uint32> Array;
-			Array.push_back(1);
-			Array.push_back(2);
-			Array.push_back(3);
-
-			ReflectionContext << Array;
-
-			HHashMap<uint32, uint32> HashMap;
-			HashMap.insert({ 1,1 });
-			HashMap.insert({ 2,2 });
-			HashMap.insert({ 3,3 });
-
-			ReflectionContext << HashMap;
-
 			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();			
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);
-
+			
 			A AInstance;
+			AInstance.Class = (HClass*)HTypeDatabaseUtils::GetTypeDescriptor<A>().ClassType;
+
+			HReflectionContext Context;
+			AInstance.Serialize(Context);
+
 			int Param0 = 10;
 			lsgd::reflect::HNativeFunction* Func0 = (lsgd::reflect::HNativeFunction*)(TypeDB->GetClass("A")->Methods[0].get());
 

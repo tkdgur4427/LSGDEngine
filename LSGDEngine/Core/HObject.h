@@ -33,7 +33,7 @@ namespace lsgd
 	public:
 		HCoreObject();
 
-	protected:
+	//protected:
 		void GenerateName();
 
 		// object's unique name
@@ -41,20 +41,20 @@ namespace lsgd
 		// class definition
 		reflect::HClass* Class;
 	};
+
+	//@todo - need to make separate thread local storage; for now, just temporary
+	extern thread_local HObjectInitializer LObjectInitializer;
+
+	extern HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, reflect::HClass* InClass);
 	
 	class HObject : public HCoreObject
 	{
 	public:
-		HObject(HObjectInitializer& InObjectInitializer);
+		HObject(HObjectInitializer& InObjectInitializer = LObjectInitializer);
 
 		// virtual methods
-		void Serialize(reflect::HReflectionContext* InContext) {}
-	};
-
-	//@todo - need to make separate thread local storage; for now, just temporary
-	extern thread_local HObjectInitializer LObjectInitializer;
-	
-	extern HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, reflect::HClass* InClass);	
+		virtual void Serialize(reflect::HReflectionContext& InContext);
+	};	
 
 	template <typename HObjectType>
 	HObjectType* AllocateHObject()

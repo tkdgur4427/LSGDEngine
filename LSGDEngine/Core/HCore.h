@@ -20,3 +20,6 @@
 
 // reflection context
 #include "HReflectionContext.h"
+
+// HObject
+#include "HObject.h"

@@ -6,6 +6,7 @@ using namespace lsgd::container;
 namespace lsgd { namespace reflect {
 
 	class HTypeDescriptor;
+	class HReflectionContext;
 
 	class HField
 	{
@@ -31,6 +32,8 @@ namespace lsgd { namespace reflect {
 		{
 			TotalSize = ElementSize * ArrayDim;
 		}
+
+		void SerializeItem(HReflectionContext& InContext, uint8* OutData);
 
 		// type descriptor
 		unique_ptr<HTypeDescriptor> TypeDescriptor;
@@ -78,17 +81,23 @@ namespace lsgd { namespace reflect {
 	public:
 		HStruct(const HString& InName)
 			: HField(InName)
-		{}
+		{}		
+
+		void SerializeProperties(HReflectionContext& InContext, uint8* OutData);
 
 		HStruct* SuperStruct;
 				
 	protected:
 		friend class HTypeDatabase;
 
-		void AddProperty(unique_ptr<HProperty>& InProperty);
+		void AddProperty(unique_ptr<HProperty>& InProperty);		
 
 		// properties
 		HArray<unique_ptr<HProperty>> Properties;
+
+		// children
+		//	- HEnum, HStruct, ...
+		HArray<unique_ptr<HField>> Children;		
 	};
 
 	class HFunction;

@@ -4,12 +4,31 @@
 // type database
 #include "HTypeDatabaseUtils.h"
 
+// reflection context
+#include "HReflectionContext.h"
+
 using namespace lsgd;
 using namespace lsgd::reflect;
+
+void HProperty::SerializeItem(HReflectionContext& InContext, uint8* OutData)
+{
+	for (int32 Index = 0; Index < ArrayDim; ++Index)
+	{
+		InContext.Serialize(OutData + Offset, ElementSize);
+	}	
+}
 
 void HStruct::AddProperty(unique_ptr<HProperty>& InProperty)
 {
 	Properties.push_back(move(InProperty));
+}
+
+void HStruct::SerializeProperties(HReflectionContext& InContext, uint8* OutData)
+{
+	for (auto& Property : Properties)
+	{
+		Property->SerializeItem(InContext, OutData);
+	}
 }
 
 void HClass::AddMethod(unique_ptr<HFunction>& InMethod)

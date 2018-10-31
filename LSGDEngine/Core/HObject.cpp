@@ -7,6 +7,8 @@
 using namespace lsgd;
 using namespace lsgd::reflect;
 
+thread_local lsgd::HObjectInitializer lsgd::LObjectInitializer;
+
 HObjectInitializer::HObjectInitializer()
 	: Object(nullptr)
 	, Class(nullptr)
@@ -41,6 +43,12 @@ HObject::HObject(HObjectInitializer& InObjectInitializer)
 {
 	// setting current initialized object as this object
 	InObjectInitializer.Object = this;
+}
+
+void HObject::Serialize(reflect::HReflectionContext& InContext)
+{
+	check(Class != nullptr);
+	Class->SerializeProperties(InContext, (uint8*)this);
 }
 
 HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, reflect::HClass* InClass)
