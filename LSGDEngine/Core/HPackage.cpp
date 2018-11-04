@@ -3,6 +3,14 @@
 
 namespace lsgd
 {
-	static HPackage GlobalTransientPackage;
+	static HTranscientPackageForTest GlobalTransientPackage;
 	HPackage* GTransientPackage = &GlobalTransientPackage;
+}
+
+using namespace lsgd;
+
+HTranscientPackageForTest::HTranscientPackageForTest()
+{
+	// generate package name
+	Name = HName("GTranscientPackageForTest");
 }

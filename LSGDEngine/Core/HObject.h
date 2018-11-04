@@ -32,6 +32,25 @@ namespace lsgd
 		uint32 RealSize;
 	};
 
+	enum EObjectFlags
+	{
+		TagExp = (1 << 0),
+		TagImp = (1 << 1),
+	};
+
+	struct HCoreObjectState
+	{
+		HCoreObjectState()
+			: ObjectFlags(0)
+		{}
+
+		void TagObjectFlags(EObjectFlags InValue);
+		void UntagObjectFlags(EObjectFlags InValue);
+
+		// bit flags for EObjectFlags
+		int64 ObjectFlags;
+	};
+
 	class HCoreObject
 	{
 	public:
@@ -44,6 +63,9 @@ namespace lsgd
 		HName Name;
 		// class definition
 		const reflect::HClass* Class;
+
+		// object state
+		HCoreObjectState State;
 	};
 
 	//@todo - need to make separate thread local storage; for now, just temporary

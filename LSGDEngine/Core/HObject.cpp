@@ -36,6 +36,16 @@ void HCoreObject::GenerateName()
 	Name = HName(Class->Name.c_str());
 }
 
+void HCoreObjectState::TagObjectFlags(EObjectFlags InValue)
+{
+	ObjectFlags |= InValue;
+}
+
+void HCoreObjectState::UntagObjectFlags(EObjectFlags InValue)
+{
+	ObjectFlags &= (0llu ^ ~(InValue));
+}
+
 HObject::HObject(HObjectInitializer& InObjectInitializer)
 	: HCoreObject()
 	, Package(InObjectInitializer.Package)
@@ -50,6 +60,8 @@ void HObject::Serialize(reflect::HReflectionContext& InContext)
 	Class->SerializeProperties(InContext, (uint8*)this);
 }
 
+#include "HPackage.h"
+
 namespace lsgd
 {
 	HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, const reflect::HClass* InClass)
@@ -63,6 +75,14 @@ namespace lsgd
 
 		// note that we didn't trigger any class constructor, just naive allocation happens
 		HObject* AllocatedObject = new (HGenericMemory::Allocate(ObjectInitializer.RealSize))HObject(ObjectInitializer);
+
+		// @todo : remove! - temporary!
+		if (AllocatedObject->Package == GTransientPackage)
+		{
+			// add tracked objects
+			((HTranscientPackageForTest*)(AllocatedObject->Package))->TrackedObjects.push_back(AllocatedObject);
+		}
+
 		return AllocatedObject;
 	}
 }
