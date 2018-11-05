@@ -86,3 +86,12 @@ namespace lsgd
 		HString Filename;
 	};
 }
+
+namespace lsgd { namespace reflect {
+
+	class HReflectionContext;
+
+} }
+
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectExport& InExport);
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectImport& InImport);

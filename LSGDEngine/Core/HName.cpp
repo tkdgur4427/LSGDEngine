@@ -18,6 +18,34 @@ bool HNameEntry::operator==(const HNameEntry& Other)
 	return false;
 }
 
+void HNameEntry::Decompose(HString& OutString, int32& OutNumber) const
+{
+	// find '_' position
+	int32 NameLen = HCString::Strlen(NameANSI);
+	int32 NumberStartLoc = -1;
+
+	for (int32 Index = NameLen - 1; Index >= 0; --Index)
+	{
+		if (NameANSI[Index] == '_')
+		{
+			// set the number start location
+			NumberStartLoc = Index + 1;
+			break;
+		}
+	}
+	check(NumberStartLoc != -1);
+
+	// process number
+	HCString::Atoi((char*)NameANSI + NumberStartLoc, OutNumber);
+
+	// process original string
+	int32 OriginalNameLen = NumberStartLoc;
+	OutString.resize(OriginalNameLen);
+	
+	// copy substring with MemCopy
+	HGenericMemory::MemCopy((void*)OutString.data(), NameANSI, OriginalNameLen - 1);
+}
+
 void HNameEntry::Init(const char* InName, int32 InNumber)
 {
 	check((InNumber >> MaxNumberSize) == 0);
@@ -89,6 +117,11 @@ int32 HNameEntryManager::FindNameEntry(const char* InName, int32 InNumber)
 	return OutNumber;
 }
 
+const HNameEntry* HNameEntryManager::GetNameEntry(int32 Index) const
+{
+	return &NameEntries[Index];
+}
+
 HName::HName()
 	: NameEntryIndex(-1)
 	, Number(0)
@@ -101,15 +134,47 @@ HName::HName(const char* InName)
 	HNameEntryManager::GetSingleton().AddNameEntry(InName, 0, NameEntryIndex, Number);
 }
 
-reflect::HReflectionContext& operator<<(reflect::HReflectionContext& InContext, HName& Value)
+HName::HName(const char* InOriginalName, int32 InNumber)
 {
+	// check if the matched name exists
+	int32 FoundNumber = HNameEntryManager::GetSingleton().FindNameEntry(InOriginalName, InNumber);
+	check(FoundNumber != InNumber);
+
+	HNameEntryManager::GetSingleton().AddNameEntry(InOriginalName, InNumber, NameEntryIndex, Number);
+}
+
+const HNameEntry* HName::GetNameEntry() const
+{
+	return HNameEntryManager::GetSingleton().GetNameEntry(NameEntryIndex);
+}
+
+HString HName::ToString() const
+{
+	const HNameEntry* NameEntry = GetNameEntry();
+	return HString(NameEntry->NameANSI);
+}
+
+reflect::HReflectionContext& HName::Serialize(reflect::HReflectionContext& InContext)
+{
+	HString OriginalName;
+	int32 Number;
+
 	if (InContext.IsSaving())
 	{
-		
+		const HNameEntry* NameEntry = GetNameEntry();
+		// @todo.. um need to think about more optimized way
+		NameEntry->Decompose(OriginalName, Number);
+
+		InContext << Number;
+		InContext << OriginalName;
 	}
 	else
 	{
+		InContext << Number;
+		InContext << OriginalName;
 
+		// add new name
+		HName NewName = HName(OriginalName.c_str(), Number);
 	}
 
 	return InContext;

@@ -22,6 +22,9 @@
     <Filter Include="Reflect\Context">
       <UniqueIdentifier>{d0b6651c-c9a6-4007-b0c5-5e7f78885808}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FileIO">
+      <UniqueIdentifier>{9e820596-0ec4-453c-97d2-9c73d3fcd5b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -97,6 +100,9 @@
     <ClInclude Include="HPackage.h">
       <Filter>CoreObject</Filter>
     </ClInclude>
+    <ClInclude Include="HFileArchive.h">
+      <Filter>FileIO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -133,6 +139,12 @@
     </ClCompile>
     <ClCompile Include="HLinkerSave.cpp">
       <Filter>CoreObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HLinker.cpp">
+      <Filter>CoreObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HFileArchive.cpp">
+      <Filter>FileIO</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

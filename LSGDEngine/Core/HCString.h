@@ -20,6 +20,11 @@ namespace lsgd
 			itoa(InNumber, OutCString, InBase);
 		}
 
+		static void Atoi(char* InCString, int32& OutNumber)
+		{
+			OutNumber = atoi(InCString);
+		}
+
 		static int32 Strcmp(const char* const Str0, const char* const Str1)
 		{
 			return strcmp(Str0, Str1);

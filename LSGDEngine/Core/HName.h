@@ -15,6 +15,8 @@ namespace lsgd
 		HNameEntry() {}
 		HNameEntry(const char* InName, int32 InNumber);
 
+		void Decompose(HString& OutOriginName, int32& OutNumber) const;
+
 		enum 
 		{
 			MaxNameSize = 128,
@@ -46,6 +48,8 @@ namespace lsgd
 		// note that if return value is same as InNumber, it means no collision, otherwise it has collision, so return new number
 		int32 FindNameEntry(const char* InName, int32 InNumber);
 
+		const HNameEntry* GetNameEntry(int32 Index) const;
+
 	protected:
 		// prevent instantiation except for GetSingleton()
 		HNameEntryManager() {}
@@ -65,11 +69,17 @@ namespace lsgd
 	{
 	public:
 		HName();
-		HName(const char* InName);		
+		HName(const char* InName);
+		HName(const char* InOriginalName, int32 InNumber);
+
+		HString ToString() const;
 
 		int32 NameEntryIndex;
 		int32 Number;
 
-		friend class reflect::HReflectionContext& operator<<(reflect::HReflectionContext& InContext, HName& Value);
+		reflect::HReflectionContext& Serialize(reflect::HReflectionContext& InContext);
+
+	protected:
+		const HNameEntry* GetNameEntry() const;
 	};
 }

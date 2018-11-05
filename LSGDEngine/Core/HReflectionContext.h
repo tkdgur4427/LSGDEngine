@@ -35,7 +35,16 @@ namespace lsgd { namespace reflect {
 	public:
 		virtual HSerializeContext& operator<<(class HName& Value) override
 		{
+			// serialize the name 
+			Value.Serialize(*this);
+			return *this;
+		}
 
+		virtual HReflectionContext& operator<<(class HObject*& Value) override
+		{
+			// serialize the object
+			Value->Serialize(*this);
+			return *this;
 		}
 	};
 

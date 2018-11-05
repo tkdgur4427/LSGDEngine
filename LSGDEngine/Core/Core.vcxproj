@@ -23,6 +23,7 @@
     <ClInclude Include="HClassType.h" />
     <ClInclude Include="HCore.h" />
     <ClInclude Include="HCorePCH.h" />
+    <ClInclude Include="HFileArchive.h" />
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
     <ClInclude Include="HGuid.h" />
     <ClInclude Include="HLinker.h" />
@@ -59,8 +60,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="HFileArchive.cpp" />
     <ClCompile Include="HGeneratePrimitiveReflect.cpp" />
     <ClCompile Include="HGuid_crossguid.cpp" />
+    <ClCompile Include="HLinker.cpp" />
     <ClCompile Include="HLinkerSave.cpp" />
     <ClCompile Include="HLogger_spd.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
