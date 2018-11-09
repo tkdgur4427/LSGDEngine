@@ -77,7 +77,7 @@ struct HTagNameRecursive : public HReflectionContext
 bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 {
 	// create file archive
-	FileArchive = new fileIO::HFileArchive();
+	FileArchive = new fileIO::HFileArchiveWrite();
 
 	// setting attributes
 	LinkerRoot = InContext.OutermostPkg;

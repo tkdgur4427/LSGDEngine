@@ -37,6 +37,11 @@ uint32 HFileCacheChunk::Write(void* InData, int32 InSize)
 	return CurrOffset;
 }
 
+void HFileCacheChunk::Move(int32 InOffset)
+{
+	CurrOffset = InOffset;
+}
+
 uint32 HFileCacheChunk::Read(void* OutData, int32 InSize)
 {
 	if (Tell() >= CACHE_SIZE)
@@ -59,6 +64,11 @@ HFileArchive::HFileArchive()
 	PlatformFileIO = move(HGenericPlatformMisc::CreatePlatformFileIO());
 }
 
+HFileArchive::~HFileArchive()
+{
+
+}
+
 int32 HFileArchive::GetAvailableFileCacheChunk()
 {
 	if (FreeFileCacheChunks.size() > 0)
@@ -71,13 +81,32 @@ int32 HFileArchive::GetAvailableFileCacheChunk()
 	unique_ptr<HFileCacheChunk> NewChunk = make_unique<HFileCacheChunk>();
 
 	int32 Result = FileCacheChunks.size();
-	FileCacheChunks.push_back(NewChunk);
+	FileCacheChunks.push_back(move(NewChunk));
 
 	return Result;
 }
 
+int64 HFileArchive::Tell() const
+{
+	return CurrFileCacheChunk * HFileCacheChunk::CACHE_SIZE + FileCacheChunks[CurrFileCacheChunk]->Tell();
+}
+
+void HFileArchive::Move(int64 Offset)
+{
+	int32 ChunkIndex = Offset / HFileCacheChunk::CACHE_SIZE;
+	int32 ChunkOffset = Offset % HFileCacheChunk::CACHE_SIZE;
+
+	CurrFileCacheChunk = ChunkIndex;
+	FileCacheChunks[CurrFileCacheChunk]->Move(ChunkOffset);
+}
+
 HFileArchiveWrite::HFileArchiveWrite()
 	: HFileArchive()
+{
+	
+}
+
+HFileArchiveWrite::~HFileArchiveWrite()
 {
 
 }
@@ -109,6 +138,11 @@ HFileArchiveRead::HFileArchiveRead()
 {
 	// reading file archive
 	bIsSaving = false;
+}
+
+HFileArchiveRead::~HFileArchiveRead()
+{
+
 }
 
 void HFileArchiveRead::UpdateState(int64 Length)

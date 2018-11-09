@@ -15,7 +15,7 @@ HWindowsPlatformFileIO::~HWindowsPlatformFileIO()
 	CloseFile();
 }
 
-void HWindowsPlatformFileIO::CreateFile(const HString InFilename, int32 InFileUsage)
+void HWindowsPlatformFileIO::CreateFile(const HString& InFilename, int32 InFileUsage)
 {
 	FileUsageFlag = InFileUsage;
 
@@ -30,7 +30,7 @@ void HWindowsPlatformFileIO::CreateFile(const HString InFilename, int32 InFileUs
 void HWindowsPlatformFileIO::WriteFile(void* InBuffer, int64 InSize, int64& OutSize)
 {
 	check(FileHandle != nullptr);
-	check(FileUsageFlag & EFileUsageFlag::Write != 0);
+	check((FileUsageFlag & EFileUsageFlag::Write) != 0);
 
 	::WriteFile(FileHandle, InBuffer, InSize, (DWORD*)&OutSize, NULL);
 }

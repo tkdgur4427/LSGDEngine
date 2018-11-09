@@ -39,8 +39,8 @@ namespace lsgd { namespace reflect {
 	class HSerializeContext : public HReflectionContext
 	{
 	public:
-		virtual HSerializeContext& operator<<(class HName& Value);
-		virtual HReflectionContext& operator<<(class HObject*& Value);
+		virtual HSerializeContext& operator<<(class HName& Value) override;
+		virtual HReflectionContext& operator<<(class HObject*& Value) override;
 	};
 
 	// behavior context

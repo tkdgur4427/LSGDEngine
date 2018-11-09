@@ -11,10 +11,10 @@ namespace lsgd {
 	class HPlatformFileIO
 	{
 	public:
-		virtual void CreateFile(const HString InFilename, int32 InFileUsage) = 0;
-		virtual void WriteFile(void* InBuffer, int64 InSize, int64& OutSize) = 0;
-		virtual void ReadFile(void* OutBuffer, int64 InMaxSize, int64& OutSize) = 0;
-		virtual void CloseFile() = 0;
+		void CreateFile(const HString& InFilename, int32 InFileUsage) { check(0); }
+		void WriteFile(void* InBuffer, int64 InSize, int64& OutSize) { check(0); }
+		void ReadFile(void* OutBuffer, int64 InMaxSize, int64& OutSize) { check(0); }
+		void CloseFile() { check(0); }
 
 		// file usage flag (read | write)
 		int32 FileUsageFlag;

@@ -169,6 +169,12 @@ namespace lsgd
 // reflection context declarations
 
 // forward declaration
+namespace lsgd {
+	class HPackageTOC;
+	class HObjectExport;
+	class HObjectImport;
+}
+
 namespace lsgd { namespace reflect {
 
 	class HReflectionContext;
@@ -181,6 +187,11 @@ extern bool IsSaving(lsgd::reflect::HReflectionContext& InContext);
 
 // operator << overloading for HReflectionContext
 extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HString& Value);
+
+// @todo um... how to resolve this
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HPackageTOC& InTOC);
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectExport& InExport);
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectImport& InImport);
 
 template <class KeyType, class ValueType>
 lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::pair<KeyType, ValueType>& Value)

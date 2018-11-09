@@ -12,10 +12,10 @@ namespace lsgd
 		HWindowsPlatformFileIO();
 		~HWindowsPlatformFileIO();
 
-		virtual void CreateFile(const HString InFilename, int32 InFileUsage) override;
-		virtual void WriteFile(void* InBuffer, int64 InSize, int64& OutSize) override;
-		virtual void ReadFile(void* OutBuffer, int64 InMaxSize, int64& OutSize) override;
-		virtual void CloseFile() override;
+		void CreateFile(const HString& InFilename, int32 InFileUsage);
+		void WriteFile(void* InBuffer, int64 InSize, int64& OutSize);
+		void ReadFile(void* OutBuffer, int64 InMaxSize, int64& OutSize);
+		void CloseFile();
 
 		HANDLE FileHandle;
 	};

@@ -38,6 +38,7 @@ namespace lsgd { namespace fileIO {
 	{
 	public:
 		HFileArchive();
+		virtual ~HFileArchive();
 
 		int32 GetAvailableFileCacheChunk();
 		int64 Tell() const;
@@ -60,6 +61,7 @@ namespace lsgd { namespace fileIO {
 	{
 	public:
 		HFileArchiveWrite();
+		~HFileArchiveWrite();
 
 		void UpdateState(int64 Length);
 
@@ -71,6 +73,7 @@ namespace lsgd { namespace fileIO {
 	{
 	public:
 		HFileArchiveRead();
+		~HFileArchiveRead();
 
 		void UpdateState(int64 Length);
 		virtual void Serialize(void* Value, int64 Length) override;
