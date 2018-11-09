@@ -3,6 +3,8 @@
 
 // HObject
 #include "HObject.h"
+// file archive
+#include "HFileArchive.h"
 
 using namespace lsgd;
 using namespace reflect;
@@ -74,6 +76,9 @@ struct HTagNameRecursive : public HReflectionContext
 
 bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 {
+	// create file archive
+	FileArchive = new fileIO::HFileArchive();
+
 	// setting attributes
 	LinkerRoot = InContext.OutermostPkg;
 
@@ -117,5 +122,16 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 	}
 	
 	// initialize TOC
-	
+	(*FileArchive) << TOC;
+
+	// serialize export/import map
+	TOC.ExportOffset = FileArchive->Tell();
+	TOC.ExportCount = ExportMap.size();
+	(*FileArchive) << ExportMap;
+
+	TOC.ImportOffset = FileArchive->Tell();
+	TOC.ImportCount = ImportMap.size();
+	(*FileArchive) << ImportMap;
+
+	return true;
 }

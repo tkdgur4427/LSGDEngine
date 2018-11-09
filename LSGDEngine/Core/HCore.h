@@ -23,3 +23,10 @@
 
 // HObject
 #include "HObject.h"
+
+// HPackage
+#include "HPackage.h"
+
+// HLinkerSave/Load
+#include "HLinkerSave.h"
+#include "HLinkerLoad.h"

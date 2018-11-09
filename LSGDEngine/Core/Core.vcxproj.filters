@@ -146,5 +146,8 @@
     <ClCompile Include="HFileArchive.cpp">
       <Filter>FileIO</Filter>
     </ClCompile>
+    <ClCompile Include="HReflectionContext.cpp">
+      <Filter>Reflect\Context</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

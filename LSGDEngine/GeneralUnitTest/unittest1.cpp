@@ -41,8 +41,12 @@ namespace GeneralUnitTest
 			
 			A* AInstance = AllocateHObject<A>();
 
-			HReflectionContext Context;
-			AInstance->Serialize(Context);
+			HLinkerSaveContext SaveContext;
+			SaveContext.ObjectsToSave = ((HTranscientPackageForTest*)GTransientPackage)->TrackedObjects;
+			SaveContext.OutermostPkg = GTransientPackage;
+
+			HLinkerSave LinkerSave;
+			LinkerSave.SavePackage(SaveContext);
 
 			int Param0 = 10;
 			lsgd::reflect::HNativeFunction* Func0 = (lsgd::reflect::HNativeFunction*)(TypeDB->GetClass("A")->Methods[0].get());

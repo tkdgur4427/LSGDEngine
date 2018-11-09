@@ -93,5 +93,6 @@ namespace lsgd { namespace reflect {
 
 } }
 
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HPackageTOC& InTOC);
 extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectExport& InExport);
 extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectImport& InImport);

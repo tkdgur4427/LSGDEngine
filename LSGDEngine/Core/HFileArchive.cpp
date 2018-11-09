@@ -1,8 +1,8 @@
 #include "HCorePCH.h"
 #include "HFileArchive.h"
 
-namespace lsgd;
-namespace lsgd::fileIO;
+using namespace lsgd;
+using namespace lsgd::fileIO;
 
 void HFileCacheChunk::Reset()
 {
@@ -71,9 +71,21 @@ int32 HFileArchive::GetAvailableFileCacheChunk()
 	unique_ptr<HFileCacheChunk> NewChunk = make_unique<HFileCacheChunk>();
 	
 	int32 Result = FileCacheChunks.size();
-	FileCacheChunks.push_back(NewChunk);
+	FileCacheChunks.push_back(move(NewChunk));
 
 	return Result;
+}
+
+int64 HFileArchive::Tell() const
+{
+	if (CurrFileCacheChunk != -1)
+	{
+		int64 CurrChunkSize = CurrFileCacheChunk * HFileCacheChunk::CACHE_SIZE;
+		return CurrChunkSize + FileCacheChunks[CurrFileCacheChunk]->Tell();
+	}
+
+	// invalid tell
+	return 0;
 }
 
 void HFileArchive::UpdateWriteState(int64 Length)

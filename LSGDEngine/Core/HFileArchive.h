@@ -11,6 +11,7 @@ namespace lsgd { namespace fileIO {
 		HFileCacheChunk()
 			: CurrOffset(0)
 		{}
+		~HFileCacheChunk() {}
 
 		enum
 		{
@@ -37,6 +38,7 @@ namespace lsgd { namespace fileIO {
 
 		void UpdateWriteState(int64 Length);
 		int32 GetAvailableFileCacheChunk();
+		int64 Tell() const;
 
 	protected:
 		// file cache chunks
