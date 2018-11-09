@@ -1,11 +1,17 @@
 #pragma once
 
+namespace lsgd
+{
+	class HObject;
+	class HName;
+}
+
 namespace lsgd { namespace reflect {
 
 	class HReflectionContext
 	{
 	public:
-		virtual HReflectionContext& operator<<(class HName& Value)
+		virtual HReflectionContext& operator<<(HName& Value)
 		{
 			return *this;
 		}
@@ -15,7 +21,7 @@ namespace lsgd { namespace reflect {
 			return *this;
 		}
 
-		virtual HReflectionContext& operator<<(class HObject*& Value)
+		virtual HReflectionContext& operator<<(HObject*& Value)
 		{
 			return *this;
 		}
@@ -33,19 +39,8 @@ namespace lsgd { namespace reflect {
 	class HSerializeContext : public HReflectionContext
 	{
 	public:
-		virtual HSerializeContext& operator<<(class HName& Value) override
-		{
-			// serialize the name 
-			Value.Serialize(*this);
-			return *this;
-		}
-
-		virtual HReflectionContext& operator<<(class HObject*& Value) override
-		{
-			// serialize the object
-			Value->Serialize(*this);
-			return *this;
-		}
+		virtual HSerializeContext& operator<<(class HName& Value);
+		virtual HReflectionContext& operator<<(class HObject*& Value);
 	};
 
 	// behavior context

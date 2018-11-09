@@ -75,6 +75,7 @@
     <ClCompile Include="HObject.cpp" />
     <ClCompile Include="HPackage.cpp" />
     <ClCompile Include="HReflect.cpp" />
+    <ClCompile Include="HReflectionContext.cpp" />
     <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HTypeDatabase.cpp" />
     <ClCompile Include="HTypeDatabaseUtils.cpp" />
