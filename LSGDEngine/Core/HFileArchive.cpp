@@ -53,6 +53,11 @@ uint32 HFileCacheChunk::Read(void* OutData, int32 InSize)
 	return CurrOffset;
 }
 
+void HFileCacheChunk::Move(int32 InOffset)
+{
+	CurrOffset = InOffset;
+}
+
 HFileArchive::HFileArchive()
 	: CurrFileCacheChunk(-1)
 {
@@ -86,6 +91,15 @@ int64 HFileArchive::Tell() const
 
 	// invalid tell
 	return 0;
+}
+
+void HFileArchive::Move(int64 Offset)
+{
+	int32 ChunkIndex = Offset / HFileCacheChunk::CACHE_SIZE;
+	int32 ChunkOffset = Offset % HFileCacheChunk::CACHE_SIZE;
+
+	CurrFileCacheChunk = ChunkIndex;
+	FileCacheChunks[CurrFileCacheChunk]->Move(ChunkOffset);
 }
 
 void HFileArchive::UpdateWriteState(int64 Length)

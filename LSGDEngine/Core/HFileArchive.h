@@ -23,6 +23,7 @@ namespace lsgd { namespace fileIO {
 		uint32 Tell() const;
 		uint32 Write(void* InData, int32 InSize);
 		uint32 Read(void* OutData, int32 InSize);
+		void Move(int32 InOffset);
 
 		uint8 Storage[CACHE_SIZE];
 		uint32 CurrOffset;
@@ -39,6 +40,7 @@ namespace lsgd { namespace fileIO {
 		void UpdateWriteState(int64 Length);
 		int32 GetAvailableFileCacheChunk();
 		int64 Tell() const;
+		void Move(int64 Offset);
 
 	protected:
 		// file cache chunks

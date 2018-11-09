@@ -122,6 +122,7 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 	}
 	
 	// initialize TOC
+	int64 TOCOffset = FileArchive->Tell();
 	(*FileArchive) << TOC;
 
 	// serialize export/import map
@@ -132,6 +133,35 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 	TOC.ImportOffset = FileArchive->Tell();
 	TOC.ImportCount = ImportMap.size();
 	(*FileArchive) << ImportMap;
+
+	TOC.NameOffset = FileArchive->Tell();
+	TOC.NameCount = NameMap.size();
+	(*FileArchive) << NameMap;
+
+	TOC.DependsOffset = FileArchive->Tell();
+	(*FileArchive) << DependsMap;
+
+	// mark as header-end
+	TOC.TotalHeaderSize = FileArchive->Tell() - TOCOffset;
+
+	// real object export serialization
+	for (HObjectExport& ObjectExport : ExportMap)
+	{
+		ObjectExport.SerialOffset = FileArchive->Tell();
+
+		// serialize real object
+		(*FileArchive) << ObjectExport.Object;
+
+		ObjectExport.SerialSize = FileArchive->Tell() - ObjectExport.SerialOffset;
+	}
+
+	// override TOC information
+	FileArchive->Move(TOCOffset);
+	(*FileArchive) << TOC;
+
+	// override export map information
+	check(FileArchive->Tell() == TOC.ExportOffset);
+	(*FileArchive) << ExportMap;
 
 	return true;
 }
