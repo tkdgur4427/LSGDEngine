@@ -16,3 +16,4 @@
 
 #include "HName.h"
 
+#include "HGenericPlatformMisc.h"

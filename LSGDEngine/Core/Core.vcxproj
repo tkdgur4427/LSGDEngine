@@ -25,6 +25,7 @@
     <ClInclude Include="HCorePCH.h" />
     <ClInclude Include="HFileArchive.h" />
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
+    <ClInclude Include="HGenericPlatformMisc.h" />
     <ClInclude Include="HGuid.h" />
     <ClInclude Include="HLinker.h" />
     <ClInclude Include="HLinkerLoad.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="HTypeDatabaseUtils.h" />
     <ClInclude Include="HTypeOverrides.h" />
     <ClInclude Include="HVariadicStack.h" />
+    <ClInclude Include="HWIndowsPlatformMisc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
@@ -64,6 +66,7 @@
     <ClCompile Include="HGeneratePrimitiveReflect.cpp" />
     <ClCompile Include="HGuid_crossguid.cpp" />
     <ClCompile Include="HLinker.cpp" />
+    <ClCompile Include="HLinkerLoad.cpp" />
     <ClCompile Include="HLinkerSave.cpp" />
     <ClCompile Include="HLogger_spd.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -76,6 +79,7 @@
     <ClCompile Include="HTypeDatabase.cpp" />
     <ClCompile Include="HTypeDatabaseUtils.cpp" />
     <ClCompile Include="HTypeOverride.cpp" />
+    <ClCompile Include="HWindowsPlatformMisc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Memory\Memory.vcxproj">

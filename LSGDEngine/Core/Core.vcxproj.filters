@@ -25,6 +25,12 @@
     <Filter Include="FileIO">
       <UniqueIdentifier>{9e820596-0ec4-453c-97d2-9c73d3fcd5b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{b6163ae7-9380-48db-909c-1d16e48a7d63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Windows">
+      <UniqueIdentifier>{05e3bbfa-b248-4b6b-ad11-855c6ec1b210}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -103,6 +109,12 @@
     <ClInclude Include="HFileArchive.h">
       <Filter>FileIO</Filter>
     </ClInclude>
+    <ClInclude Include="HGenericPlatformMisc.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="HWIndowsPlatformMisc.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -145,6 +157,12 @@
     </ClCompile>
     <ClCompile Include="HFileArchive.cpp">
       <Filter>FileIO</Filter>
+    </ClCompile>
+    <ClCompile Include="HLinkerLoad.cpp">
+      <Filter>CoreObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HWindowsPlatformMisc.cpp">
+      <Filter>Platform\Windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

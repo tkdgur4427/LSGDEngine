@@ -1,8 +1,8 @@
 #include "HCorePCH.h"
 #include "HFileArchive.h"
 
-namespace lsgd;
-namespace lsgd::fileIO;
+using namespace lsgd;
+using namespace lsgd::fileIO;
 
 void HFileCacheChunk::Reset()
 {
@@ -56,7 +56,7 @@ uint32 HFileCacheChunk::Read(void* OutData, int32 InSize)
 HFileArchive::HFileArchive()
 	: CurrFileCacheChunk(-1)
 {
-
+	PlatformFileIO = move(HGenericPlatformMisc::CreatePlatformFileIO());
 }
 
 int32 HFileArchive::GetAvailableFileCacheChunk()
@@ -69,45 +69,61 @@ int32 HFileArchive::GetAvailableFileCacheChunk()
 	}
 
 	unique_ptr<HFileCacheChunk> NewChunk = make_unique<HFileCacheChunk>();
-	
+
 	int32 Result = FileCacheChunks.size();
 	FileCacheChunks.push_back(NewChunk);
 
 	return Result;
 }
 
-void HFileArchive::UpdateWriteState(int64 Length)
+HFileArchiveWrite::HFileArchiveWrite()
+	: HFileArchive()
 {
-	// if there is first initialization, get the new chunk
-	if (CurrFileCacheChunk == -1)
-	{
-		CurrFileCacheChunk = GetAvailableFileCacheChunk();
-		return;
-	}
 
+}
+
+void HFileArchiveWrite::UpdateState(int64 Length)
+{
 	//@todo - need to find more optimized way of using compact size
-	if (FileCacheChunks[CurrFileCacheChunk]->GetAvailableSize() <= Length)
+	if (CurrFileCacheChunk == -1 // when it updates first state
+		|| FileCacheChunks[CurrFileCacheChunk]->GetAvailableSize() <= Length)
 	{
 		// when it is out of memory
 		// @todo - trigger new file async flush with this file cache chunk
 
 		// get the new chunk
 		CurrFileCacheChunk = GetAvailableFileCacheChunk();
-		return;
 	}
 }
 
-void HFileArchive::Serialize(void* Value, int64 Length)
+void HFileArchiveWrite::Serialize(void* Value, int64 Length)
 {
-	if (IsSaving())
+	// update file cache chunk to hold 'Length' size
+	UpdateState(Length);
+	// write to the file cache chunk
+	FileCacheChunks[CurrFileCacheChunk]->Write(Value, Length);
+}
+
+HFileArchiveRead::HFileArchiveRead()
+	: HFileArchive()
+{
+	// reading file archive
+	bIsSaving = false;
+}
+
+void HFileArchiveRead::UpdateState(int64 Length)
+{
+	if (CurrFileCacheChunk == -1 // when it updates first state
+		|| FileCacheChunks[CurrFileCacheChunk]->GetAvailableSize() <= Length)
 	{
-		// update file cache chunk to hold 'Length' size
-		UpdateWriteState(Length);
-		// write to the file cache chunk
-		FileCacheChunks[CurrFileCacheChunk]->Write(Value, Length);
+		CurrFileCacheChunk = GetAvailableFileCacheChunk();
 	}
-	else
-	{
-		// todo! need to also implement correct precaching from file
-	}
+
+	//@todo flush to read the cache size (16K)
+}
+
+void HFileArchiveRead::Serialize(void* Value, int64 Length)
+{
+	UpdateState(Length);
+	FileCacheChunks[CurrFileCacheChunk]->Read(Value, Length);
 }

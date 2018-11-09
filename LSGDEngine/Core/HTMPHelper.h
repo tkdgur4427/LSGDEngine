@@ -12,6 +12,7 @@ namespace lsgd {
 
 	template <bool B, class T = void>
 	using HEnableIf = std::enable_if<B, T>;
+
 }
 
 namespace lsgd { namespace TMP {

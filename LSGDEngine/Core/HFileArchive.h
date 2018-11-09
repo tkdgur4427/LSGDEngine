@@ -2,6 +2,10 @@
 
 #include "HReflectionContext.h"
 
+namespace lsgd {
+	class HPlatformFileIO;
+}
+
 namespace lsgd { namespace fileIO {
 
 	// file cache
@@ -33,9 +37,6 @@ namespace lsgd { namespace fileIO {
 	public:
 		HFileArchive();
 
-		virtual void Serialize(void* Value, int64 Length) override;
-
-		void UpdateWriteState(int64 Length);
 		int32 GetAvailableFileCacheChunk();
 
 	protected:
@@ -45,6 +46,29 @@ namespace lsgd { namespace fileIO {
 
 		// current read/write file cache chunk
 		int32 CurrFileCacheChunk;
+
+		// platform file io
+		unique_ptr<HPlatformFileIO> PlatformFileIO;
 	};
 
+	// file IO archive writer
+	class HFileArchiveWrite : public HFileArchive
+	{
+	public:
+		HFileArchiveWrite();
+
+		void UpdateState(int64 Length);
+
+		virtual void Serialize(void* Value, int64 Length) override;
+	};
+
+	// file IO archive reader
+	class HFileArchiveRead : public HFileArchive
+	{
+	public:
+		HFileArchiveRead();
+
+		void UpdateState(int64 Length);
+		virtual void Serialize(void* Value, int64 Length) override;
+	};
 } }
