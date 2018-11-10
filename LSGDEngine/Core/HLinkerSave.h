@@ -27,6 +27,7 @@ namespace lsgd
 	{
 	public:
 		HLinkerSave();
+		~HLinkerSave();
 
 		bool SavePackage(HLinkerSaveContext& InContext);
 
@@ -34,6 +35,6 @@ namespace lsgd
 		const HPackage* SrcPackageToSave;
 
 		// file archive
-		fileIO::HFileArchive* FileArchive;
+		unique_ptr<fileIO::HFileArchive> FileArchive;
 	};
 }

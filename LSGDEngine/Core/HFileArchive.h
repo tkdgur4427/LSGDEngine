@@ -29,6 +29,8 @@ namespace lsgd { namespace fileIO {
 		uint32 Read(void* OutData, int32 InSize);
 		void Move(int32 InOffset);
 
+		void* GetData() { return (void*)&Storage[0]; }
+
 		uint8 Storage[CACHE_SIZE];
 		uint32 CurrOffset;
 	};
@@ -37,7 +39,7 @@ namespace lsgd { namespace fileIO {
 	class HFileArchive : public lsgd::reflect::HSerializeContext
 	{
 	public:
-		HFileArchive();
+		HFileArchive(const HString& InFilename);
 		virtual ~HFileArchive();
 
 		int32 GetAvailableFileCacheChunk();
@@ -52,6 +54,9 @@ namespace lsgd { namespace fileIO {
 		// current read/write file cache chunk
 		int32 CurrFileCacheChunk;
 
+		// filename
+		HString Filename;
+
 		// platform file io
 		unique_ptr<HPlatformFileIO> PlatformFileIO;
 	};
@@ -60,7 +65,7 @@ namespace lsgd { namespace fileIO {
 	class HFileArchiveWrite : public HFileArchive
 	{
 	public:
-		HFileArchiveWrite();
+		HFileArchiveWrite(const HString& InFilename);
 		~HFileArchiveWrite();
 
 		void UpdateState(int64 Length);
@@ -72,7 +77,7 @@ namespace lsgd { namespace fileIO {
 	class HFileArchiveRead : public HFileArchive
 	{
 	public:
-		HFileArchiveRead();
+		HFileArchiveRead(const HString& InFilename);
 		~HFileArchiveRead();
 
 		void UpdateState(int64 Length);

@@ -11,10 +11,13 @@ namespace lsgd {
 	class HPlatformFileIO
 	{
 	public:
-		void CreateFile(const HString& InFilename, int32 InFileUsage) { check(0); }
-		void WriteFile(void* InBuffer, int64 InSize, int64& OutSize) { check(0); }
-		void ReadFile(void* OutBuffer, int64 InMaxSize, int64& OutSize) { check(0); }
-		void CloseFile() { check(0); }
+		virtual void OpenFile(const HString& InFilename, int32 InFileUsage) = 0;
+		virtual void WriteFile(void* InBuffer, int64 InSize, int64& OutSize) = 0;
+		virtual void ReadFile(void* OutBuffer, int64 InMaxSize, int64& OutSize) = 0;
+		virtual void CloseFile() = 0;
+
+		// filename
+		HString Filename;
 
 		// file usage flag (read | write)
 		int32 FileUsageFlag;
@@ -24,6 +27,9 @@ namespace lsgd {
 	class HGenericPlatformMisc
 	{
 	public:
+		// get game directory
+		static HString GetGameDir();
+
 		static unique_ptr<HPlatformFileIO> CreatePlatformFileIO();
 	};
 

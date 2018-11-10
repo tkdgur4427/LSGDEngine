@@ -33,6 +33,7 @@
     <ClInclude Include="HLogger.h" />
     <ClInclude Include="HCString.h" />
     <ClInclude Include="HName.h" />
+    <ClInclude Include="HNewDeleteOverride.h" />
     <ClInclude Include="HObject.h" />
     <ClInclude Include="HPackage.h" />
     <ClInclude Include="HPrimitiveType.h" />
@@ -72,6 +73,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HName.cpp" />
+    <ClCompile Include="HNewDeleteOverride.cpp" />
     <ClCompile Include="HObject.cpp" />
     <ClCompile Include="HPackage.cpp" />
     <ClCompile Include="HReflect.cpp" />

@@ -15,8 +15,9 @@ HWindowsPlatformFileIO::~HWindowsPlatformFileIO()
 	CloseFile();
 }
 
-void HWindowsPlatformFileIO::CreateFile(const HString& InFilename, int32 InFileUsage)
+void HWindowsPlatformFileIO::OpenFile(const HString& InFilename, int32 InFileUsage)
 {
+	Filename = InFilename;
 	FileUsageFlag = InFileUsage;
 
 	DWORD UsageFlag = 0;
@@ -54,4 +55,9 @@ void HWindowsPlatformFileIO::CloseFile()
 unique_ptr<HPlatformFileIO> HGenericPlatformMisc::CreatePlatformFileIO()
 {
 	return make_unique<HPlatformFileIO, HWindowsPlatformFileIO>();
+}
+
+HString HGenericPlatformMisc::GetGameDir()
+{
+	return HString();
 }

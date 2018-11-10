@@ -2,7 +2,6 @@
 
 // include custom allocator
 #include "../Memory/HAllocator.h"
-#include "../Memory/HDeleter.h"
 #include "../Memory/HMakeMethods.h"
 
 // include std libraries
@@ -43,8 +42,8 @@ namespace lsgd
 	using pair = std::pair<KeyType, ValueType>;
 
 	// unique_ptr
-	template <class Type, class Deleter = HStdDeleter<Type>>
-	using unique_ptr = std::unique_ptr<Type, Deleter>;
+	template <class Type>
+	using unique_ptr = std::unique_ptr<Type>;
 		
 	// make_unique
 	template <typename Type, typename... Arguments>

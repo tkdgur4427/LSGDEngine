@@ -115,6 +115,7 @@
     <ClInclude Include="HWIndowsPlatformMisc.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="HNewDeleteOverride.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -164,5 +165,7 @@
     <ClCompile Include="HWindowsPlatformMisc.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="HReflectionContext.cpp" />
+    <ClCompile Include="HNewDeleteOverride.cpp" />
   </ItemGroup>
 </Project>

@@ -143,7 +143,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="HAllocator.h" />
-    <ClInclude Include="HDeleter.h" />
     <ClInclude Include="HGenericMemory.h" />
     <ClInclude Include="HMakeMethods.h" />
     <ClInclude Include="HMemoryPCH.h" />

@@ -46,6 +46,8 @@ namespace lsgd
 	class HLinkerTables
 	{
 	public:
+		virtual ~HLinkerTables() {}
+
 		HArray<HObjectImport> ImportMap;
 		HArray<HObjectExport> ExportMap;
 
@@ -73,6 +75,8 @@ namespace lsgd
 	class HLinker : public HLinkerTables
 	{
 	public:
+		virtual ~HLinker() {}
+
 		// the top-level HPackage object for the package associated with this linker
 		class HPackage* LinkerRoot;
 

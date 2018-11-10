@@ -157,7 +157,6 @@ HString HName::ToString() const
 reflect::HReflectionContext& HName::Serialize(reflect::HReflectionContext& InContext)
 {
 	HString OriginalName;
-	int32 Number;
 
 	if (InContext.IsSaving())
 	{

@@ -58,15 +58,19 @@ uint32 HFileCacheChunk::Read(void* OutData, int32 InSize)
 	return CurrOffset;
 }
 
-HFileArchive::HFileArchive()
+HFileArchive::HFileArchive(const HString& InFilename)
 	: CurrFileCacheChunk(-1)
+	, Filename(InFilename)
 {
 	PlatformFileIO = move(HGenericPlatformMisc::CreatePlatformFileIO());
+
+	// get the new chunk (initially allocate new file cache chunk)
+	CurrFileCacheChunk = GetAvailableFileCacheChunk();
 }
 
 HFileArchive::~HFileArchive()
 {
-
+	PlatformFileIO->CloseFile();
 }
 
 int32 HFileArchive::GetAvailableFileCacheChunk()
@@ -88,6 +92,11 @@ int32 HFileArchive::GetAvailableFileCacheChunk()
 
 int64 HFileArchive::Tell() const
 {
+	if (CurrFileCacheChunk == -1)
+	{
+		return 0;
+	}
+
 	return CurrFileCacheChunk * HFileCacheChunk::CACHE_SIZE + FileCacheChunks[CurrFileCacheChunk]->Tell();
 }
 
@@ -100,15 +109,21 @@ void HFileArchive::Move(int64 Offset)
 	FileCacheChunks[CurrFileCacheChunk]->Move(ChunkOffset);
 }
 
-HFileArchiveWrite::HFileArchiveWrite()
-	: HFileArchive()
+HFileArchiveWrite::HFileArchiveWrite(const HString& InFilename)
+	: HFileArchive(InFilename)
 {
-	
+	// writing file archive
+	bIsSaving = true;
+
+	PlatformFileIO->OpenFile(InFilename, EFileUsageFlag::Write);
 }
 
 HFileArchiveWrite::~HFileArchiveWrite()
 {
-
+	// @todo - need to refactor this code
+	// flush rest data to the file
+	int64 WrittenSize;
+	PlatformFileIO->WriteFile(FileCacheChunks[CurrFileCacheChunk]->GetData(), FileCacheChunks[CurrFileCacheChunk]->Tell(), WrittenSize);
 }
 
 void HFileArchiveWrite::UpdateState(int64 Length)
@@ -117,8 +132,10 @@ void HFileArchiveWrite::UpdateState(int64 Length)
 	if (CurrFileCacheChunk == -1 // when it updates first state
 		|| FileCacheChunks[CurrFileCacheChunk]->GetAvailableSize() <= Length)
 	{
-		// when it is out of memory
-		// @todo - trigger new file async flush with this file cache chunk
+		// when it is out of memory, write to the file
+		//	- @todo need to abstract this logic as flush
+		int64 WrittenSize;
+		PlatformFileIO->WriteFile(FileCacheChunks[CurrFileCacheChunk]->GetData(), HFileCacheChunk::CACHE_SIZE, WrittenSize);
 
 		// get the new chunk
 		CurrFileCacheChunk = GetAvailableFileCacheChunk();
@@ -133,11 +150,14 @@ void HFileArchiveWrite::Serialize(void* Value, int64 Length)
 	FileCacheChunks[CurrFileCacheChunk]->Write(Value, Length);
 }
 
-HFileArchiveRead::HFileArchiveRead()
-	: HFileArchive()
+HFileArchiveRead::HFileArchiveRead(const HString& InFilename)
+	: HFileArchive(InFilename)
 {
 	// reading file archive
 	bIsSaving = false;
+
+	// create file handle for read
+	PlatformFileIO->OpenFile(InFilename, EFileUsageFlag::Read);
 }
 
 HFileArchiveRead::~HFileArchiveRead()
@@ -153,7 +173,9 @@ void HFileArchiveRead::UpdateState(int64 Length)
 		CurrFileCacheChunk = GetAvailableFileCacheChunk();
 	}
 
-	//@todo flush to read the cache size (16K)
+	// read the file IO from the specified file
+	int64 ReadSize = 0;
+	PlatformFileIO->ReadFile(FileCacheChunks[CurrFileCacheChunk]->GetData(), HFileCacheChunk::CACHE_SIZE, ReadSize);
 }
 
 void HFileArchiveRead::Serialize(void* Value, int64 Length)

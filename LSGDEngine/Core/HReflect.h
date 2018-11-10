@@ -14,6 +14,7 @@ namespace lsgd { namespace reflect {
 		explicit HField(const HString& InName)
 			: Name(InName)
 		{}
+		virtual ~HField() {}
 
 		HString Name;
 	};
@@ -32,6 +33,8 @@ namespace lsgd { namespace reflect {
 		{
 			TotalSize = ElementSize * ArrayDim;
 		}
+
+		virtual ~HProperty() {}
 
 		void SerializeItem(HReflectionContext& InContext, uint8* OutData);
 
@@ -82,6 +85,8 @@ namespace lsgd { namespace reflect {
 		HStruct(const HString& InName)
 			: HField(InName)
 		{}		
+
+		virtual ~HStruct() {}
 
 		void SerializeProperties(HReflectionContext& InContext, uint8* OutData) const;
 
@@ -177,6 +182,8 @@ namespace lsgd { namespace reflect {
 			, FunctionOutputHead(nullptr)
 		{}
 
+		virtual ~HFunction() {}
+
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) {}	
 
 		/*
@@ -219,7 +226,8 @@ namespace lsgd { namespace reflect {
 	{
 	public:
 		explicit HNativeFunction(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject, const HStruct* InOwner = nullptr);
-				
+		virtual ~HNativeFunction() {}
+
 		virtual void CallFunction(void* InContext, const HFrame& InStack, void* const OutReturn) override;
 		virtual void InvokeInner(HDirectFunctionCallFrame& InvokeFrame);
 
@@ -237,6 +245,7 @@ namespace lsgd { namespace reflect {
 	class HScriptFunction : public HFunction
 	{
 	public:
+		virtual ~HScriptFunction() {}
 	};
 
 	class HClass : public HStruct
@@ -246,6 +255,7 @@ namespace lsgd { namespace reflect {
 			: HStruct(InName)
 		{
 		}
+		virtual ~HClass() {}
 		
 		void AddMethod(unique_ptr<HFunction>& InMethod);
 
@@ -275,6 +285,7 @@ namespace lsgd { namespace reflect {
 		HNumberProperty(const HString& InPrimitiveName, const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
 		{}
+		virtual ~HNumberProperty() {}
 	};
 
 	class HBoolProperty : public HProperty
@@ -283,6 +294,7 @@ namespace lsgd { namespace reflect {
 		HBoolProperty(const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
 		{}
+		virtual ~HBoolProperty() {}
 	};
 
 	class HStringProperty : public HProperty
@@ -294,11 +306,14 @@ namespace lsgd { namespace reflect {
 			// note that string property is dynamic property
 			bDynamicProperty = true;
 		}
+		virtual ~HStringProperty() {}
 	};
 
 	class HEnumProperty : public HProperty
 	{
 	public:
+		virtual ~HEnumProperty() {}
+
 		HEnum* Enum;
 		
 		// note that actual enum property value is number
@@ -308,12 +323,16 @@ namespace lsgd { namespace reflect {
 	class HClassProperty : public HProperty
 	{
 	public:
+		virtual ~HClassProperty() {}
+
 		HClass* Class;
 	};
 
 	class HStructProperty : public HProperty
 	{
 	public:
+		virtual ~HStructProperty() {}
+
 		HStruct* Struct;
 	};
 

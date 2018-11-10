@@ -2,19 +2,13 @@
 
 #include "HPrimitiveType.h"
 #include "HClassType.h"
+#include "HReflect.h"
 
 // variadic stack
 #include "HVariadicStack.h"
 using namespace lsgd::container;
 
 namespace lsgd { namespace reflect {
-
-	// forward declaration
-	class HProperty;
-	class HNumberProperty;
-	class HBoolProperty;
-	class HStringProperty;
-	class HClass;
 
 	// type descriptor stored in HTypeDatabase
 	class HTypeDescriptor

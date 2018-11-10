@@ -3,6 +3,8 @@
 
 // HObject
 #include "HObject.h"
+// HPackage
+#include "HPackage.h"
 // file archive
 #include "HFileArchive.h"
 
@@ -12,6 +14,11 @@ using namespace reflect;
 HLinkerSave::HLinkerSave()
 	: SrcPackageToSave(nullptr)
 	, FileArchive(nullptr)
+{
+
+}
+
+HLinkerSave::~HLinkerSave()
 {
 
 }
@@ -77,7 +84,8 @@ struct HTagNameRecursive : public HReflectionContext
 bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 {
 	// create file archive
-	FileArchive = new fileIO::HFileArchiveWrite();
+	HString FilePath = HGenericPlatformMisc::GetGameDir() + InContext.OutermostPkg->Name.ToString();
+	FileArchive = make_unique<fileIO::HFileArchive, fileIO::HFileArchiveWrite>(FilePath);
 
 	// setting attributes
 	LinkerRoot = InContext.OutermostPkg;
@@ -162,6 +170,9 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 	// override export map information
 	check(FileArchive->Tell() == TOC.ExportOffset);
 	(*FileArchive) << ExportMap;
+
+	// @todo - temporary
+	FileArchive.reset();
 
 	return true;
 }
