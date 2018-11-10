@@ -29,7 +29,7 @@ uint32 HFileCacheChunk::Write(void* InData, int32 InSize)
 	}
 
 	// copy the data to the cache 
-	HGenericMemory::MemCopy((void*)&Storage[0], InData, InSize);
+	HGenericMemory::MemCopy((void*)&Storage[CurrOffset], InData, InSize);
 
 	// update the offset
 	CurrOffset += InSize;
@@ -50,7 +50,7 @@ uint32 HFileCacheChunk::Read(void* OutData, int32 InSize)
 	}
 
 	// copy the data to the OutData
-	HGenericMemory::MemCopy(OutData, (void*)&Storage[0], InSize);
+	HGenericMemory::MemCopy(OutData, (void*)&Storage[CurrOffset], InSize);
 
 	// update the read offset
 	CurrOffset += InSize;

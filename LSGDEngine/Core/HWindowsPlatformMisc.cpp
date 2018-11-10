@@ -24,7 +24,19 @@ void HWindowsPlatformFileIO::OpenFile(const HString& InFilename, int32 InFileUsa
 	UsageFlag |= (FileUsageFlag & EFileUsageFlag::Read) ? GENERIC_READ : 0;
 	UsageFlag |= (FileUsageFlag & EFileUsageFlag::Write) ? GENERIC_WRITE : 0;
 
-	FileHandle = ::CreateFileA(InFilename.c_str(), UsageFlag, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+	DWORD CreateFlag = 0;
+	switch (FileUsageFlag)
+	{
+	case EFileUsageFlag::Read:
+		CreateFlag = OPEN_ALWAYS;
+		break;
+	case EFileUsageFlag::Write:
+		CreateFlag = CREATE_ALWAYS;
+		break;
+	}
+
+	FileHandle = ::CreateFileA(Filename.c_str(), UsageFlag, 0, NULL, CreateFlag, FILE_ATTRIBUTE_NORMAL, NULL);
+	
 	check(FileHandle != INVALID_HANDLE_VALUE);
 }
 

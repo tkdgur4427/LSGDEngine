@@ -48,6 +48,9 @@ namespace GeneralUnitTest
 			HLinkerSave LinkerSave;
 			LinkerSave.SavePackage(SaveContext);
 
+			HLinkerLoad LinkerLoad;
+			LinkerLoad.LoadPackage(HLinkerLoadContext());
+
 			int Param0 = 10;
 			lsgd::reflect::HNativeFunction* Func0 = (lsgd::reflect::HNativeFunction*)(TypeDB->GetClass("A")->Methods[0].get());
 

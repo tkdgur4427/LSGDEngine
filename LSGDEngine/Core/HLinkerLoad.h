@@ -7,7 +7,6 @@
 namespace lsgd { namespace fileIO {
 
 		class HFileArchive;
-
 } }
 
 namespace lsgd
@@ -19,18 +18,22 @@ namespace lsgd
 
 	struct HLinkerLoadContext
 	{
-		HString SrcFilename;
+		HLinkerLoadContext()
+			: SrcPackage(nullptr)
+		{}
+
+		class HPackage* SrcPackage;
 	};
 
 	class HLinkerLoad : public HLinker
 	{
 	public:
+		HLinkerLoad();
+		~HLinkerLoad();
+
 		bool LoadPackage(HLinkerLoadContext& InContext);
 
-		// outermost package to save
-		const HPackage* PackageToLoad;
-
 		// file archive
-		fileIO::HFileArchive* FileArchive;
+		unique_ptr<fileIO::HFileArchive> FileArchive;
 	};
 }

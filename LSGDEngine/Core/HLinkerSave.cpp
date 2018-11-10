@@ -13,7 +13,6 @@ using namespace reflect;
 
 HLinkerSave::HLinkerSave()
 	: SrcPackageToSave(nullptr)
-	, FileArchive(nullptr)
 {
 
 }
