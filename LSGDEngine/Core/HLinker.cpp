@@ -34,6 +34,7 @@ HReflectionContext& operator<<(HReflectionContext& InContext, HPackageTOC& InTOC
 	InContext << InTOC.ImportCount;
 	InContext << InTOC.NameOffset;
 	InContext << InTOC.NameCount;
+	InContext << InTOC.DependsOffset;
 
 	return InContext;
 }

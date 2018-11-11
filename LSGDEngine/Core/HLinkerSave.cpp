@@ -170,6 +170,11 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 	check(FileArchive->Tell() == TOC.ExportOffset);
 	(*FileArchive) << ExportMap;
 
+	check(FileArchive->Tell() == TOC.ImportOffset);
+
+	// move the archive offset to the end
+	FileArchive->Move(TOC.TotalHeaderSize);
+
 	// @todo - temporary
 	FileArchive.reset();
 

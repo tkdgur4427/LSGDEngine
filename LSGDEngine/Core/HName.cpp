@@ -173,7 +173,7 @@ reflect::HReflectionContext& HName::Serialize(reflect::HReflectionContext& InCon
 		InContext << OriginalName;
 
 		// add new name
-		HName NewName = HName(OriginalName.c_str(), Number);
+		(*this) = HName(OriginalName.c_str(), Number);
 	}
 
 	return InContext;
