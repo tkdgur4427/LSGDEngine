@@ -60,9 +60,11 @@ bool HLinkerLoad::LoadPackage(HLinkerLoadContext& InContext)
 		check(FileArchive->Tell() == ObjectExport.SerialOffset);
 
 		// create new HObject
-		//HObject*
+		// @todo - need to make GC for HObject!
+		HObject* NewObject = AllocateHObject(ObjectExport.TypeInfo.TypeName);
 
 		// serialize real object
+		(*FileArchive) << NewObject;
 	}
 
 	return true;
