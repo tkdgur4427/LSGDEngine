@@ -88,6 +88,10 @@ namespace lsgd
 	// forward declaration
 	extern class HPackage* GTransientPackage;
 
+	extern HObject* AllocateHObjectInner(const reflect::HClass* InClass, class HPackage* InPackage);
+
+	extern HObject* AllocateHObject(const HString& ClassName, class HPackage* InPackage = nullptr);
+
 	template <typename HObjectType>
 	HObjectType* AllocateHObject(class HPackage* InPackage = nullptr)
 	{
@@ -95,38 +99,10 @@ namespace lsgd
 		reflect::HTypeDescriptor ClassType = reflect::HTypeDatabaseUtils::GetTypeDescriptor<HObjectType>();
 		check(ClassType.ClassType != nullptr);
 
-		// set the package
-		LObjectInitializer.Package = InPackage;
-
-		// when there is no package, set the GTranscientPackage
-		if (LObjectInitializer.Package == nullptr)
-		{
-			LObjectInitializer.Package = GTransientPackage;
-		}
-
-		// set the real class size
-		LObjectInitializer.RealSize = sizeof(HObjectType);
-
-		// try to allocate HObject
-		HObject* NewObject = AllocateHObjectInternal(LObjectInitializer, ClassType.ClassType);
-		check(NewObject != nullptr);
-		//check(LObjectInitializer.TotalSize == sizeof(HObjectType));
-		check(LObjectInitializer.Object == NewObject);
-
-		// trigger constructor
-		// @todo : need to support arbitrary number of constructor parameters forwarding
-		new (NewObject) HObjectType();		
-
-		// set the class to NewObject
-		NewObject->Class = LObjectInitializer.Class;
-
-		// generate unique object name
-		NewObject->GenerateName();
-
-		// reset the ObjectInitializer
-		LObjectInitializer.Reset();
+		// get HClass
+		const reflect::HClass* Class = ClassType.ClassType;
 
 		// @todo - need to dynamic RTTI checking for whether this class is derived or not
-		return (HObjectType*)NewObject;
+		return (HObjectType*)AllocateHObjectInner(Class, InPackage);
 	}
 }

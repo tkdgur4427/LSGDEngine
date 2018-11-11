@@ -25,3 +25,8 @@ HTypeDescriptor HTypeDatabaseUtils::GetTypeDescriptor(const HString& InTypeName)
 
 	return Result;
 }
+
+const HCommonTypeHelperInterface* HTypeDatabaseUtils::GetClassCommonTypeHelper(const HString& InTypeName)
+{
+	return HTypeDatabase::GetSingleton()->GetClassCommonTypeHelper(InTypeName);
+}

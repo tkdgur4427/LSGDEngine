@@ -64,6 +64,53 @@ void HObject::Serialize(reflect::HReflectionContext& InContext)
 
 namespace lsgd
 {
+	HObject* AllocateHObject(const HString& ClassName, class HPackage* InPackage)
+	{
+		const HClass* Class = reflect::HTypeDatabaseUtils::GetTypeDescriptor(ClassName).ClassType;
+		return AllocateHObjectInner(Class, InPackage);
+	}
+
+	HObject* AllocateHObjectInner(const reflect::HClass* InClass, class HPackage* InPackage)
+	{
+		// get the class name
+		const HString& ClassName = InClass->Name;
+		// get the common type helper
+		HCommonTypeHelperInterface* CommonTypeHelper = const_cast<HCommonTypeHelperInterface*>(reflect::HTypeDatabaseUtils::GetClassCommonTypeHelper(ClassName));
+
+		// set the package
+		LObjectInitializer.Package = InPackage;
+
+		// when there is no package, set the GTranscientPackage
+		if (LObjectInitializer.Package == nullptr)
+		{
+			LObjectInitializer.Package = GTransientPackage;
+		}
+
+		// set the real class size
+		LObjectInitializer.RealSize = CommonTypeHelper->GetSize();
+
+		// try to allocate HObject
+		HObject* NewObject = AllocateHObjectInternal(LObjectInitializer, InClass);
+		check(NewObject != nullptr);
+		//check(LObjectInitializer.TotalSize == sizeof(HObjectType));
+		check(LObjectInitializer.Object == NewObject);
+
+		// trigger constructor
+		// @todo : need to support arbitrary number of constructor parameters forwarding
+		CommonTypeHelper->TriggerConstructor(NewObject);
+
+		// set the class to NewObject
+		NewObject->Class = LObjectInitializer.Class;
+
+		// generate unique object name
+		NewObject->GenerateName();
+
+		// reset the ObjectInitializer
+		LObjectInitializer.Reset();
+
+		return NewObject;
+	}
+
 	HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, const reflect::HClass* InClass)
 	{
 		uint32 SizeOfHObject = sizeof(HObject);

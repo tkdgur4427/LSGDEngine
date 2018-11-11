@@ -19,6 +19,6 @@
 #define IMPLEMENT_CLASS_TYPE(ClassType, ...) \
 	HStatic##ClassType::HStatic##ClassType() \
 	{ \
-		lsgd::reflect::HTypeDatabase::GetSingleton()->AddClassType(#ClassType, lsgd::HString()); \
+		lsgd::reflect::HTypeDatabase::GetSingleton()->AddClassType<ClassType>(#ClassType, lsgd::HString()); \
 	} \
 	HStatic##ClassType Static##ClassType;

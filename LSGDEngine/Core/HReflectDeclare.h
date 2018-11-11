@@ -2,6 +2,7 @@
 
 #include "HPrimitiveType.h"
 #include "HClassType.h"
+#include "HCommonTypeHelper.h"
 
 // register primitive types
 #define DECLARE_PRIMITIVE_TYPE(PrimitiveType)	\
@@ -14,6 +15,7 @@
 		static bool IsNumber() { return IsNumberHelper<PrimitiveType>::Value; } \
 		static bool IsBoolean() { return IsBooleanHelper<PrimitiveType>::Value; } \
 		static bool IsString() { return IsStringHelper<PrimitiveType>::Value; } \
+		static HCommonTypeHelperInterface* GetCommonTypeHelper() { static HCommonTypeHelper<PrimitiveType> CommonTypeHelper; return &CommonTypeHelper; } \
 	};	\
 	class HStatic##PrimitiveType	\
 	{	\
@@ -33,6 +35,7 @@
 		static bool IsClassType() { return true; } \
 		static lsgd::HString GetClassName() { return #ClassType; } \
 		static lsgd::HString GetBaseClassNames() { return lsgd::HString(); } \
+		static HCommonTypeHelperInterface* GetCommonTypeHelper() { static HCommonTypeHelper<ClassType> CommonTypeHelper; return &CommonTypeHelper; } \
 	}; \
 	class HStatic##ClassType \
 	{ \

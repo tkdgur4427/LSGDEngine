@@ -24,12 +24,26 @@ namespace lsgd
 	class HObject;
 	class HLinkerLoad;
 
+	/*
+		this part is different from UE4
+			- I try to be independent from type and object instance
+			- need to serialize separately for type info
+	*/
+	class HTypeInfo
+	{
+	public:
+		// currently, used as class name for HObject
+		HString TypeName;
+	};
+
 	class HObjectExport : public HObjectResource
 	{
 	public:	
 		int64 SerialSize;
 		int64 SerialOffset;
 
+		// type info to serialize
+		HTypeInfo TypeInfo;
 		HObject* Object;
 	};
 
@@ -98,5 +112,6 @@ namespace lsgd { namespace reflect {
 } }
 
 extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HPackageTOC& InTOC);
+extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HTypeInfo& InTypeInfo);
 extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectExport& InExport);
 extern lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectImport& InImport);

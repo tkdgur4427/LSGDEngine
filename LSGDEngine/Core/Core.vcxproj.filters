@@ -116,6 +116,9 @@
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="HNewDeleteOverride.h" />
+    <ClInclude Include="HCommonTypeHelper.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />

@@ -14,6 +14,8 @@ namespace lsgd { namespace reflect {
 
 		static HTypeDescriptor GetTypeDescriptor(const HString& InTypeName);
 
+		static const HCommonTypeHelperInterface* GetClassCommonTypeHelper(const HString& InTypeName);
+
 		template <typename FunctionType>
 		static HFunctionDecomposeResult DecomposeFunction();
 	};

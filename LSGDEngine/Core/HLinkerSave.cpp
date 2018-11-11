@@ -116,6 +116,12 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 		ExportMap[OutIndex].OuterIndex = OutIndex + 1;
 		ExportMap[OutIndex].Object = Object;
 		ExportMap[OutIndex].ObjectName = Object->Name;
+
+		// create type info ans set it to HObjectExport
+		HTypeInfo TypeInfo;
+		TypeInfo.TypeName = Object->Class->Name;
+
+		ExportMap[OutIndex].TypeInfo = TypeInfo;
 	}
 
 	// create import map

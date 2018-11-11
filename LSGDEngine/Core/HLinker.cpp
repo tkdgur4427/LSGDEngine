@@ -6,12 +6,19 @@
 using namespace lsgd;
 using namespace lsgd::reflect;
 
+HReflectionContext& operator<<(HReflectionContext& InContext, HTypeInfo& InTypeInfo)
+{
+	InContext << InTypeInfo.TypeName;
+	return InContext;
+}
+
 HReflectionContext& operator<<(HReflectionContext& InContext, HObjectExport& InExport)
 {
 	InContext << InExport.OuterIndex;
 	InContext << InExport.ObjectName;
 	InContext << InExport.SerialOffset;
 	InContext << InExport.SerialSize;
+	InContext << InExport.TypeInfo;
 
 	return InContext;
 }

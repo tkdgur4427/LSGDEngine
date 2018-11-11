@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="HAssert.h" />
     <ClInclude Include="HClassType.h" />
+    <ClInclude Include="HCommonTypeHelper.h" />
     <ClInclude Include="HCore.h" />
     <ClInclude Include="HCorePCH.h" />
     <ClInclude Include="HFileArchive.h" />

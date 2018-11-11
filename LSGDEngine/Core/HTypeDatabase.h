@@ -1,5 +1,6 @@
 #pragma once
 
+#include "HCommonTypeHelper.h"
 #include "HPrimitiveType.h"
 #include "HClassType.h"
 #include "HReflect.h"
@@ -287,10 +288,14 @@ namespace lsgd { namespace reflect {
 
 		unique_ptr<HProperty> CreatePropertyByName(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
 
+		template <class Type>
 		void AddClassType(const HString& InName, const HString& InSuperClassName);
+
+		void AddClassTypeInner(const HString& InName, const HString& InSuperClassName);
 		bool ExistClass(const HString& InClassName);
 		int32 GetClassIndex(const HString& InClassName);
 		const HClass* GetClass(const HString& InClassName);
+		const HCommonTypeHelperInterface* GetClassCommonTypeHelper(const HString& InClassName);
 
 		template <class ClassType, class FieldType>
 		void AddClassField(const HString& InFieldName, FieldType ClassType::*InField);
@@ -301,11 +306,17 @@ namespace lsgd { namespace reflect {
 		// generated class types
 		HArray<unique_ptr<HClass>> Classes;
 
+		// class type helper
+		HArray<HCommonTypeHelperInterface*> ClassCommonTypeHelpers;
+
 		// temporary data - after processing class data, it will removes all data
 		HArray<HPostProcessClassData> PostProcessClassDataList;
 
 		// primitive types
 		HArray<unique_ptr<HPrimitiveType>> PrimitiveTypes;
+
+		// primitive type helper
+		HArray<HCommonTypeHelperInterface*> PrimitiveTypeCommonTypeHelpers;
 
 		// primitive type mapper by guid
 		HHashMap<HGuid, int32> GuidToPrimitiveTypes;
@@ -625,6 +636,18 @@ namespace lsgd { namespace reflect {
 		NameToPrimitiveTypes.insert({ NewPrimitiveType->PrimitiveName, NewIndex });
 
 		PrimitiveTypes.push_back(move(NewPrimitiveType));
+
+		// add common type helper
+		PrimitiveTypeCommonTypeHelpers.push_back(HPrimitiveTypeHelper<Type>::GetCommonTypeHelper());
+	}
+
+	template <class Type>
+	void HTypeDatabase::AddClassType(const HString& InName, const HString& InSuperClassName)
+	{
+		// add class type inner
+		AddClassTypeInner(InName, InSuperClassName);
+		// add common type helper
+		ClassCommonTypeHelpers.push_back(HClassTypeHelper<Type>::GetCommonTypeHelper());
 	}
 
 	template <typename Type>

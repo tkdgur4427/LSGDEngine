@@ -72,7 +72,7 @@ const HPrimitiveType* HTypeDatabase::GetPrimitiveType(const HString& InName) con
 	return PrimitiveTypes[NameToPrimitiveTypes.find(InName)->second].get();
 }
 
-void HTypeDatabase::AddClassType(const HString& InName, const HString& InSuperClassName)
+void HTypeDatabase::AddClassTypeInner(const HString& InName, const HString& InSuperClassName)
 {
 	check(!ExistClass(InName));
 
@@ -118,6 +118,11 @@ int32 HTypeDatabase::GetClassIndex(const HString& InClassName)
 const HClass* HTypeDatabase::GetClass(const HString& InClassName)
 {
 	return Classes[GetClassIndex(InClassName)].get();
+}
+
+const HCommonTypeHelperInterface* HTypeDatabase::GetClassCommonTypeHelper(const HString& InClassName)
+{
+	return ClassCommonTypeHelpers[GetClassIndex(InClassName)];
 }
 
 void HTypeDatabase::LinkProperty(int32 InClassIndex, unique_ptr<HProperty>& InProperty)
