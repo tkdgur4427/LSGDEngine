@@ -85,24 +85,39 @@ HWindowsPlatformThread::HWindowsPlatformThread(unique_ptr<lsgd::thread::HThreadR
 
 HWindowsPlatformThread::~HWindowsPlatformThread()
 {
-
+	Destroy();
 }
 
 uint32 __stdcall WindowsThreadEntryPoint(void* InData)
 {
 	lsgd::thread::HThreadRunnable* Runnable = (lsgd::thread::HThreadRunnable*)InData;
 	Runnable->Run();
+	_endthreadex(0);
 	return 0;
 }
 
 bool HWindowsPlatformThread::Create(uint32 CpuCoreAffinity)
 {
 	// put the option 'SUSPENDED' to set the thread to arbitrary CPU core
-	ThreadHandle = _beginthreadex(nullptr, 0, WindowsThreadEntryPoint, Runnable.get(), CREATE_SUSPENDED, nullptr);
+	ThreadHandle = (HANDLE)_beginthreadex(nullptr, 0, WindowsThreadEntryPoint, Runnable.get(), CREATE_SUSPENDED, nullptr);
 	if (ThreadHandle == 0)
 	{
 		return false;
 	}
 
 	return true;
+}
+
+void HWindowsPlatformThread::Destroy()
+{
+	if (Runnable != nullptr)
+	{
+		Runnable->Terminate();
+	}
+
+	if (ThreadHandle != 0)
+	{
+		WaitForSingleObject(ThreadHandle, INFINITE);
+		CloseHandle(ThreadHandle);
+	}	
 }

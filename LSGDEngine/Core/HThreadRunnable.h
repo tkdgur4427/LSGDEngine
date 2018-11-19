@@ -6,6 +6,7 @@ namespace lsgd { namespace thread {
 	{
 	public:
 		virtual void Run() = 0;
+		virtual void Terminate() = 0;
 	};
 
 } }

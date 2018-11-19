@@ -29,7 +29,8 @@ namespace lsgd
 		virtual ~HWindowsPlatformThread();
 
 		virtual bool Create(uint32 CpuCoreAffinity) override;
+		virtual void Destroy() override;
 
-		uint32 ThreadHandle;
+		HANDLE ThreadHandle;
 	};
 }

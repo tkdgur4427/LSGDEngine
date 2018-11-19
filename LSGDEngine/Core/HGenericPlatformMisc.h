@@ -35,6 +35,7 @@ namespace lsgd {
 		virtual ~HPlatformThread(){}
 
 		virtual bool Create(uint32 CpuCoreAffinity) = 0;
+		virtual void Destroy() = 0;
 
 		// thread slot; ThreadRunnable
 		unique_ptr<lsgd::thread::HThreadRunnable> Runnable;
