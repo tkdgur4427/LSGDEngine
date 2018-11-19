@@ -31,6 +31,9 @@
     <Filter Include="Platform\Windows">
       <UniqueIdentifier>{05e3bbfa-b248-4b6b-ad11-855c6ec1b210}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{f582c643-8269-465e-a9e4-8af22d89a20f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -118,6 +121,9 @@
     <ClInclude Include="HNewDeleteOverride.h" />
     <ClInclude Include="HCommonTypeHelper.h">
       <Filter>Reflect</Filter>
+    </ClInclude>
+    <ClInclude Include="HThreadRunnable.h">
+      <Filter>Thread</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <windows.h>
+#include <process.h>
+
 #include "HGenericPlatformMisc.h"
 
 namespace lsgd
@@ -20,4 +22,14 @@ namespace lsgd
 		HANDLE FileHandle;
 	};
 
+	class HWindowsPlatformThread : public HPlatformThread
+	{
+	public:
+		HWindowsPlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InRunnable);
+		virtual ~HWindowsPlatformThread();
+
+		virtual bool Create(uint32 CpuCoreAffinity) override;
+
+		uint32 ThreadHandle;
+	};
 }

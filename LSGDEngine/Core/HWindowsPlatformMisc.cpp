@@ -1,6 +1,8 @@
 #include "HCorePCH.h"
 #include "HWIndowsPlatformMisc.h"
 
+#include "HThreadRunnable.h"
+
 using namespace lsgd;
 
 HWindowsPlatformFileIO::HWindowsPlatformFileIO()
@@ -72,4 +74,35 @@ unique_ptr<HPlatformFileIO> HGenericPlatformMisc::CreatePlatformFileIO()
 HString HGenericPlatformMisc::GetGameDir()
 {
 	return HString();
+}
+
+HWindowsPlatformThread::HWindowsPlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InRunnable)
+	: HPlatformThread(InRunnable)
+	, ThreadHandle(0)
+{
+
+}
+
+HWindowsPlatformThread::~HWindowsPlatformThread()
+{
+
+}
+
+uint32 __stdcall WindowsThreadEntryPoint(void* InData)
+{
+	lsgd::thread::HThreadRunnable* Runnable = (lsgd::thread::HThreadRunnable*)InData;
+	Runnable->Run();
+	return 0;
+}
+
+bool HWindowsPlatformThread::Create(uint32 CpuCoreAffinity)
+{
+	// put the option 'SUSPENDED' to set the thread to arbitrary CPU core
+	ThreadHandle = _beginthreadex(nullptr, 0, WindowsThreadEntryPoint, Runnable.get(), CREATE_SUSPENDED, nullptr);
+	if (ThreadHandle == 0)
+	{
+		return false;
+	}
+
+	return true;
 }
