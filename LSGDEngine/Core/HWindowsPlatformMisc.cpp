@@ -105,6 +105,8 @@ bool HWindowsPlatformThread::Create(uint32 CpuCoreAffinity)
 		return false;
 	}
 
+	//@todo - set affinity
+
 	return true;
 }
 
