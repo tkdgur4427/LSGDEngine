@@ -139,23 +139,23 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 	(*FileArchive) << TOC;
 
 	// serialize export/import map
-	TOC.ExportOffset = FileArchive->Tell();
+	TOC.ExportOffset = static_cast<int32>(FileArchive->Tell());
 	TOC.ExportCount = ExportMap.size();
 	(*FileArchive) << ExportMap;
 
-	TOC.ImportOffset = FileArchive->Tell();
+	TOC.ImportOffset = static_cast<int32>(FileArchive->Tell());
 	TOC.ImportCount = ImportMap.size();
 	(*FileArchive) << ImportMap;
 
-	TOC.NameOffset = FileArchive->Tell();
+	TOC.NameOffset = static_cast<int32>(FileArchive->Tell());
 	TOC.NameCount = NameMap.size();
 	(*FileArchive) << NameMap;
 
-	TOC.DependsOffset = FileArchive->Tell();
+	TOC.DependsOffset = static_cast<int32>(FileArchive->Tell());
 	(*FileArchive) << DependsMap;
 
 	// mark as header-end
-	TOC.TotalHeaderSize = FileArchive->Tell() - TOCOffset;
+	TOC.TotalHeaderSize = static_cast<int32>(FileArchive->Tell()) - TOCOffset;
 
 	// real object export serialization
 	for (HObjectExport& ObjectExport : ExportMap)

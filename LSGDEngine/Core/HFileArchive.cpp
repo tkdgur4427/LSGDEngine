@@ -20,7 +20,7 @@ uint32 HFileCacheChunk::Tell() const
 	return CurrOffset;
 }
 
-uint32 HFileCacheChunk::Write(void* InData, int32 InSize)
+uint32 HFileCacheChunk::Write(void* InData, int64 InSize)
 {
 	if (GetAvailableSize() < InSize)
 	{
@@ -42,7 +42,7 @@ void HFileCacheChunk::Move(int32 InOffset)
 	CurrOffset = InOffset;
 }
 
-uint32 HFileCacheChunk::Read(void* OutData, int32 InSize)
+uint32 HFileCacheChunk::Read(void* OutData, int64 InSize)
 {
 	if (Tell() >= CACHE_SIZE)
 	{

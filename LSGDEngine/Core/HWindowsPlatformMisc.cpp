@@ -53,7 +53,7 @@ void HWindowsPlatformFileIO::WriteFile(void* InBuffer, int64 InSize, int64& OutS
 void HWindowsPlatformFileIO::ReadFile(void* OutBuffer, int64 InMaxSize, int64& OutSize)
 {
 	check(FileHandle != nullptr);
-	check(FileUsageFlag & EFileUsageFlag::Read != 0);
+	check((FileUsageFlag & EFileUsageFlag::Read) != 0);
 
 	::ReadFile(FileHandle, OutBuffer, InMaxSize, (DWORD*)&OutSize, NULL);
 }
@@ -71,9 +71,31 @@ unique_ptr<HPlatformFileIO> HGenericPlatformMisc::CreatePlatformFileIO()
 	return make_unique<HPlatformFileIO, HWindowsPlatformFileIO>();
 }
 
+unique_ptr<HPlatformThread> HGenericPlatformMisc::CreatePlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InThreadRunnable)
+{
+	return make_unique<HPlatformThread, HWindowsPlatformThread>(move(InThreadRunnable));
+}
+
 HString HGenericPlatformMisc::GetGameDir()
 {
 	return HString();
+}
+
+uint32 HGenericPlatformMisc::GetCurrentThreadId()
+{
+	HANDLE CurrThreadHandle = nullptr;
+
+	// convert pseudo handle to real handle
+	DuplicateHandle(GetCurrentProcess(),
+		GetCurrentThread(),
+		GetCurrentProcess(),
+		&CurrThreadHandle,
+		0,
+		FALSE,
+		DUPLICATE_SAME_ACCESS);
+
+	// return current thread Id
+	return GetThreadId(CurrThreadHandle);
 }
 
 HWindowsPlatformThread::HWindowsPlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InRunnable)
@@ -105,7 +127,15 @@ bool HWindowsPlatformThread::Create(uint32 CpuCoreAffinity)
 		return false;
 	}
 
-	//@todo - set affinity
+	// assign the thread id
+	ThreadId = GetThreadId(ThreadHandle);
+
+	// core affinity
+	uint32 AffinityMask = 1ull << CpuCoreAffinity;
+	SetThreadAffinityMask(ThreadHandle, AffinityMask);
+
+	// now resume the thread
+	ResumeThread(ThreadHandle);
 
 	return true;
 }
@@ -122,4 +152,9 @@ void HWindowsPlatformThread::Destroy()
 		WaitForSingleObject(ThreadHandle, INFINITE);
 		CloseHandle(ThreadHandle);
 	}	
+}
+
+bool HWindowsPlatformThread::IsCurrThread() const
+{
+	return HGenericPlatformMisc::GetCurrentThreadId() == ThreadId;
 }

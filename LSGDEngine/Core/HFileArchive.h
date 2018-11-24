@@ -19,14 +19,14 @@ namespace lsgd { namespace fileIO {
 
 		enum
 		{
-			CACHE_SIZE = 16 * 1024, // 16K
+			CACHE_SIZE = 16ull * 1024, // 16K
 		};
 
 		void Reset();
 		uint32 GetAvailableSize() const;
 		uint32 Tell() const;
-		uint32 Write(void* InData, int32 InSize);
-		uint32 Read(void* OutData, int32 InSize);
+		uint32 Write(void* InData, int64 InSize);
+		uint32 Read(void* OutData, int64 InSize);
 		void Move(int32 InOffset);
 
 		void* GetData() { return (void*)&Storage[0]; }

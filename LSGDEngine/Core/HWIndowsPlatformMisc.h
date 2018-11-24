@@ -31,6 +31,10 @@ namespace lsgd
 		virtual bool Create(uint32 CpuCoreAffinity) override;
 		virtual void Destroy() override;
 
+		// whether the current thread is running or not
+		virtual bool IsCurrThread() const override;
+
 		HANDLE ThreadHandle;
+		uint32 ThreadId;
 	};
 }

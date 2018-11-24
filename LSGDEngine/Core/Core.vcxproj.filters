@@ -125,6 +125,12 @@
     <ClInclude Include="HThreadRunnable.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="HWorkerThread.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HThreadManager.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />

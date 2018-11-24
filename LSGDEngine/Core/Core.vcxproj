@@ -47,6 +47,7 @@
     <ClInclude Include="HReflectionContextImplementMacro.h" />
     <ClInclude Include="HStdOverrides.h" />
     <ClInclude Include="HStringTypeHelper.h" />
+    <ClInclude Include="HThreadManager.h" />
     <ClInclude Include="HThreadRunnable.h" />
     <ClInclude Include="HTMPHelper.h" />
     <ClInclude Include="HTypeDatabase.h" />
@@ -54,6 +55,7 @@
     <ClInclude Include="HTypeOverrides.h" />
     <ClInclude Include="HVariadicStack.h" />
     <ClInclude Include="HWIndowsPlatformMisc.h" />
+    <ClInclude Include="HWorkerThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
