@@ -34,6 +34,9 @@
     <Filter Include="Thread">
       <UniqueIdentifier>{f582c643-8269-465e-a9e4-8af22d89a20f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Async">
+      <UniqueIdentifier>{9b1ac765-b580-4d6a-9c87-3b6b0ea4f1f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -125,11 +128,23 @@
     <ClInclude Include="HThreadRunnable.h">
       <Filter>Thread</Filter>
     </ClInclude>
-    <ClInclude Include="HWorkerThread.h">
-      <Filter>Thread</Filter>
-    </ClInclude>
     <ClInclude Include="HThreadManager.h">
       <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HConcurrentQueue.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="HScopedLock.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HTaskGraph.h">
+      <Filter>Async</Filter>
+    </ClInclude>
+    <ClInclude Include="HThreadSafeCounter.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HTaskThreadBase.h">
+      <Filter>Async</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -182,5 +197,11 @@
     </ClCompile>
     <ClCompile Include="HReflectionContext.cpp" />
     <ClCompile Include="HNewDeleteOverride.cpp" />
+    <ClCompile Include="HTaskGraph.cpp">
+      <Filter>Async</Filter>
+    </ClCompile>
+    <ClCompile Include="HTaskThreadBase.cpp">
+      <Filter>Async</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -22,6 +22,7 @@
     <ClInclude Include="HAssert.h" />
     <ClInclude Include="HClassType.h" />
     <ClInclude Include="HCommonTypeHelper.h" />
+    <ClInclude Include="HConcurrentQueue.h" />
     <ClInclude Include="HCore.h" />
     <ClInclude Include="HCorePCH.h" />
     <ClInclude Include="HFileArchive.h" />
@@ -45,17 +46,20 @@
     <ClInclude Include="HReflectionContext.h" />
     <ClInclude Include="HReflectionContextDeclareMacro.h" />
     <ClInclude Include="HReflectionContextImplementMacro.h" />
+    <ClInclude Include="HScopedLock.h" />
     <ClInclude Include="HStdOverrides.h" />
     <ClInclude Include="HStringTypeHelper.h" />
+    <ClInclude Include="HTaskGraph.h" />
+    <ClInclude Include="HTaskThreadBase.h" />
     <ClInclude Include="HThreadManager.h" />
     <ClInclude Include="HThreadRunnable.h" />
+    <ClInclude Include="HThreadSafeCounter.h" />
     <ClInclude Include="HTMPHelper.h" />
     <ClInclude Include="HTypeDatabase.h" />
     <ClInclude Include="HTypeDatabaseUtils.h" />
     <ClInclude Include="HTypeOverrides.h" />
     <ClInclude Include="HVariadicStack.h" />
     <ClInclude Include="HWIndowsPlatformMisc.h" />
-    <ClInclude Include="HWorkerThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
@@ -83,6 +87,8 @@
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HReflectionContext.cpp" />
     <ClCompile Include="HStdOverrides.cpp" />
+    <ClCompile Include="HTaskGraph.cpp" />
+    <ClCompile Include="HTaskThreadBase.cpp" />
     <ClCompile Include="HTypeDatabase.cpp" />
     <ClCompile Include="HTypeDatabaseUtils.cpp" />
     <ClCompile Include="HTypeOverride.cpp" />

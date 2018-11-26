@@ -10,6 +10,12 @@
 
 #include "HStdOverrides.h"
 
+#include "HScopedLock.h"
+
+#include "HThreadSafeCounter.h"
+
+#include "HConcurrentQueue.h"
+
 #include "HCString.h"
 
 #include "HAssert.h"

@@ -9,8 +9,11 @@
 #include <array>
 #include <vector>
 #include <unordered_map>
+#include <queue>
 
 #include <tuple>
+#include <mutex>
+#include <atomic>
 
 // override std libraries with lsgd:: by type aliasing
 namespace lsgd
@@ -36,6 +39,10 @@ namespace lsgd
 	// hash_map
 	template <class KeyType, class ValueType, class Hash = std::hash<KeyType>, class KeyEqual = std::equal_to<KeyType>>
 	using HHashMap = std::unordered_map<KeyType, ValueType, Hash, KeyEqual, HStdAllocator<std::pair<const KeyType, ValueType>>>;
+
+	// queue
+	template <class Type>
+	using HQueue = std::queue<Type>;
 
 	// pair
 	template <class KeyType, class ValueType>
@@ -163,6 +170,12 @@ namespace lsgd
 		TupleToFixedArray(Result, InTuple, HMakeIntegerSequence<size_t, sizeof...(Types)>());
 		return Result;
 	}
+
+	// concurrent
+	using HCriticalSection = std::mutex;
+
+	template <typename Type>
+	using HAtomic = std::atomic<Type>;
 }
 
 // reflection context declarations

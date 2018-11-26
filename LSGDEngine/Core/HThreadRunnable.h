@@ -14,5 +14,7 @@ namespace lsgd { namespace thread {
 
 		virtual void Run() = 0;
 		virtual void Terminate() = 0;
+
+		HPlatformThread* OwnerThread;
 	};
 } }
