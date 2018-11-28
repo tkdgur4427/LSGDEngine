@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HAssert.h" />
+    <ClInclude Include="HCallOnceLock.h" />
     <ClInclude Include="HClassType.h" />
     <ClInclude Include="HCommonTypeHelper.h" />
     <ClInclude Include="HConcurrentQueue.h" />
@@ -89,6 +90,7 @@
     <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HTaskGraph.cpp" />
     <ClCompile Include="HTaskThreadBase.cpp" />
+    <ClCompile Include="HThreadRunnable.cpp" />
     <ClCompile Include="HTypeDatabase.cpp" />
     <ClCompile Include="HTypeDatabaseUtils.cpp" />
     <ClCompile Include="HTypeOverride.cpp" />

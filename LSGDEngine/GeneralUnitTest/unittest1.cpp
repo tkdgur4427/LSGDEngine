@@ -5,6 +5,8 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 #include "../Core/HCore.h"
 
+#include "../Core/HTaskThreadBase.h"
+
 using namespace lsgd;
 using namespace lsgd::reflect;
 
@@ -35,6 +37,8 @@ namespace GeneralUnitTest
 		
 		TEST_METHOD(TestMethod1)
 		{
+			int* temp = lsgd::async::HTaskThreadSingleton<int>::Get();
+
 			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();			
 			TypeDB->AddClassField("ADouble", &A::ADouble);
 			TypeDB->AddClassMethod("TestMethod", &A::TestMethod);

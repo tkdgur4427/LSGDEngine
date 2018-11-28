@@ -146,6 +146,9 @@
     <ClInclude Include="HTaskThreadBase.h">
       <Filter>Async</Filter>
     </ClInclude>
+    <ClInclude Include="HCallOnceLock.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -202,6 +205,9 @@
     </ClCompile>
     <ClCompile Include="HTaskThreadBase.cpp">
       <Filter>Async</Filter>
+    </ClCompile>
+    <ClCompile Include="HThreadRunnable.cpp">
+      <Filter>Thread</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

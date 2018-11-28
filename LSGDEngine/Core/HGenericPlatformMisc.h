@@ -53,7 +53,7 @@ namespace lsgd {
 		virtual bool IsCurrThread() const = 0;
 
 		// thread slot; ThreadRunnable
-		unique_ptr<lsgd::thread::HThreadRunnable> Runnable;
+		shared_ptr<lsgd::thread::HThreadRunnable> Runnable;
 	};
 
 	// note that all definition of this class is reside in each platform misc.cpp (e.g. HWindowsPlatformMisc.cpp)

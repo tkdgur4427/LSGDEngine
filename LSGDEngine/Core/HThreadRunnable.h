@@ -1,5 +1,11 @@
 #pragma once
 
+// forward declaration
+namespace lsgd
+{
+	class HPlatformThread;
+}
+
 namespace lsgd { namespace thread {
 
 	/*
@@ -15,6 +21,10 @@ namespace lsgd { namespace thread {
 		virtual void Run() = 0;
 		virtual void Terminate() = 0;
 
+		// whether the thread runnable is running binded hardware thread
+		bool IsCurrThread() const;
+
+		// currently binded thread
 		HPlatformThread* OwnerThread;
 	};
 } }

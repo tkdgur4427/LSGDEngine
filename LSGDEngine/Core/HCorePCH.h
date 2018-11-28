@@ -12,6 +12,8 @@
 
 #include "HScopedLock.h"
 
+#include "HCallOnceLock.h"
+
 #include "HThreadSafeCounter.h"
 
 #include "HConcurrentQueue.h"

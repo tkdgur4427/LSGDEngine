@@ -173,9 +173,16 @@ namespace lsgd
 
 	// concurrent
 	using HCriticalSection = std::mutex;
+	using HCriticalSectionCallOnce = std::once_flag;
 
 	template <typename Type>
 	using HAtomic = std::atomic<Type>;
+
+	template <typename CallableType, typename... Args>
+	void HCallOnce(HCriticalSectionCallOnce& InSyncObject, CallableType&& InCallable, Args&&... InArguments)
+	{
+		std::call_once(InSyncObject, InCallable, InArguments...);
+	}
 }
 
 // reflection context declarations

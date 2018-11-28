@@ -21,7 +21,7 @@ namespace lsgd { namespace thread {
 
 		// software threads
 		//	- note that real instance life time is managed by HPlatformThread
-		HArray<HThreadRunnable*> SoftwareThreads;
+		HArray<shared_ptr<HThreadRunnable>> SoftwareThreads;
 	};
 
 } }
