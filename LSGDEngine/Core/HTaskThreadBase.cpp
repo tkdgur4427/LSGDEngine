@@ -57,6 +57,16 @@ HTaskThreadBase::~HTaskThreadBase()
 
 }
 
+void HTaskThreadBase::Run()
+{
+
+}
+
+void HTaskThreadBase::Terminate()
+{
+
+}
+
 bool HTaskThreadBase::IsValidTTLSIndex(uint32 Index)
 {
 	bool bResult = true;

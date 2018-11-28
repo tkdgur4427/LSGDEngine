@@ -54,31 +54,17 @@ namespace lsgd { namespace async {
 		HTaskThreadBase();
 		virtual ~HTaskThreadBase();
 
+		virtual void Run() override;
+		virtual void Terminate() override;
+
 		template <typename CallableType>
-		shared_ptr<HTaskThreadLocalStorage> GetTTLS(uint32 Index, CallableType&& InCallable)
-		{
-			if (!IsValidTTLSIndex(Index))
-			{
-				AllocTTLS(Index, InCallable);
-			}
-			return TaskThreadLocalStorages[Index];
-		}
+		shared_ptr<HTaskThreadLocalStorage> GetTTLS(uint32 Index, CallableType&& InCallable);
 
 		// shared task-thread context
 		static HTaskThreadSharedContext TaskThreadSharedContext;
 
 	protected:
 		bool IsValidTTLSIndex(uint32 Index);
-
-		template <typename CallableType>
-		void AllocTTLS(uint32 Index, CallableType&& InCallable)
-		{
-			if (TaskThreadLocalStorages.size() <= Index)
-			{
-				TaskThreadLocalStorages.resize(Index + 1);
-			}
-			TaskThreadLocalStorages[Index] = InCallable();
-		}
 
 		// member variables
 		HArray<shared_ptr<HTaskThreadLocalStorage>> TaskThreadLocalStorages;
@@ -132,6 +118,21 @@ namespace lsgd { namespace async {
 		// call_once flag (static methods)
 		static HCriticalSectionCallOnce SyncObject;
 	};
+
+	template <typename CallableType>
+	shared_ptr<HTaskThreadLocalStorage> HTaskThreadBase::GetTTLS(uint32 Index, CallableType&& InCallable)
+	{
+		if (!IsValidTTLSIndex(Index))
+		{
+			// allocate ttls
+			if (TaskThreadLocalStorages.size() <= Index)
+			{
+				TaskThreadLocalStorages.resize(Index + 1);
+			}
+			TaskThreadLocalStorages[Index] = InCallable();
+		}
+		return TaskThreadLocalStorages[Index];
+	}
 
 	template <class DataType>
 	HCriticalSectionCallOnce HTaskThreadSingleton<DataType>::SyncObject;
