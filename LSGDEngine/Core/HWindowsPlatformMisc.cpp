@@ -98,6 +98,11 @@ uint32 HGenericPlatformMisc::GetCurrentThreadId()
 	return GetThreadId(CurrThreadHandle);
 }
 
+void HGenericPlatformMisc::Sleep(double InSecs)
+{
+	_sleep(InSecs * 1000);
+}
+
 HWindowsPlatformThread::HWindowsPlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InRunnable)
 	: HPlatformThread(InRunnable)
 	, ThreadHandle(0)
@@ -158,3 +163,4 @@ bool HWindowsPlatformThread::IsCurrThread() const
 {
 	return HGenericPlatformMisc::GetCurrentThreadId() == ThreadId;
 }
+

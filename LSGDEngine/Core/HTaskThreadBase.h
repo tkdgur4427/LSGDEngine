@@ -21,6 +21,8 @@ namespace lsgd { namespace async {
 
 		shared_ptr<HThreadRunnable> GetTaskThread();
 
+		shared_ptr<HBaseGraphTask> GetNextTask();
+
 	protected:
 		int32 GetTaskThreadIndex();
 
@@ -71,6 +73,8 @@ namespace lsgd { namespace async {
 
 		// generated from HTaskThreadSharedContext::
 		uint32 UniqueId;
+
+		HThreadSafeCounter bTerminate;
 	};
 
 	template <class DataType>

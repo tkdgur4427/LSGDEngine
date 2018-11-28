@@ -29,6 +29,11 @@ shared_ptr<HThreadRunnable> HTaskThreadSharedContext::GetTaskThread()
 	return TaskThreads[GetTaskThreadIndex()];
 }
 
+shared_ptr<HBaseGraphTask> HTaskThreadSharedContext::GetNextTask()
+{
+	return Tasks.Pop();
+}
+
 int32 HTaskThreadSharedContext::GetTaskThreadIndex()
 {
 	int32 Result = -1;
@@ -59,12 +64,32 @@ HTaskThreadBase::~HTaskThreadBase()
 
 void HTaskThreadBase::Run()
 {
+	while (!(bTerminate.GetValue()))
+	{
+		// get the graph task
+		shared_ptr<HBaseGraphTask> NewTask = TaskThreadSharedContext.GetNextTask();
 
+		if (NewTask == nullptr)
+		{
+			// if there is no available task, make it stalled (2ms)
+			HGenericPlatformMisc::Sleep(0.002);
+		}		
+		else
+		{
+			// execute the task
+			NewTask->Execute();
+
+			// when it executes the new task, task should have refcount as 1
+			//	- it means when it is out-of-scope, it must be destroyed!
+			check(NewTask.use_count() == 1);
+		}
+	}
 }
 
 void HTaskThreadBase::Terminate()
 {
-
+	// terminate the task thread running
+	bTerminate.Increment();
 }
 
 bool HTaskThreadBase::IsValidTTLSIndex(uint32 Index)

@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <process.h>
+#include <stdlib.h>
 
 #include "HGenericPlatformMisc.h"
 

@@ -68,6 +68,8 @@ namespace lsgd {
 		static unique_ptr<HPlatformThread> CreatePlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InThreadRunnable);
 		// get the current thread Id
 		static uint32 GetCurrentThreadId();
+		// sleep
+		static void Sleep(double InSecs);
 	};
 
 }

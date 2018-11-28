@@ -8,9 +8,15 @@ namespace lsgd { namespace async {
 	class HBaseGraphTask
 	{
 	public:
-		HBaseGraphTask() {}
+		HBaseGraphTask(uint32 InNumberOfPrerequisities)
+			: NumberOfPrerequisitiesOutstanding(InNumberOfPrerequisities)
+		{}
+
 		virtual ~HBaseGraphTask() {}
 
+		virtual void Execute() = 0;
+
+		// short-cut for number of prerequisite task left
 		HThreadSafeCounter NumberOfPrerequisitiesOutstanding;
 	};
 
@@ -21,6 +27,17 @@ namespace lsgd { namespace async {
 		HArray<shared_ptr<HGraphEvent>> EventsToWaitFor;
 		HThreadSafeCounter ReferenceCount;
 	};
+
+	/*
+		comment for 'TaskType'
+		
+		class TaskType
+		{
+		public:
+			// must-method you should implement!
+			void Execute() {}
+		};
+	*/
 
 	template <typename TaskType>
 	class HGraphTask : public HBaseGraphTask
@@ -40,6 +57,8 @@ namespace lsgd { namespace async {
 		HGraphTask();
 		virtual ~HGraphTask();
 
+		virtual void Execute() override;
+
 		shared_ptr<HGraphEvent> Subsequents;
 		uint8 TaskStorage[TaskSize];
 		bool bTaskCounstructed;
@@ -57,5 +76,12 @@ namespace lsgd { namespace async {
 	HGraphTask<TaskType>::~HGraphTask()
 	{
 
+	}
+
+	template <typename TaskType>
+	void HGraphTask<TaskType>::Execute()
+	{
+		check(bTaskCounstructed == true);
+		(TaskType*)(&TaskStorage)->Execute();
 	}
 } }

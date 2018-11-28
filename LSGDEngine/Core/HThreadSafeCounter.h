@@ -16,6 +16,8 @@ namespace lsgd { namespace thread {
 		// increment/decrement returns previous value of Counter
 		uint32 Increment() { return Counter++; }
 		uint32 Decrement() { return Counter--; }
+		uint32 GetValue() { return Counter; }
+		void SetValue(uint32 InValue) { Counter = InValue; }
 
 	protected:
 		HAtomic<uint32> Counter;
