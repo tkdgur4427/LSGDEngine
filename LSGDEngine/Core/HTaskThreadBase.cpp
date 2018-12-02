@@ -31,6 +31,16 @@ shared_ptr<HThreadRunnable> HTaskThreadSharedContext::GetTaskThread()
 
 shared_ptr<HBaseGraphTask> HTaskThreadSharedContext::GetNextTask()
 {
+	return DequeueGraphTask();
+}
+
+void HTaskThreadSharedContext::EnqueueGraphTask(shared_ptr<HBaseGraphTask> InTask)
+{
+	Tasks.Push(InTask);
+}
+
+shared_ptr<HBaseGraphTask> HTaskThreadSharedContext::DequeueGraphTask()
+{
 	return Tasks.Pop();
 }
 

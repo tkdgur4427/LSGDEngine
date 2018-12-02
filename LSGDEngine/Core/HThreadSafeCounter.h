@@ -7,9 +7,10 @@ namespace lsgd { namespace thread {
 	public:
 		HThreadSafeCounter()
 			: Counter(0)
-		{
-
-		}
+		{}
+		HThreadSafeCounter(uint32 InValue)
+			: Counter(InValue)
+		{}
 
 		~HThreadSafeCounter() {}
 

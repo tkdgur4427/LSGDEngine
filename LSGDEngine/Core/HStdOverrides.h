@@ -70,6 +70,10 @@ namespace lsgd
 		return HMakeUnique<BaseType, Type>(InArguments...);
 	}
 
+	// enable_shared_from_this
+	template <class Type>
+	using enable_shared_from_this = std::enable_shared_from_this<Type>;
+
 	// shared_ptr
 	template <class Type>
 	using shared_ptr = std::shared_ptr<Type>;

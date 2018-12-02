@@ -5,7 +5,11 @@ using namespace lsgd::container;
 
 namespace lsgd { namespace async {
 
-	class HBaseGraphTask
+	/*
+		note that
+			- for preventing dangling pointer situation, I add enable_shared_from_this class (different from UE4; compared to raw pointer management)
+	*/
+	class HBaseGraphTask : public enable_shared_from_this<HBaseGraphTask>
 	{
 	public:
 		HBaseGraphTask(uint32 InNumberOfPrerequisities)
@@ -16,6 +20,11 @@ namespace lsgd { namespace async {
 
 		virtual void Execute() = 0;
 
+		// methods
+		void SetupCompletePrerequisities();
+		void ConditionalQueueTask();
+		void QueueTask();
+
 		// short-cut for number of prerequisite task left
 		HThreadSafeCounter NumberOfPrerequisitiesOutstanding;
 	};
@@ -23,7 +32,15 @@ namespace lsgd { namespace async {
 	class HGraphEvent
 	{
 	public:
-		HConcurrentQueue<shared_ptr<HBaseGraphTask>> SubsequentList;
+		HGraphEvent();
+		~HGraphEvent();
+
+		static shared_ptr<HGraphEvent> CreateGraphEvent();
+
+		// methods
+		bool AddSubsequent(shared_ptr<HBaseGraphTask>& InSubsequent);
+
+		HClosableConcurrentQueue<shared_ptr<HBaseGraphTask>> SubsequentList;
 		HArray<shared_ptr<HGraphEvent>> EventsToWaitFor;
 		HThreadSafeCounter ReferenceCount;
 	};
@@ -50,26 +67,57 @@ namespace lsgd { namespace async {
 
 		struct HConstructor
 		{
+			template <typename... Args>
+			shared_ptr<HGraphEvent> ConstructAndDispatchWhenReady(Args&&... InArgs)
+			{
+				// construct the task instance into task storage
+				new ((void*)Owner->TaskStorage[0]) TaskType(forward<Args>(InArgs)...);
+				// set up the HGraphTask
+				Owner->Setup(Prerequisites);
+			}
+
+			HConstructor(HGraphTask* InOwner, HArray<shared_ptr<HGraphEvent>>& InPrerequisitiesRef)
+				: Owner(InOwner)
+				, Prerequisites(InPrerequisitiesRef)
+			{}
+
 			HGraphTask* Owner;
-			HArray<shared_ptr<HGraphEvent>> Prerequisites;
+			HArray<shared_ptr<HGraphEvent>>& Prerequisites;
 		};
 
-		HGraphTask();
-		virtual ~HGraphTask();
+		// static method
+		static HConstructor CreateTask(HArray<shared_ptr<HGraphEvent>>& InPrerequisites)
+		{
+			uint32 NumberOfPrerequisites = InPrerequisites.size();
+			shared_ptr<HBaseGraphTask> NewTask = make_shared<HBaseGraphTask, HGraphTask>(HGraphEvent::CreateGraphEvent(), NumberOfPrerequisites);
+			HGraphTask* NewGraphTask = (HGraphTask*)(NewTask.get());
+			
+			return HConstructor(NewGraphTask, InPrerequisites);
+		}
 
+		virtual ~HGraphTask();
 		virtual void Execute() override;
+
+		// helper methods
+		shared_ptr<HGraphEvent> Setup(HArray<shared_ptr<HGraphEvent>>& InPrerequisites);
+		void SetupPrerequisites(HArray<shared_ptr<HGraphEvent>>& InPrerequisites);
 
 		shared_ptr<HGraphEvent> Subsequents;
 		uint8 TaskStorage[TaskSize];
 		bool bTaskCounstructed;
+
+	protected:
+		// make it only allow to create by CreateTask static method
+		HGraphTask(shared_ptr<HGraphEvent>& InSubsequents, uint32 InNumberOfPrerequisities);
 	};
 
 	template <typename TaskType>
-	HGraphTask<TaskType>::HGraphTask()
-		: HBaseGraphTask()
+	HGraphTask<TaskType>::HGraphTask(shared_ptr<HGraphEvent>& InSubsequents, uint32 InNumberOfPrerequisities)
+		: HBaseGraphTask(InNumberOfPrerequisities)
 		, bTaskCounstructed(false)
 	{
-
+		Subsequents.swap(InSubsequents);
+		check(InSubsequents.get() == nullptr);
 	}
 
 	template <typename TaskType>
@@ -83,5 +131,33 @@ namespace lsgd { namespace async {
 	{
 		check(bTaskCounstructed == true);
 		(TaskType*)(&TaskStorage)->Execute();
+	}
+
+	template <typename TaskType>
+	void HGraphTask<TaskType>::SetupPrerequisites(HArray<shared_ptr<HGraphEvent>>& InPrerequisites)
+	{
+		// now set up task is constructed
+		bTaskCounstructed = true;
+
+		int32 AlreadyCompletedPrerequisites = 0;
+		for (auto&& Prerequisite : InPrerequisites)
+		{
+			check(Prerequisite != nullptr);
+			if (!Prerequisite->AddSubsequent(shared_from_this()))
+			{
+				AlreadyCompletedPrerequisites++;
+			}
+		}
+		check((InPrerequisites.size() - AlreadyCompletedPrerequisites) == NumberOfPrerequisitiesOutstanding);
+
+		SetupCompletePrerequisities();
+	}
+
+	template <typename TaskType>
+	shared_ptr<HGraphEvent> HGraphTask<TaskType>::Setup(HArray<shared_ptr<HGraphEvent>>& InPrerequisites)
+	{
+		shared_ptr<HGraphEvent> ReturnGraphEvent = Subsequents;
+		SetupPrerequisites(InPrerequisites);
+		return ReturnGraphEvent;
 	}
 } }

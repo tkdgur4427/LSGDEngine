@@ -23,6 +23,10 @@ namespace lsgd { namespace async {
 
 		shared_ptr<HBaseGraphTask> GetNextTask();
 
+		// enqueue/dequeue the graph task to the queue
+		void EnqueueGraphTask(shared_ptr<HBaseGraphTask> InTask);
+		shared_ptr<HBaseGraphTask> DequeueGraphTask();
+
 	protected:
 		int32 GetTaskThreadIndex();
 

@@ -13,7 +13,10 @@ namespace lsgd { namespace container {
 	class HConcurrentQueue
 	{
 	public:
-		void Push(Type&& InType)
+		HConcurrentQueue() {}
+		virtual ~HConcurrentQueue() {}
+
+		void Push(const Type& InType)
 		{
 			HScopedLock Lock(SyncObject);
 			Queue.push(InType);
@@ -29,11 +32,65 @@ namespace lsgd { namespace container {
 			return Result;
 		}
 
-		uint32 Num() const { HScopedLock Lock(SyncObject); return Queue.size(); }
+		uint32 Num() { HScopedLock Lock(SyncObject); return Queue.size(); }
 
 	private:
 		HCriticalSection SyncObject;
 		HQueue<Type> Queue;
+	};
+
+	/*
+		Closable?
+			- usually this structure is useful to reusing any instance having ConcurrentQueue
+			- or naive ConcurrentQueue; we could reduce any memory reallocation for every instance to create this queue
+	*/
+
+	template <class Type>
+	class HClosableConcurrentQueue : public HConcurrentQueue<Type>
+	{
+	public:
+		HClosableConcurrentQueue(bool InClosed = false)
+			: Closed(InClosed)
+		{}
+
+		bool Push(const Type& InType)
+		{
+			if (Closed)
+			{
+				return false;
+			}
+
+			HConcurrentQueue<Type>::Push(InType);
+			return true;
+		}
+
+		bool Pop(Type& OutValue)
+		{
+			if (Closed)
+			{
+				return false;
+			}
+
+			OutValue = HConcurrentQueue<Type>::Pop();
+			return true;
+		}
+
+		uint32 Num()
+		{
+			if (Closed)
+			{
+				return -1;
+			}
+
+			return HConcurrentQueue<Type>::Num();
+		}
+
+		void SetClosed(bool InValue) { Closed = InValue; }
+		bool IsClosed() const { return Closed; }
+
+	protected:
+		// whether concurrent queue is already closed or not
+		HAtomic<bool> Closed;
 	};
 
 } }
