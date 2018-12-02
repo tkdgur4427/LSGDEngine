@@ -149,6 +149,9 @@
     <ClInclude Include="HCallOnceLock.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="HTaskGraphInterface.h">
+      <Filter>Async</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -207,6 +210,12 @@
       <Filter>Async</Filter>
     </ClCompile>
     <ClCompile Include="HThreadRunnable.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="HTaskGraphInterface.cpp">
+      <Filter>Async</Filter>
+    </ClCompile>
+    <ClCompile Include="HThreadManager.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
   </ItemGroup>

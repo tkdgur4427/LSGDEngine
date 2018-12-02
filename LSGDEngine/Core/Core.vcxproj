@@ -51,6 +51,7 @@
     <ClInclude Include="HStdOverrides.h" />
     <ClInclude Include="HStringTypeHelper.h" />
     <ClInclude Include="HTaskGraph.h" />
+    <ClInclude Include="HTaskGraphInterface.h" />
     <ClInclude Include="HTaskThreadBase.h" />
     <ClInclude Include="HThreadManager.h" />
     <ClInclude Include="HThreadRunnable.h" />
@@ -90,11 +91,13 @@
     <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HTaskGraph.cpp" />
     <ClCompile Include="HTaskThreadBase.cpp" />
+    <ClCompile Include="HThreadManager.cpp" />
     <ClCompile Include="HThreadRunnable.cpp" />
     <ClCompile Include="HTypeDatabase.cpp" />
     <ClCompile Include="HTypeDatabaseUtils.cpp" />
     <ClCompile Include="HTypeOverride.cpp" />
     <ClCompile Include="HWindowsPlatformMisc.cpp" />
+    <ClCompile Include="HTaskGraphInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Memory\Memory.vcxproj">

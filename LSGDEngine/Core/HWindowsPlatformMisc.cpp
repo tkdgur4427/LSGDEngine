@@ -71,9 +71,9 @@ unique_ptr<HPlatformFileIO> HGenericPlatformMisc::CreatePlatformFileIO()
 	return make_unique<HPlatformFileIO, HWindowsPlatformFileIO>();
 }
 
-unique_ptr<HPlatformThread> HGenericPlatformMisc::CreatePlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InThreadRunnable)
+unique_ptr<HPlatformThread> HGenericPlatformMisc::CreatePlatformThread(shared_ptr<lsgd::thread::HThreadRunnable>& InThreadRunnable)
 {
-	return make_unique<HPlatformThread, HWindowsPlatformThread>(move(InThreadRunnable));
+	return make_unique<HPlatformThread, HWindowsPlatformThread>(InThreadRunnable);
 }
 
 HString HGenericPlatformMisc::GetGameDir()
@@ -103,7 +103,14 @@ void HGenericPlatformMisc::Sleep(double InSecs)
 	_sleep(InSecs * 1000);
 }
 
-HWindowsPlatformThread::HWindowsPlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InRunnable)
+uint32 HGenericPlatformMisc::GetHardwareThreadNum()
+{
+	SYSTEM_INFO sysInfo;
+	GetSystemInfo(&sysInfo);
+	return sysInfo.dwNumberOfProcessors;
+}
+
+HWindowsPlatformThread::HWindowsPlatformThread(shared_ptr<lsgd::thread::HThreadRunnable>& InRunnable)
 	: HPlatformThread(InRunnable)
 	, ThreadHandle(0)
 {

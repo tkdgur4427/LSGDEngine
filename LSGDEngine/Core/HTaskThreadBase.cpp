@@ -1,6 +1,9 @@
 #include "HCorePCH.h"
 #include "HTaskThreadBase.h"
 
+// thread manager
+#include "HThreadManager.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
@@ -42,6 +45,16 @@ void HTaskThreadSharedContext::EnqueueGraphTask(shared_ptr<HBaseGraphTask> InTas
 shared_ptr<HBaseGraphTask> HTaskThreadSharedContext::DequeueGraphTask()
 {
 	return Tasks.Pop();
+}
+
+void HTaskThreadSharedContext::CreateTaskThread()
+{
+	// create task thread base
+	shared_ptr<HThreadRunnable> TaskThreadRunnable = make_shared<HThreadRunnable, HTaskThreadBase>();
+	TaskThreads.push_back(TaskThreadRunnable);
+
+	// create hardware thread
+	lsgd::thread::HThreadManager::GetSingleton()->CreateHardwareThread(TaskThreadRunnable);
 }
 
 int32 HTaskThreadSharedContext::GetTaskThreadIndex()

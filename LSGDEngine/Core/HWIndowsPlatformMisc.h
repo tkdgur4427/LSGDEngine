@@ -26,7 +26,7 @@ namespace lsgd
 	class HWindowsPlatformThread : public HPlatformThread
 	{
 	public:
-		HWindowsPlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InRunnable);
+		HWindowsPlatformThread(shared_ptr<lsgd::thread::HThreadRunnable>& InRunnable);
 		virtual ~HWindowsPlatformThread();
 
 		virtual bool Create(uint32 CpuCoreAffinity) override;

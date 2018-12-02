@@ -21,6 +21,9 @@
 // reflection context
 #include "HReflectionContext.h"
 
+// task graph
+#include "HTaskGraphInterface.h"
+
 // HObject
 #include "HObject.h"
 

@@ -41,9 +41,11 @@ namespace lsgd {
 			DefaultCoreAffinity = (Core0 | Core1 | Core2 | Core3 | Core4 | Core5 | Core6 | Core7),
 		};
 
-		explicit HPlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InRunnable)
-			: Runnable(move(InRunnable))
-		{}
+		explicit HPlatformThread(shared_ptr<lsgd::thread::HThreadRunnable>& InRunnable)
+			: Runnable(InRunnable)
+		{
+			Runnable->OwnerThread = this;
+		}
 
 		virtual ~HPlatformThread(){}
 
@@ -65,11 +67,13 @@ namespace lsgd {
 		// create platform file io instance
 		static unique_ptr<HPlatformFileIO> CreatePlatformFileIO();
 		// create platform thread instance
-		static unique_ptr<HPlatformThread> CreatePlatformThread(unique_ptr<lsgd::thread::HThreadRunnable>& InThreadRunnable);
+		static unique_ptr<HPlatformThread> CreatePlatformThread(shared_ptr<lsgd::thread::HThreadRunnable>& InThreadRunnable);
 		// get the current thread Id
 		static uint32 GetCurrentThreadId();
 		// sleep
 		static void Sleep(double InSecs);
+		// get the hardware thread
+		static uint32 GetHardwareThreadNum();
 	};
 
 }

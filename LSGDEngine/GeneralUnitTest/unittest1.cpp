@@ -37,6 +37,9 @@ namespace GeneralUnitTest
 		
 		TEST_METHOD(TestMethod1)
 		{
+			lsgd::async::HTaskGraph1 TaskGraph;
+			TaskGraph.Initialize();
+
 			int* temp = lsgd::async::HTaskThreadSingleton<int>::Get();
 
 			HTypeDatabase* TypeDB = HTypeDatabase::GetSingleton();			

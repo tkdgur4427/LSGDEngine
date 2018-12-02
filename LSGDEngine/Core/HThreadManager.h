@@ -8,6 +8,15 @@ namespace lsgd { namespace thread {
 	class HThreadManager
 	{
 	public:
+		static HThreadManager* GetSingleton()
+		{
+			static HThreadManager ThreadManagerInstance;
+			return &ThreadManagerInstance;
+		}
+
+		void CreateHardwareThread(shared_ptr<HThreadRunnable> InThreadRunnable);
+
+	protected:
 		HThreadManager() {}
 		~HThreadManager() {}
 
