@@ -16,6 +16,8 @@
 
 #include "HThreadSafeCounter.h"
 
+#include "HSingletonTemplate.h"
+
 #include "HConcurrentQueue.h"
 
 #include "HCString.h"

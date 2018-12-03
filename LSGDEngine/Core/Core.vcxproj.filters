@@ -152,6 +152,10 @@
     <ClInclude Include="HTaskGraphInterface.h">
       <Filter>Async</Filter>
     </ClInclude>
+    <ClInclude Include="HObjectArray.h">
+      <Filter>CoreObject</Filter>
+    </ClInclude>
+    <ClInclude Include="HSingletonTemplate.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -217,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="HThreadManager.cpp">
       <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="HObjectArray.cpp">
+      <Filter>CoreObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

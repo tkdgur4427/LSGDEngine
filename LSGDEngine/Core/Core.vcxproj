@@ -38,6 +38,7 @@
     <ClInclude Include="HName.h" />
     <ClInclude Include="HNewDeleteOverride.h" />
     <ClInclude Include="HObject.h" />
+    <ClInclude Include="HObjectArray.h" />
     <ClInclude Include="HPackage.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HNumericTypeHelper.h" />
@@ -48,6 +49,7 @@
     <ClInclude Include="HReflectionContextDeclareMacro.h" />
     <ClInclude Include="HReflectionContextImplementMacro.h" />
     <ClInclude Include="HScopedLock.h" />
+    <ClInclude Include="HSingletonTemplate.h" />
     <ClInclude Include="HStdOverrides.h" />
     <ClInclude Include="HStringTypeHelper.h" />
     <ClInclude Include="HTaskGraph.h" />
@@ -85,6 +87,7 @@
     <ClCompile Include="HName.cpp" />
     <ClCompile Include="HNewDeleteOverride.cpp" />
     <ClCompile Include="HObject.cpp" />
+    <ClCompile Include="HObjectArray.cpp" />
     <ClCompile Include="HPackage.cpp" />
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HReflectionContext.cpp" />

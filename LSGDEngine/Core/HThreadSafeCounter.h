@@ -22,6 +22,5 @@ namespace lsgd { namespace thread {
 
 	protected:
 		HAtomic<uint32> Counter;
-	};
-
+	};	
 } }
