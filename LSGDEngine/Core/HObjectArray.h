@@ -48,13 +48,15 @@ namespace lsgd
 			~HObjectDeleteListener();
 		};
 
-		void RegisterObject(unique_ptr<HObject>& InObject);
-		void DeregisterObject();
+		void RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags);
 		
 	protected:
 		HObjectArray();
 
 		void InitializeObjectArray();
+
+		// make it only allowed in GC
+		void DeregisterObject();
 
 		// object array
 		HObjectArrayType Objects;

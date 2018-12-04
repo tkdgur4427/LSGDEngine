@@ -90,3 +90,14 @@ void HObjectArray::InitializeObjectArray()
 		Index++;
 	}
 }
+
+void HObjectArray::RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags)
+{
+	uint32 NewIndex = FreeIndices.Pop();
+	Objects[NewIndex]->Bind(InObject, InFlags);
+}
+
+void HObjectArray::DeregisterObject()
+{
+
+}
