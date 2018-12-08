@@ -49,6 +49,7 @@ namespace lsgd
 		};
 
 		void RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags);
+		HObject* GetObject(uint32 Index, uint32 SerialNumber);
 		
 	protected:
 		HObjectArray();
@@ -56,7 +57,7 @@ namespace lsgd
 		void InitializeObjectArray();
 
 		// make it only allowed in GC
-		void DeregisterObject();
+		void DeregisterObject(uint32 Index, uint32 SerialNumber);
 
 		// object array
 		HObjectArrayType Objects;

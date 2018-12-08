@@ -97,7 +97,25 @@ void HObjectArray::RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags)
 	Objects[NewIndex]->Bind(InObject, InFlags);
 }
 
-void HObjectArray::DeregisterObject()
+void HObjectArray::DeregisterObject(uint32 Index, uint32 SerialNumber)
 {
+	HObjectItem* ObjectItem = Objects[Index].get();
+	check(ObjectItem->UniqueNumber == SerialNumber);
+	
+	// release the object
+	ObjectItem->Unbind();
+}
 
+HObject* HObjectArray::GetObject(uint32 Index, uint32 SerialNumber)
+{
+	HObjectItem* ObjectItem = Objects[Index].get();
+	
+	// when only unique number is same as serial number (it means that it indicates same object)
+	if (ObjectItem->UniqueNumber == SerialNumber)
+	{
+		return ObjectItem->Object.get();
+	}
+
+	// otherwise
+	return nullptr;
 }

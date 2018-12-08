@@ -84,7 +84,51 @@ namespace lsgd
 		// outer object
 		class HPackage* Package;
 	};	
+
+	// object array data (common data)
+	struct HObjectArrayData
+	{
+		uint32 SerialNumber;	// object's unique number
+		uint32 Index;			// GObjectArray's index
+	};
+
+	// object helper class 
+	struct HObjectHelper
+	{
+		static HObject* GetObject(uint32 Index, uint32 SerialNumber);
+	};
+
+	// object handle
+	template <typename ObjectType, bool bIsOwned>
+	class HObjectHandle
+	{
+	public:
+		//HObjectHandle(uint32 InSerialNumber, uint32 InIndex);
+
+		// whether the handle has ownership of a object
+		bool IsOwned() const { return bIsOwned; }
+		
+		// get the object
+		ObjectType* GetObject()
+		{
+			return HObjectHelper::GetObject(Data.Index, Data.SerialNumber);
+		}
+
+		HObjectArrayData Data;
+	};
+
+	template <typename ObjectType>
+	class HObjectHandleUnique : public HObjectHandle<ObjectType, true>
+	{
 	
+	};
+	
+	template <typename ObjectType>
+	class HObjectHandleWeak : public HObjectHandle<ObjectType, false>
+	{
+
+	};
+
 	// forward declaration
 	extern class HPackage* GTransientPackage;
 

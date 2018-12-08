@@ -3,6 +3,10 @@
 
 // HClass
 #include "HReflect.h"
+// HPackage
+#include "HPackage.h"
+// HObjectArray
+#include "HObjectArray.h"
 
 using namespace lsgd;
 using namespace lsgd::reflect;
@@ -60,7 +64,10 @@ void HObject::Serialize(reflect::HReflectionContext& InContext)
 	Class->SerializeProperties(InContext, (uint8*)this);
 }
 
-#include "HPackage.h"
+HObject* HObjectHelper::GetObject(uint32 Index, uint32 SerialNumber)
+{
+	HObjectArray::GetSingleton()->
+}
 
 namespace lsgd
 {
