@@ -8,12 +8,14 @@ namespace lsgd
 {
 	class HObjectItem
 	{
+	public:
+		virtual ~HObjectItem() {}
+
 	protected:
 		// the only class which can access
 		friend class HObjectArray;
 
 		HObjectItem();
-		~HObjectItem() {}
 
 		void Bind(unique_ptr<HObject>& InObject, int64 InFlag);
 		void Unbind();		
@@ -48,10 +50,11 @@ namespace lsgd
 			~HObjectDeleteListener();
 		};
 
-		void RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags);
+		HObjectArrayData RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags);
 		HObject* GetObject(uint32 Index, uint32 SerialNumber);
 		
 	protected:
+		friend class HSingletonTemplate<HObjectArray>;
 		HObjectArray();
 
 		void InitializeObjectArray();

@@ -8,21 +8,15 @@ namespace lsgd
 	public:
 		static Type* GetSingleton()
 		{
-			static HCriticalSectionCallOnce CallOnceSyncObject;
-			static unique_ptr<Type> Instance;
-			
-			if (Instance == nullptr)
-			{
-				lsgd::thread::HCallOnceLock Lock(CallOnceSyncObject);
-				Instance = make_unique<Type>();
-			}
-
-			return Instance.get();
+			static Type Instance;
+			return &Instance;
 		}		
 
 		virtual ~HSingletonTemplate() {}
 
 	protected:
-		HSingletonTemplate() {}		
+		HSingletonTemplate() {}	
+		HSingletonTemplate(const HSingletonTemplate&) = delete;
+		HSingletonTemplate& operator=(const HSingletonTemplate&) = delete;
 	};
 }

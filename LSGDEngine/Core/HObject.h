@@ -103,8 +103,6 @@ namespace lsgd
 	class HObjectHandle
 	{
 	public:
-		//HObjectHandle(uint32 InSerialNumber, uint32 InIndex);
-
 		// whether the handle has ownership of a object
 		bool IsOwned() const { return bIsOwned; }
 		
@@ -114,39 +112,59 @@ namespace lsgd
 			return HObjectHelper::GetObject(Data.Index, Data.SerialNumber);
 		}
 
+	protected:
+		HObjectHandle(uint32 InSerialNumber, uint32 InIndex)
+		{
+			Data.Index = InIndex;
+			Data.SerialNumber = InSerialNumber;
+		}
+
 		HObjectArrayData Data;
 	};
 
 	template <typename ObjectType>
 	class HObjectHandleUnique : public HObjectHandle<ObjectType, true>
 	{
-	
+	public:
+		explicit HObjectHandleUnique(const HObjectHandleUnique& InObjectHandle)
+			: HObjectHandle(InObjectHandle.Data.SerialNumber, InObjectHandle.Data.Index)
+		{}
+		explicit HObjectHandleUnique(uint32 InSerialNumber, uint32 InIndex)
+			: HObjectHandle(InSerialNumber, InIndex)
+		{}
 	};
 	
 	template <typename ObjectType>
 	class HObjectHandleWeak : public HObjectHandle<ObjectType, false>
 	{
-
+	public:
+		explicit HObjectHandleWeak(const HObjectHandleWeak& InObjectHandle)
+			: HObjectHandle(InObjectHandle.Data.SerialNumber, InObjectHandle.Data.Index)
+		{}
+		explicit HObjectHandleWeak(uint32 InSerialNumber, uint32 InIndex)
+			: HObjectHandle(InSerialNumber, InIndex)
+		{}
 	};
 
 	// forward declaration
 	extern class HPackage* GTransientPackage;
 
-	extern HObject* AllocateHObjectInner(const reflect::HClass* InClass, class HPackage* InPackage);
+	extern HObjectArrayData AllocateHObjectInner(const reflect::HClass* InClass, class HPackage* InPackage);
 
-	extern HObject* AllocateHObject(const HString& ClassName, class HPackage* InPackage = nullptr);
+	extern HObjectArrayData AllocateHObject(const HString& ClassName, class HPackage* InPackage = nullptr);
 
-	template <typename HObjectType>
-	HObjectType* AllocateHObject(class HPackage* InPackage = nullptr)
+	template <typename ObjectType>
+	HObjectHandleUnique<ObjectType> AllocateHObject(class HPackage* InPackage = nullptr)
 	{
 		// get the HClass type with template parameter, HObjectType
-		reflect::HTypeDescriptor ClassType = reflect::HTypeDatabaseUtils::GetTypeDescriptor<HObjectType>();
+		reflect::HTypeDescriptor ClassType = reflect::HTypeDatabaseUtils::GetTypeDescriptor<ObjectType>();
 		check(ClassType.ClassType != nullptr);
 
 		// get HClass
 		const reflect::HClass* Class = ClassType.ClassType;
 
 		// @todo - need to dynamic RTTI checking for whether this class is derived or not
-		return (HObjectType*)AllocateHObjectInner(Class, InPackage);
+		HObjectArrayData NewData = AllocateHObjectInner(Class, InPackage);
+		return HObjectHandleUnique<ObjectType>(NewData.SerialNumber, NewData.Index);
 	}
 }

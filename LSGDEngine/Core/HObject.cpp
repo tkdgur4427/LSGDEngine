@@ -66,18 +66,18 @@ void HObject::Serialize(reflect::HReflectionContext& InContext)
 
 HObject* HObjectHelper::GetObject(uint32 Index, uint32 SerialNumber)
 {
-	HObjectArray::GetSingleton()->
+	return HObjectArray::GetSingleton()->GetObject(Index, SerialNumber);
 }
 
 namespace lsgd
 {
-	HObject* AllocateHObject(const HString& ClassName, class HPackage* InPackage)
+	HObjectArrayData AllocateHObject(const HString& ClassName, class HPackage* InPackage)
 	{
 		const HClass* Class = reflect::HTypeDatabaseUtils::GetTypeDescriptor(ClassName).ClassType;
 		return AllocateHObjectInner(Class, InPackage);
 	}
 
-	HObject* AllocateHObjectInner(const reflect::HClass* InClass, class HPackage* InPackage)
+	HObjectArrayData AllocateHObjectInner(const reflect::HClass* InClass, class HPackage* InPackage)
 	{
 		// get the class name
 		const HString& ClassName = InClass->Name;
@@ -115,7 +115,11 @@ namespace lsgd
 		// reset the ObjectInitializer
 		LObjectInitializer.Reset();
 
-		return NewObject;
+		// register new object to GObjectArray
+		unique_ptr<HObject> NewObjectPtr(NewObject);
+		HObjectArrayData NewData = HObjectArray::GetSingleton()->RegisterObject(NewObjectPtr, 0);
+
+		return NewData;
 	}
 
 	HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, const reflect::HClass* InClass)

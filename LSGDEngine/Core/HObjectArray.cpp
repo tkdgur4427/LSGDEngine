@@ -91,10 +91,12 @@ void HObjectArray::InitializeObjectArray()
 	}
 }
 
-void HObjectArray::RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags)
+HObjectArrayData HObjectArray::RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags)
 {
 	uint32 NewIndex = FreeIndices.Pop();
 	Objects[NewIndex]->Bind(InObject, InFlags);
+
+	return {Objects[NewIndex]->UniqueNumber, NewIndex};
 }
 
 void HObjectArray::DeregisterObject(uint32 Index, uint32 SerialNumber)
