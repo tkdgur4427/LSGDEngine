@@ -205,7 +205,6 @@
     <ClCompile Include="HWindowsPlatformMisc.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="HReflectionContext.cpp" />
     <ClCompile Include="HNewDeleteOverride.cpp" />
     <ClCompile Include="HTaskGraph.cpp">
       <Filter>Async</Filter>
@@ -224,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="HObjectArray.cpp">
       <Filter>CoreObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HReflectionContext.cpp">
+      <Filter>Reflect\Context</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
