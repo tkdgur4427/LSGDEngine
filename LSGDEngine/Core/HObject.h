@@ -88,6 +88,12 @@ namespace lsgd
 	// object array data (common data)
 	struct HObjectArrayData
 	{
+		void Reset()
+		{
+			SerialNumber = -1;
+			Index = -1;
+		}
+
 		uint32 SerialNumber;	// object's unique number
 		uint32 Index;			// GObjectArray's index
 	};
@@ -96,6 +102,7 @@ namespace lsgd
 	struct HObjectHelper
 	{
 		static HObject* GetObject(uint32 Index, uint32 SerialNumber);
+		static void SetAsDestroyed(const HObjectArrayData& InData);
 	};
 
 	// object handle
@@ -105,14 +112,31 @@ namespace lsgd
 	public:
 		// whether the handle has ownership of a object
 		bool IsOwned() const { return bIsOwned; }
+		// whether object handle is valid or not
+		bool IsValid() const { return GetObject() != nullptr; }
 		
 		// get the object
 		ObjectType* GetObject()
 		{
+			// early validation out
+			if (Data.Index == -1)
+			{
+				return nullptr;
+			}
+
 			return HObjectHelper::GetObject(Data.Index, Data.SerialNumber);
 		}
 
 	protected:
+		HObjectHandle()
+		{
+			Data.Reset();
+		}
+
+		HObjectHandle(const HObjectArrayData& InData)
+			: Data(InData)
+		{}
+
 		HObjectHandle(uint32 InSerialNumber, uint32 InIndex)
 		{
 			Data.Index = InIndex;
@@ -126,12 +150,62 @@ namespace lsgd
 	class HObjectHandleUnique : public HObjectHandle<ObjectType, true>
 	{
 	public:
-		explicit HObjectHandleUnique(const HObjectHandleUnique& InObjectHandle)
-			: HObjectHandle(InObjectHandle.Data.SerialNumber, InObjectHandle.Data.Index)
+		HObjectHandleUnique()
+			: HObjectHandle()
 		{}
-		explicit HObjectHandleUnique(uint32 InSerialNumber, uint32 InIndex)
-			: HObjectHandle(InSerialNumber, InIndex)
-		{}
+
+		// explicit constructor
+		explicit HObjectHandleUnique(const HObjectArrayData& InData)
+			: HObjectHandle(InData)
+		{
+			check(IsValid()); // for explicit constructor, object should be valid
+		}
+
+		~HObjectHandleUnique()
+		{
+			HObjectHelper::SetAsDestroyed(Data);
+		}
+
+		// constructor/assignment that allows move semantics
+		HObjectHandleUnique(HObjectHandleUnique&& Moving) noexcept
+		{
+			Moving.Swap(*this);
+		}
+
+		HObjectHandleUnique& operator=(HObjectHandleUnique&& Moving) noexcept
+		{
+			HObjectHandleUnique<T> Tmp(Moving.Release());
+			Tmp.Swap(*this);
+		}
+
+		HObjectHandleUnique(HObjectHandleUnique const&) = delete;
+		HObjectHandleUnique& operator=(HObjectHandleUnique const&) = delete;
+
+		/*
+			@todo - HCast<> RTTI
+		*/
+		ObjectType* operator->() const { return GetObject(); }
+		ObjectType& operator*() const { return *GetObject(); }
+		ObjectType* Get() const { return GetObject(); }
+		explicit operator bool() const { return (Get() != nullptr); }
+
+		HObjectArrayData Release() noexcept
+		{
+			HObjectArrayData Result;
+			HSwap(Result, Data);
+			return Result;
+		}
+
+		void Swap(HObjectHandleUnique& InUnqiueHandle) noexcept
+		{
+			HSwap(Data, InUnqiueHandle.Data);
+		}
+
+		void Reset()
+		{
+			HObjectArrayData Tmp = Release();
+			HObjectHelper::SetAsDestroyed(Tmp);
+		}
 	};
 	
 	template <typename ObjectType>

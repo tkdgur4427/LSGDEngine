@@ -6,6 +6,11 @@ using namespace lsgd::container;
 
 namespace lsgd
 {
+	enum EObjectItemFlags : uint64
+	{
+		MarkAsDestroyed = 1 << 0,
+	};
+
 	class HObjectItem
 	{
 	public:
@@ -17,8 +22,12 @@ namespace lsgd
 
 		HObjectItem();
 
-		void Bind(unique_ptr<HObject>& InObject, int64 InFlag);
-		void Unbind();		
+		void Bind(unique_ptr<HObject>& InObject, uint64 InFlag);
+		void Unbind();
+
+		void SetFlag(uint64 InFlags);
+		void UnsetFlag(uint64 InFlags);
+		bool HasFlags(EObjectItemFlags InFlag);
 
 		unique_ptr<HObject> Object;
 		int64 Flags;
@@ -52,6 +61,11 @@ namespace lsgd
 
 		HObjectArrayData RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags);
 		HObject* GetObject(uint32 Index, uint32 SerialNumber);
+
+		bool IsValidObject(uint32 Index, uint32 SerialNumber);
+
+		// mark proper flags
+		void SetAsDestroyed(uint32 Index, uint32 SerialNumber);
 		
 	protected:
 		friend class HSingletonTemplate<HObjectArray>;

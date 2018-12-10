@@ -13,8 +13,10 @@ HObjectItem::HObjectItem()
 
 }
 
-void HObjectItem::Bind(unique_ptr<HObject>& InObject, int64 InFlag)
+void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag)
 {
+	check(Flags == 0);
+
 	Flags = InFlag;
 	UniqueNumber = UniqueNumberGenerator.Increment();
 
@@ -25,11 +27,26 @@ void HObjectItem::Bind(unique_ptr<HObject>& InObject, int64 InFlag)
 void HObjectItem::Unbind()
 {
 	// reset the unique number and flags
-	Flags = -1;
+	Flags = 0;
 	UniqueNumber = -1;
 
 	// release the Object binded in this item slot
 	Object.reset();
+}
+
+void HObjectItem::SetFlag(uint64 InFlags)
+{
+	Flags |= InFlags;
+}
+
+void HObjectItem::UnsetFlag(uint64 InFlags)
+{
+	Flags &= ((uint64)(-1) ^ InFlags);
+}
+
+bool HObjectItem::HasFlags(EObjectItemFlags InFlag)
+{
+	return (Flags & InFlag) != 0;
 }
 
 HObjectArray::HObjectCreateListener::HObjectCreateListener()
@@ -108,16 +125,37 @@ void HObjectArray::DeregisterObject(uint32 Index, uint32 SerialNumber)
 	ObjectItem->Unbind();
 }
 
-HObject* HObjectArray::GetObject(uint32 Index, uint32 SerialNumber)
+bool HObjectArray::IsValidObject(uint32 Index, uint32 SerialNumber)
 {
 	HObjectItem* ObjectItem = Objects[Index].get();
-	
-	// when only unique number is same as serial number (it means that it indicates same object)
-	if (ObjectItem->UniqueNumber == SerialNumber)
+	if (ObjectItem->HasFlags(EObjectItemFlags::MarkAsDestroyed))
 	{
-		return ObjectItem->Object.get();
+		return false;
 	}
 
-	// otherwise
-	return nullptr;
+	if (ObjectItem->UniqueNumber != SerialNumber)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+HObject* HObjectArray::GetObject(uint32 Index, uint32 SerialNumber)
+{
+	if (!IsValidObject(Index, SerialNumber))
+	{
+		return nullptr;
+	}	
+	
+	HObjectItem* ObjectItem = Objects[Index].get();	
+	return ObjectItem->Object.get();
+}
+
+void HObjectArray::SetAsDestroyed(uint32 Index, uint32 SerialNumber)
+{	
+	check(IsValidObject(Index, SerialNumber));
+
+	HObjectItem* ObjectItem = Objects[Index].get();
+	ObjectItem->SetFlag(EObjectItemFlags::MarkAsDestroyed);
 }

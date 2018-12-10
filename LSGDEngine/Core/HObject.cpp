@@ -69,6 +69,11 @@ HObject* HObjectHelper::GetObject(uint32 Index, uint32 SerialNumber)
 	return HObjectArray::GetSingleton()->GetObject(Index, SerialNumber);
 }
 
+void HObjectHelper::SetAsDestroyed(const HObjectArrayData& InData)
+{
+	HObjectArray::GetSingleton()->SetAsDestroyed(InData.Index, InData.SerialNumber);
+}
+
 namespace lsgd
 {
 	HObjectArrayData AllocateHObject(const HString& ClassName, class HPackage* InPackage)

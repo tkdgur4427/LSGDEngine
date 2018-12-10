@@ -158,6 +158,12 @@ namespace lsgd
 		return std::to_string(InVal);
 	}
 
+	template <typename Type>
+	void HSwap(Type InValA, Type InValB)
+	{
+		std::swap(InValA, InValB);
+	}
+
 	//-------------------------------------------------------------------------
 	// custom implementations for dependent std library above
 
