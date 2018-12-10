@@ -105,17 +105,17 @@ namespace lsgd
 		static void SetAsDestroyed(const HObjectArrayData& InData);
 	};
 
-	// object handle
-	template <typename ObjectType, bool bIsOwned>
+	// object handle	
 	class HObjectHandle
 	{
 	public:
 		// whether the handle has ownership of a object
 		bool IsOwned() const { return bIsOwned; }
 		// whether object handle is valid or not
-		bool IsValid() const { return GetObject() != nullptr; }
+		bool IsValid() const { return HObjectHelper::GetObject(Data.Index, Data.SerialNumber) != nullptr; }
 		
 		// get the object
+		template <typename ObjectType>
 		ObjectType* GetObject()
 		{
 			// early validation out
@@ -124,39 +124,37 @@ namespace lsgd
 				return nullptr;
 			}
 
-			return HObjectHelper::GetObject(Data.Index, Data.SerialNumber);
+			// @todo - HCast<>
+			return (ObjectType*)HObjectHelper::GetObject(Data.Index, Data.SerialNumber);
 		}
 
 	protected:
-		HObjectHandle()
+		HObjectHandle(bool InbIsOwned)
+			: bIsOwned(InbIsOwned)
 		{
 			Data.Reset();
 		}
 
-		HObjectHandle(const HObjectArrayData& InData)
+		HObjectHandle(const HObjectArrayData& InData, bool InbIsOwned)
 			: Data(InData)
-		{}
-
-		HObjectHandle(uint32 InSerialNumber, uint32 InIndex)
-		{
-			Data.Index = InIndex;
-			Data.SerialNumber = InSerialNumber;
-		}
+			, bIsOwned(InbIsOwned)
+		{}		
 
 		HObjectArrayData Data;
+		bool bIsOwned;
 	};
 
 	template <typename ObjectType>
-	class HObjectHandleUnique : public HObjectHandle<ObjectType, true>
+	class HObjectHandleUnique : public HObjectHandle
 	{
 	public:
 		HObjectHandleUnique()
-			: HObjectHandle()
+			: HObjectHandle(true)
 		{}
 
 		// explicit constructor
 		explicit HObjectHandleUnique(const HObjectArrayData& InData)
-			: HObjectHandle(InData)
+			: HObjectHandle(InData, true)
 		{
 			check(IsValid()); // for explicit constructor, object should be valid
 		}
@@ -181,12 +179,9 @@ namespace lsgd
 		HObjectHandleUnique(HObjectHandleUnique const&) = delete;
 		HObjectHandleUnique& operator=(HObjectHandleUnique const&) = delete;
 
-		/*
-			@todo - HCast<> RTTI
-		*/
-		ObjectType* operator->() const { return GetObject(); }
-		ObjectType& operator*() const { return *GetObject(); }
-		ObjectType* Get() const { return GetObject(); }
+		ObjectType* operator->() const { return GetObject<ObjectType>(); }
+		ObjectType& operator*() const { return *GetObject<ObjectType>(); }
+		ObjectType* Get() const { return GetObject<ObjectType>(); }
 		explicit operator bool() const { return (Get() != nullptr); }
 
 		HObjectArrayData Release() noexcept
@@ -209,14 +204,11 @@ namespace lsgd
 	};
 	
 	template <typename ObjectType>
-	class HObjectHandleWeak : public HObjectHandle<ObjectType, false>
+	class HObjectHandleWeak : public HObjectHandle
 	{
 	public:
-		explicit HObjectHandleWeak(const HObjectHandleWeak& InObjectHandle)
-			: HObjectHandle(InObjectHandle.Data.SerialNumber, InObjectHandle.Data.Index)
-		{}
-		explicit HObjectHandleWeak(uint32 InSerialNumber, uint32 InIndex)
-			: HObjectHandle(InSerialNumber, InIndex)
+		HObjectHandleWeak()
+			: HObjectHandle(false)
 		{}
 	};
 
