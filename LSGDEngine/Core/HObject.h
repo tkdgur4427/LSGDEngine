@@ -231,6 +231,6 @@ namespace lsgd
 
 		// @todo - need to dynamic RTTI checking for whether this class is derived or not
 		HObjectArrayData NewData = AllocateHObjectInner(Class, InPackage);
-		return HObjectHandleUnique<ObjectType>(NewData.SerialNumber, NewData.Index);
+		return HObjectHandleUnique<ObjectType>(NewData);
 	}
 }
