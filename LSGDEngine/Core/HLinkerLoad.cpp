@@ -61,9 +61,11 @@ bool HLinkerLoad::LoadPackage(HLinkerLoadContext& InContext)
 
 		// create new HObject
 		// @todo - need to make GC for HObject!
-		HObject* NewObject = AllocateHObject(ObjectExport.TypeInfo.TypeName);
+		HObjectHandleUnique<HObject> NewHandle(AllocateHObject(ObjectExport.TypeInfo.TypeName));
 
 		// serialize real object
+		// @todo - temporary...
+		HObject* NewObject = NewHandle.Get();
 		(*FileArchive) << NewObject;
 	}
 

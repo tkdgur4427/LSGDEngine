@@ -116,7 +116,7 @@ namespace lsgd
 		
 		// get the object
 		template <typename ObjectType>
-		ObjectType* GetObject()
+		ObjectType* GetObject() const
 		{
 			// early validation out
 			if (Data.Index == -1)
@@ -138,7 +138,10 @@ namespace lsgd
 		HObjectHandle(const HObjectArrayData& InData, bool InbIsOwned)
 			: Data(InData)
 			, bIsOwned(InbIsOwned)
-		{}		
+		{}	
+
+		virtual ~HObjectHandle()
+		{}
 
 		HObjectArrayData Data;
 		bool bIsOwned;
@@ -159,7 +162,7 @@ namespace lsgd
 			check(IsValid()); // for explicit constructor, object should be valid
 		}
 
-		~HObjectHandleUnique()
+		virtual ~HObjectHandleUnique()
 		{
 			HObjectHelper::SetAsDestroyed(Data);
 		}
@@ -172,7 +175,7 @@ namespace lsgd
 
 		HObjectHandleUnique& operator=(HObjectHandleUnique&& Moving) noexcept
 		{
-			HObjectHandleUnique<T> Tmp(Moving.Release());
+			HObjectHandleUnique<ObjectType> Tmp(Moving.Release());
 			Tmp.Swap(*this);
 		}
 
@@ -210,6 +213,25 @@ namespace lsgd
 		HObjectHandleWeak()
 			: HObjectHandle(false)
 		{}
+
+		explicit HObjectHandleWeak(const HObjectArrayData& InData)
+			: HObjectHandle(InData, false)
+		{
+			check(IsValid());
+		}
+
+		virtual ~HObjectHandleWeak()
+		{
+			// do nothing (done by GC)
+		}
+
+		HObjectHandleWeak(HObjectHandleWeak const&) = delete;
+		HObjectHandleWeak& operator=(HObjectHandleWeak const&) = delete;
+
+		ObjectType* operator->() const { return GetObject<ObjectType>(); }
+		ObjectType& operator*() const { return *GetObject<ObjectType>(); }
+		ObjectType* Get() const { return GetObject<ObjectType>(); }
+		explicit operator bool() const { return (Get() != nullptr); }
 	};
 
 	// forward declaration

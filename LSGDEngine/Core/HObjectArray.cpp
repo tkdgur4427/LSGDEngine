@@ -123,6 +123,9 @@ void HObjectArray::DeregisterObject(uint32 Index, uint32 SerialNumber)
 	
 	// release the object
 	ObjectItem->Unbind();
+
+	// add to free index
+	FreeIndices.Push(Index);
 }
 
 bool HObjectArray::IsValidObject(uint32 Index, uint32 SerialNumber)
