@@ -62,7 +62,7 @@ HFileArchive::HFileArchive(const HString& InFilename)
 	: CurrFileCacheChunk(-1)
 	, Filename(InFilename)
 {
-	PlatformFileIO = move(HGenericPlatformMisc::CreatePlatformFileIO());
+	PlatformFileIO = HMove(HGenericPlatformMisc::CreatePlatformFileIO());
 
 	// get the new chunk (initially allocate new file cache chunk)
 	CurrFileCacheChunk = GetAvailableFileCacheChunk();
@@ -85,7 +85,7 @@ int32 HFileArchive::GetAvailableFileCacheChunk()
 	unique_ptr<HFileCacheChunk> NewChunk = make_unique<HFileCacheChunk>();
 
 	int32 Result = FileCacheChunks.size();
-	FileCacheChunks.push_back(move(NewChunk));
+	FileCacheChunks.push_back(HMove(NewChunk));
 
 	return Result;
 }

@@ -635,7 +635,7 @@ namespace lsgd { namespace reflect {
 		// add mapper from name to primitive type
 		NameToPrimitiveTypes.insert({ NewPrimitiveType->PrimitiveName, NewIndex });
 
-		PrimitiveTypes.push_back(move(NewPrimitiveType));
+		PrimitiveTypes.push_back(HMove(NewPrimitiveType));
 
 		// add common type helper
 		PrimitiveTypeCommonTypeHelpers.push_back(HPrimitiveTypeHelper<Type>::GetCommonTypeHelper());
@@ -679,7 +679,7 @@ namespace lsgd { namespace reflect {
 		// first handling primitive type
 		if (HPrimitiveTypeHelper<Type>::IsPrimitiveType())
 		{
-			return move(CreatePrimitiveProperty<Type>(InVariableName, InOffset, InSize, InArrayDim));
+			return HMove(CreatePrimitiveProperty<Type>(InVariableName, InOffset, InSize, InArrayDim));
 		}
 
 		// second ...		
@@ -697,7 +697,7 @@ namespace lsgd { namespace reflect {
 		int32 FieldSize = sizeof(FieldType);
 
 		// create property
-		unique_ptr<HProperty> NewProperty = move(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+		unique_ptr<HProperty> NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
 		LinkProperty(ClassIndex, NewProperty);
 	}
 

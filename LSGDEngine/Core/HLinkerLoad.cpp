@@ -67,6 +67,9 @@ bool HLinkerLoad::LoadPackage(HLinkerLoadContext& InContext)
 		// @todo - temporary...
 		HObject* NewObject = NewHandle.Get();
 		(*FileArchive) << NewObject;
+
+		// set the object export
+		ObjectExport.Object = HMove(NewHandle);
 	}
 
 	return true;

@@ -8,7 +8,7 @@ namespace lsgd {
 
 	// remove_reference
 	template<class Type>
-	using HRemoveReference = typename std::remove_reference_t<Type>::type;
+	using HRemoveReference = typename std::remove_reference<Type>;
 
 	template <bool B, class T = void>
 	using HEnableIf = std::enable_if<B, T>;

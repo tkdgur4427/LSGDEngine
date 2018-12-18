@@ -97,16 +97,16 @@ namespace lsgd
 
 	// forward
 	template<class Type>
-	constexpr Type&& forward(HRemoveReference<Type>& Arg)
+	constexpr Type&& forward(typename HRemoveReference<Type>::type& Arg)
 	{	
-		return (static_cast<Type&&>(Arg));
+		return (Type&&)(Arg);
 	}
 
 	// move
 	template<class Type>
-	constexpr HRemoveReference<Type>&& move(Type&& Arg)
+	constexpr typename HRemoveReference<Type>::type&& HMove(Type&& Arg) noexcept
 	{	
-		return (static_cast<HRemoveReference<Type>&&>(Arg));
+		return (static_cast<typename HRemoveReference<Type>::type&&>(Arg));
 	}
 
 	//-------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HObjectHandle.h"
+
 namespace lsgd
 {
 	/*
@@ -44,7 +46,7 @@ namespace lsgd
 
 		// type info to serialize
 		HTypeInfo TypeInfo;
-		HObject* Object;
+		HObjectHandleUnique<HObject> Object;
 	};
 
 	class HObjectImport : public HObjectResource

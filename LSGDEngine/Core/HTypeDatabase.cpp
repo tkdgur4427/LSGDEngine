@@ -78,7 +78,7 @@ void HTypeDatabase::AddClassTypeInner(const HString& InName, const HString& InSu
 
 	// declare the class instance
 	unique_ptr<HClass> NewClass = lsgd::make_unique<HClass>(InName);
-	Classes.push_back(move(NewClass));
+	Classes.push_back(HMove(NewClass));
 
 	// generate class data for post-processing
 	HPostProcessClassData NewPostprocessClassData;
@@ -160,7 +160,7 @@ unique_ptr<HProperty> HTypeDatabase::CreatePrimitiveProperty(const HString& InTy
 	}
 
 	// move the type descriptor instance (note that unique_ptr)
-	NewProperty->TypeDescriptor = move(NewDescriptor);
+	NewProperty->TypeDescriptor = HMove(NewDescriptor);
 
 	return NewProperty;
 }
@@ -170,7 +170,7 @@ unique_ptr<HProperty> HTypeDatabase::CreatePropertyByName(const HString& InTypeN
 	// first handling primitive type
 	if (ExistPrimitiveType(InTypeName))
 	{
-		return move(CreatePrimitiveProperty(InTypeName, InVariableName, InOffset, InSize, InArrayDim));
+		return HMove(CreatePrimitiveProperty(InTypeName, InVariableName, InOffset, InSize, InArrayDim));
 	}
 
 	// second ...		

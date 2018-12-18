@@ -156,6 +156,9 @@
       <Filter>CoreObject</Filter>
     </ClInclude>
     <ClInclude Include="HSingletonTemplate.h" />
+    <ClInclude Include="HObjectHandle.h">
+      <Filter>CoreObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -223,6 +226,9 @@
       <Filter>Thread</Filter>
     </ClCompile>
     <ClCompile Include="HObjectArray.cpp">
+      <Filter>CoreObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HObjectHandle.cpp">
       <Filter>CoreObject</Filter>
     </ClCompile>
   </ItemGroup>

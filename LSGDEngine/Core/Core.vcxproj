@@ -39,6 +39,7 @@
     <ClInclude Include="HNewDeleteOverride.h" />
     <ClInclude Include="HObject.h" />
     <ClInclude Include="HObjectArray.h" />
+    <ClInclude Include="HObjectHandle.h" />
     <ClInclude Include="HPackage.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HNumericTypeHelper.h" />
@@ -88,6 +89,7 @@
     <ClCompile Include="HNewDeleteOverride.cpp" />
     <ClCompile Include="HObject.cpp" />
     <ClCompile Include="HObjectArray.cpp" />
+    <ClCompile Include="HObjectHandle.cpp" />
     <ClCompile Include="HPackage.cpp" />
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HReflectionContext.cpp" />

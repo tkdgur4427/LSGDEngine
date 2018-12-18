@@ -20,7 +20,7 @@ void HProperty::SerializeItem(HReflectionContext& InContext, uint8* OutData)
 
 void HStruct::AddProperty(unique_ptr<HProperty>& InProperty)
 {
-	Properties.push_back(move(InProperty));
+	Properties.push_back(HMove(InProperty));
 }
 
 void HStruct::SerializeProperties(HReflectionContext& InContext, uint8* OutData) const
@@ -36,7 +36,7 @@ void HClass::AddMethod(unique_ptr<HFunction>& InMethod)
 	HFunction* RawMethod = InMethod.get();
 
 	// add method
-	Methods.push_back(move(InMethod));
+	Methods.push_back(HMove(InMethod));
 
 	// add pointer to mapper
 	FunctionMap.insert({ RawMethod->Name, RawMethod });
@@ -97,7 +97,7 @@ void HNativeFunction::InvokeInner(HDirectFunctionCallFrame& InvokeFrame)
 void HNativeFunction::SetNativeFunctionObject(unique_ptr<HNativeFunctionObject>& InNativeFunctionObject)
 {
 	// move the function object
-	NativeFunctionObject = move(InNativeFunctionObject);
+	NativeFunctionObject = HMove(InNativeFunctionObject);
 	
 	// processing function inputs
 	int8 AccParamNum = 0;

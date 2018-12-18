@@ -21,7 +21,7 @@ void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag)
 	UniqueNumber = UniqueNumberGenerator.Increment();
 
 	// move the object real instance to the slot
-	Object = move(InObject);
+	Object = HMove(InObject);
 }
 
 void HObjectItem::Unbind()

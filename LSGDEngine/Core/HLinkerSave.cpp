@@ -114,6 +114,7 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 		ExportMap.push_back(HObjectExport());
 
 		ExportMap[OutIndex].OuterIndex = OutIndex + 1;
+ 
 		ExportMap[OutIndex].Object = Object;
 		ExportMap[OutIndex].ObjectName = Object->Name;
 
