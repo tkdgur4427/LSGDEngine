@@ -51,12 +51,18 @@ namespace lsgd
 
 		// bit flags for EObjectFlags
 		int64 ObjectFlags;
+
+		// object array data
+		HObjectArrayData ObjectArrayData;
 	};
 
 	class HCoreObject
 	{
 	public:
 		HCoreObject();
+
+		// get the object array data
+		const HObjectArrayData& GetObjectArrayData() const { return State.ObjectArrayData; }
 
 	//protected:
 		void GenerateName();

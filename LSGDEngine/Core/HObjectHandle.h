@@ -22,6 +22,9 @@ namespace lsgd
 	{
 		static HObject* GetObject(uint32 Index, uint32 SerialNumber);
 		static void SetAsDestroyed(const HObjectArrayData& InData);
+		static void SetAsRootSet(const HObjectArrayData& InData);
+		static void MarkGC(const HObjectArrayData& InData);
+		static void UnMarkGC(const HObjectArrayData& InData);
 	};
 
 	// object handle	
@@ -97,6 +100,7 @@ namespace lsgd
 		{
 			HObjectHandleUnique<ObjectType> Tmp(Moving.Release());
 			Tmp.Swap(*this);
+			return *this;
 		}
 
 		HObjectHandleUnique(HObjectHandleUnique const&) = delete;
@@ -153,4 +157,17 @@ namespace lsgd
 		ObjectType* Get() const { return GetObject<ObjectType>(); }
 		explicit operator bool() const { return (Get() != nullptr); }
 	};
+}
+
+template <class ObjectType>
+lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectHandleUnique<ObjectType>& InObjectHandleUnique)
+{
+	// only serialize for unique object handle
+	InContext << *InObjectHandleUnique;
+}
+
+template <class ObjectType>
+lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectHandleWeak<ObjectType>& InObjectHandleWeak)
+{
+	// do nothing
 }

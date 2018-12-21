@@ -69,7 +69,7 @@ bool HLinkerLoad::LoadPackage(HLinkerLoadContext& InContext)
 		(*FileArchive) << NewObject;
 
 		// set the object export
-		ObjectExport.Object = HMove(NewHandle);
+		ObjectExport.Object = NewObject;
 	}
 
 	return true;

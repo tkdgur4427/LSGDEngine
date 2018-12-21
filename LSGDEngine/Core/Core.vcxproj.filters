@@ -37,6 +37,9 @@
     <Filter Include="Async">
       <UniqueIdentifier>{9b1ac765-b580-4d6a-9c87-3b6b0ea4f1f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GC">
+      <UniqueIdentifier>{8baf4ff1-c02a-4a9f-adaf-79ae6311d61e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -159,6 +162,15 @@
     <ClInclude Include="HObjectHandle.h">
       <Filter>CoreObject</Filter>
     </ClInclude>
+    <ClInclude Include="HReferenceCollector.h">
+      <Filter>GC</Filter>
+    </ClInclude>
+    <ClInclude Include="HGarbageCollect.h">
+      <Filter>GC</Filter>
+    </ClInclude>
+    <ClInclude Include="HGCSweepExecutor.h">
+      <Filter>GC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -208,7 +220,6 @@
     <ClCompile Include="HWindowsPlatformMisc.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="HReflectionContext.cpp" />
     <ClCompile Include="HNewDeleteOverride.cpp" />
     <ClCompile Include="HTaskGraph.cpp">
       <Filter>Async</Filter>
@@ -230,6 +241,18 @@
     </ClCompile>
     <ClCompile Include="HObjectHandle.cpp">
       <Filter>CoreObject</Filter>
+    </ClCompile>
+    <ClCompile Include="HReflectionContext.cpp">
+      <Filter>Reflect</Filter>
+    </ClCompile>
+    <ClCompile Include="HReferenceCollector.cpp">
+      <Filter>GC</Filter>
+    </ClCompile>
+    <ClCompile Include="HGarbageCollect.cpp">
+      <Filter>GC</Filter>
+    </ClCompile>
+    <ClCompile Include="HGCSweepExecutor.cpp">
+      <Filter>GC</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

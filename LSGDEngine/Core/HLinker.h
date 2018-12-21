@@ -46,7 +46,7 @@ namespace lsgd
 
 		// type info to serialize
 		HTypeInfo TypeInfo;
-		HObjectHandleUnique<HObject> Object;
+		HObject* Object;
 	};
 
 	class HObjectImport : public HObjectResource

@@ -13,7 +13,7 @@ HObjectItem::HObjectItem()
 
 }
 
-void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag)
+void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag, uint32 InIndex)
 {
 	check(Flags == 0);
 
@@ -22,6 +22,9 @@ void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag)
 
 	// move the object real instance to the slot
 	Object = HMove(InObject);
+
+	// set the object's state as binded object array data
+	Object->State.ObjectArrayData = { UniqueNumber, InIndex };
 }
 
 void HObjectItem::Unbind()
@@ -29,6 +32,9 @@ void HObjectItem::Unbind()
 	// reset the unique number and flags
 	Flags = 0;
 	UniqueNumber = -1;
+
+	// reset the data
+	Object->State.ObjectArrayData.Reset();
 
 	// release the Object binded in this item slot
 	Object.reset();
@@ -111,7 +117,7 @@ void HObjectArray::InitializeObjectArray()
 HObjectArrayData HObjectArray::RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags)
 {
 	uint32 NewIndex = FreeIndices.Pop();
-	Objects[NewIndex]->Bind(InObject, InFlags);
+	Objects[NewIndex]->Bind(InObject, InFlags, NewIndex);
 
 	return {Objects[NewIndex]->UniqueNumber, NewIndex};
 }
@@ -155,10 +161,51 @@ HObject* HObjectArray::GetObject(uint32 Index, uint32 SerialNumber)
 	return ObjectItem->Object.get();
 }
 
+HArray<HObject*> HObjectArray::GetRootSetObjects()
+{
+	HArray<HObject*> Result;
+	Result.resize(RootSetObjects.size());
+
+	int32 Index = 0;
+	for (auto& RootSetIndex : RootSetObjects)
+	{
+		Result[Index++] = Objects[RootSetIndex]->Object.get();
+	}
+
+	return Result;
+}
+
 void HObjectArray::SetAsDestroyed(uint32 Index, uint32 SerialNumber)
 {	
 	check(IsValidObject(Index, SerialNumber));
 
 	HObjectItem* ObjectItem = Objects[Index].get();
 	ObjectItem->SetFlag(EObjectItemFlags::MarkAsDestroyed);
+}
+
+void HObjectArray::SetAsRootSet(uint32 Index, uint32 SerialNumber)
+{
+	check(IsValidObject(Index, SerialNumber));
+
+	HObjectItem* ObjectItem = Objects[Index].get();
+	ObjectItem->SetFlag(EObjectItemFlags::RootSet);
+
+	// add to fast look-up table for rootset
+	RootSetObjects.push_back(Index);
+}
+
+void HObjectArray::MarkGC(uint32 Index, uint32 SerialNumber)
+{
+	check(IsValidObject(Index, SerialNumber));
+
+	HObjectItem* ObjectItem = Objects[Index].get();
+	ObjectItem->SetFlag(EObjectItemFlags::MarkGC);
+}
+
+void HObjectArray::UnMarkGC(uint32 Index, uint32 SerialNumber)
+{
+	check(IsValidObject(Index, SerialNumber));
+
+	HObjectItem* ObjectItem = Objects[Index].get();
+	ObjectItem->UnsetFlag(EObjectItemFlags::MarkGC);
 }

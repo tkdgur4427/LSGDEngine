@@ -83,9 +83,13 @@ namespace lsgd
 		LObjectInitializer.Package = InPackage;
 
 		// when there is no package, set the GTranscientPackage
+		bool bNeedRootSet = false;
 		if (LObjectInitializer.Package == nullptr)
 		{
 			LObjectInitializer.Package = GTransientPackage;
+
+			// @todo - temporary
+			bNeedRootSet = true;
 		}
 
 		// set the real class size
@@ -113,6 +117,12 @@ namespace lsgd
 		// register new object to GObjectArray
 		unique_ptr<HObject> NewObjectPtr(NewObject);
 		HObjectArrayData NewData = HObjectArray::GetSingleton()->RegisterObject(NewObjectPtr, 0);
+
+		if (bNeedRootSet)
+		{
+			// if we need to set root set
+			HObjectHelper::SetAsRootSet(NewData);
+		}
 
 		return NewData;
 	}

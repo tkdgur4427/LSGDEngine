@@ -4,11 +4,19 @@
 
 using namespace lsgd::container;
 
+namespace lsgd { namespace gc {
+
+	class HGCSweepExecutor;
+
+} }
+
 namespace lsgd
 {
 	enum EObjectItemFlags : uint64
 	{
 		MarkAsDestroyed = 1 << 0,
+		RootSet			= 1 << 1,
+		MarkGC			= 1 << 2,
 	};
 
 	class HObjectItem
@@ -19,15 +27,18 @@ namespace lsgd
 	protected:
 		// the only class which can access
 		friend class HObjectArray;
+		friend class gc::HGCSweepExecutor;
 
 		HObjectItem();
 
-		void Bind(unique_ptr<HObject>& InObject, uint64 InFlag);
+		void Bind(unique_ptr<HObject>& InObject, uint64 InFlag, uint32 InIndex);
 		void Unbind();
 
 		void SetFlag(uint64 InFlags);
 		void UnsetFlag(uint64 InFlags);
 		bool HasFlags(EObjectItemFlags InFlag);
+
+		bool IsEmpty() const { return UniqueNumber == -1; }
 
 		unique_ptr<HObject> Object;
 		int64 Flags;
@@ -61,14 +72,20 @@ namespace lsgd
 
 		HObjectArrayData RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags);
 		HObject* GetObject(uint32 Index, uint32 SerialNumber);
+		HArray<HObject*> GetRootSetObjects();
 
 		bool IsValidObject(uint32 Index, uint32 SerialNumber);
 
 		// mark proper flags
 		void SetAsDestroyed(uint32 Index, uint32 SerialNumber);
+		void SetAsRootSet(uint32 Index, uint32 SerialNumber);
+		void MarkGC(uint32 Index, uint32 SerialNumber);
+		void UnMarkGC(uint32 Index, uint32 SerialNumber);
 		
 	protected:
 		friend class HSingletonTemplate<HObjectArray>;
+		friend class gc::HGCSweepExecutor;
+
 		HObjectArray();
 
 		void InitializeObjectArray();
@@ -80,6 +97,8 @@ namespace lsgd
 		HObjectArrayType Objects;
 		// free indices
 		HConcurrentQueue<uint32> FreeIndices;
+		// root set object array
+		HArray<uint32> RootSetObjects;
 
 		// registered observers (create/delete)
 		HArray<HObjectCreateListener*> ObjectCreateListeners;

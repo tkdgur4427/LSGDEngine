@@ -27,6 +27,8 @@
     <ClInclude Include="HCore.h" />
     <ClInclude Include="HCorePCH.h" />
     <ClInclude Include="HFileArchive.h" />
+    <ClInclude Include="HGarbageCollect.h" />
+    <ClInclude Include="HGCSweepExecutor.h" />
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
     <ClInclude Include="HGenericPlatformMisc.h" />
     <ClInclude Include="HGuid.h" />
@@ -43,6 +45,7 @@
     <ClInclude Include="HPackage.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HNumericTypeHelper.h" />
+    <ClInclude Include="HReferenceCollector.h" />
     <ClInclude Include="HReflect.h" />
     <ClInclude Include="HReflectDeclare.h" />
     <ClInclude Include="HReflectImplement.h" />
@@ -77,6 +80,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="HFileArchive.cpp" />
+    <ClCompile Include="HGarbageCollect.cpp" />
+    <ClCompile Include="HGCSweepExecutor.cpp" />
     <ClCompile Include="HGeneratePrimitiveReflect.cpp" />
     <ClCompile Include="HGuid_crossguid.cpp" />
     <ClCompile Include="HLinker.cpp" />
@@ -91,6 +96,7 @@
     <ClCompile Include="HObjectArray.cpp" />
     <ClCompile Include="HObjectHandle.cpp" />
     <ClCompile Include="HPackage.cpp" />
+    <ClCompile Include="HReferenceCollector.cpp" />
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HReflectionContext.cpp" />
     <ClCompile Include="HStdOverrides.cpp" />
