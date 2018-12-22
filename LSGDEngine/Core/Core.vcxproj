@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="HAssert.h" />
     <ClInclude Include="HCallOnceLock.h" />
+    <ClInclude Include="HCastType.h" />
     <ClInclude Include="HClassType.h" />
     <ClInclude Include="HCommonTypeHelper.h" />
     <ClInclude Include="HConcurrentQueue.h" />

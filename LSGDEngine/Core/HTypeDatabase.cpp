@@ -80,15 +80,36 @@ void HTypeDatabase::AddClassTypeInner(const HString& InName, const HString& InSu
 	unique_ptr<HClass> NewClass = lsgd::make_unique<HClass>(InName);
 	Classes.push_back(HMove(NewClass));
 
-	// generate class data for post-processing
-	HPostProcessClassData NewPostprocessClassData;
-	NewPostprocessClassData.ClassName = InName;
-	NewPostprocessClassData.SuperClassName = InSuperClassName;
+	// only supoer class name exists
+	if (InSuperClassName != HString())
+	{
+		// generate class data for post-processing
+		HPostProcessClassData NewPostprocessClassData;
+		NewPostprocessClassData.ClassName = InName;
+		NewPostprocessClassData.SuperClassName = InSuperClassName;
 
-	PostProcessClassDataList.push_back(NewPostprocessClassData);
+		PostProcessClassDataList.push_back(NewPostprocessClassData);
+	}
 }
 
-bool HTypeDatabase::ExistClass(const HString& InClassName)
+void HTypeDatabase::ProcessPostProcessClassData()
+{
+	for (auto& PostProcessClassData : PostProcessClassDataList)
+	{
+		// link the class with base class
+		const HString& ClassName = PostProcessClassData.ClassName;
+		const HString& BaseClassName = PostProcessClassData.SuperClassName;
+		check(ExistClass(ClassName));
+		check(ExistClass(BaseClassName));
+
+		HClass* Class = GetClass(ClassName);
+		HClass* BaseClass = GetClass(BaseClassName);
+
+		Class->SuperStruct = BaseClass;
+	}
+}
+
+bool HTypeDatabase::ExistClass(const HString& InClassName) const
 {
 	for (auto& Class : Classes)
 	{
@@ -100,7 +121,7 @@ bool HTypeDatabase::ExistClass(const HString& InClassName)
 	return false;
 }
 
-int32 HTypeDatabase::GetClassIndex(const HString& InClassName)
+int32 HTypeDatabase::GetClassIndex(const HString& InClassName) const
 {
 	int32 Index = 0;
 	for (auto& Class : Classes)
@@ -115,7 +136,12 @@ int32 HTypeDatabase::GetClassIndex(const HString& InClassName)
 	return -1;
 }
 
-const HClass* HTypeDatabase::GetClass(const HString& InClassName)
+const HClass* HTypeDatabase::GetClass(const HString& InClassName) const
+{
+	return Classes[GetClassIndex(InClassName)].get();
+}
+
+HClass* HTypeDatabase::GetClass(const HString& InClassName)
 {
 	return Classes[GetClassIndex(InClassName)].get();
 }

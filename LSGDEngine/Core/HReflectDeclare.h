@@ -27,6 +27,7 @@
 #define GENERATE_CLASS_BODY(ClassType) \
 	static lsgd::HString GetClassName() { return #ClassType; }
 
+// @todo need to support multiple base classes
 #define DECLARE_CLASS_TYPE(ClassType, ...) \
 	class ClassType; \
 	template <> \
@@ -44,3 +45,22 @@
 	}; \
 	extern HStatic##ClassType Static##ClassType; 
 	
+// supporting only one base class inheritance
+#define DECLARE_CLASS_TYPE1(ClassType, BaseClassType) \
+	class ClassType; \
+	class BaseClassType; \
+	template <> \
+	struct HClassTypeHelper<ClassType> \
+	{ \
+		using Super = BaseClassType; \
+		static bool IsClassType() { return true; } \
+		static lsgd::HString GetClassName() { return #ClassType; } \
+		static lsgd::HString GetBaseClassNames() { return #BaseClassType; } \
+		static HCommonTypeHelperInterface* GetCommonTypeHelper() { static HCommonTypeHelper<ClassType> CommonTypeHelper; return &CommonTypeHelper; } \
+	}; \
+	class HStatic##ClassType \
+	{ \
+	public: \
+		HStatic##ClassType(); \
+	}; \
+	extern HStatic##ClassType Static##ClassType; 

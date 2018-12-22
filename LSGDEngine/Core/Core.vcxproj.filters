@@ -171,6 +171,9 @@
     <ClInclude Include="HGCSweepExecutor.h">
       <Filter>GC</Filter>
     </ClInclude>
+    <ClInclude Include="HCastType.h">
+      <Filter>Reflect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />

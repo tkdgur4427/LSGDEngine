@@ -291,10 +291,14 @@ namespace lsgd { namespace reflect {
 		template <class Type>
 		void AddClassType(const HString& InName, const HString& InSuperClassName);
 
+		// process post process class data
+		void ProcessPostProcessClassData();
+
 		void AddClassTypeInner(const HString& InName, const HString& InSuperClassName);
-		bool ExistClass(const HString& InClassName);
-		int32 GetClassIndex(const HString& InClassName);
-		const HClass* GetClass(const HString& InClassName);
+		bool ExistClass(const HString& InClassName) const;
+		int32 GetClassIndex(const HString& InClassName) const;
+		const HClass* GetClass(const HString& InClassName) const;
+		HClass* GetClass(const HString& InClassName);
 		const HCommonTypeHelperInterface* GetClassCommonTypeHelper(const HString& InClassName);
 
 		template <class ClassType, class FieldType>
