@@ -57,6 +57,16 @@ void HTaskThreadSharedContext::CreateTaskThread()
 	lsgd::thread::HThreadManager::GetSingleton()->CreateHardwareThread(TaskThreadRunnable);
 }
 
+void HTaskThreadSharedContext::CreateNamedThread(const HString& InName)
+{
+	// create task thread base
+	shared_ptr<HThreadRunnable> NamedThreadRunnable = make_shared<HThreadRunnable, HNamedTaskThread>(InName);
+	NamedThreads.push_back(NamedThreadRunnable);
+
+	// create hardware thread
+	lsgd::thread::HThreadManager::GetSingleton()->CreateHardwareThread(NamedThreadRunnable);
+}
+
 int32 HTaskThreadSharedContext::GetTaskThreadIndex()
 {
 	int32 Result = -1;
@@ -75,7 +85,8 @@ int32 HTaskThreadSharedContext::GetTaskThreadIndex()
 }
 
 HTaskThreadBase::HTaskThreadBase()
-	: UniqueId(TaskThreadSharedContext.GenerateTaskThreadId())
+	: HThreadRunnable("TaskThread")
+	, UniqueId(TaskThreadSharedContext.GenerateTaskThreadId())
 {
 
 }
@@ -134,10 +145,11 @@ bool HTaskThreadBase::IsValidTTLSIndex(uint32 Index)
 	return bResult;
 }
 
-HNamedTaskThread::HNamedTaskThread()
+HNamedTaskThread::HNamedTaskThread(const HString& InName)
 	: HTaskThreadBase()
 {
-
+	// update the name
+	Name = InName;
 }
 
 HNamedTaskThread::~HNamedTaskThread()

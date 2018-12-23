@@ -65,7 +65,7 @@ struct HTagNameRecursive : public HReflectionContext
 
 	virtual HReflectionContext& operator<<(class HObject*& Value) override
 	{
-		if (Value->State.ObjectFlags & (EObjectFlags::TagExp | EObjectFlags::TagImp) != 0)
+		if (((Value->State.ObjectFlags) & (EObjectFlags::TagExp | EObjectFlags::TagImp)) != 0)
 		{
 			// only when object is tagged by import or export object, serialize HName
 			*this << Value->Name;
@@ -156,7 +156,7 @@ bool HLinkerSave::SavePackage(HLinkerSaveContext& InContext)
 	(*FileArchive) << DependsMap;
 
 	// mark as header-end
-	TOC.TotalHeaderSize = static_cast<int32>(FileArchive->Tell()) - TOCOffset;
+	TOC.TotalHeaderSize = static_cast<int32>(FileArchive->Tell()) - (int32)TOCOffset;
 
 	// real object export serialization
 	for (HObjectExport& ObjectExport : ExportMap)

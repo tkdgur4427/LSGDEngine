@@ -30,6 +30,9 @@ namespace lsgd { namespace async {
 		// generate task threads
 		void CreateTaskThread();
 
+		// generate named threads
+		void CreateNamedThread(const HString& InName);
+
 	protected:
 		int32 GetTaskThreadIndex();
 
@@ -38,6 +41,9 @@ namespace lsgd { namespace async {
 
 		// task thread base
 		HArray<shared_ptr<HThreadRunnable>> TaskThreads;
+
+		// named threads
+		HArray<shared_ptr<HThreadRunnable>> NamedThreads;
 
 		// task thread base id generator
 		HThreadSafeCounter TaskThreadIdGenerator;	
@@ -87,7 +93,7 @@ namespace lsgd { namespace async {
 	class HNamedTaskThread : public HTaskThreadBase
 	{
 	public:
-		HNamedTaskThread();
+		HNamedTaskThread(const HString& InName);
 		virtual ~HNamedTaskThread();
 
 		virtual void Run() final;

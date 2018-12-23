@@ -29,10 +29,10 @@ uint32 HFileCacheChunk::Write(void* InData, int64 InSize)
 	}
 
 	// copy the data to the cache 
-	HGenericMemory::MemCopy((void*)&Storage[CurrOffset], InData, InSize);
+	HGenericMemory::MemCopy((void*)&Storage[CurrOffset], InData, (size_t)InSize);
 
 	// update the offset
-	CurrOffset += InSize;
+	CurrOffset += (uint32)InSize;
 
 	return CurrOffset;
 }
@@ -50,10 +50,10 @@ uint32 HFileCacheChunk::Read(void* OutData, int64 InSize)
 	}
 
 	// copy the data to the OutData
-	HGenericMemory::MemCopy(OutData, (void*)&Storage[CurrOffset], InSize);
+	HGenericMemory::MemCopy(OutData, (void*)&Storage[CurrOffset], (size_t)InSize);
 
 	// update the read offset
-	CurrOffset += InSize;
+	CurrOffset += (uint32)InSize;
 
 	return CurrOffset;
 }
@@ -102,7 +102,7 @@ int64 HFileArchive::Tell() const
 
 void HFileArchive::Move(int64 Offset)
 {
-	int32 ChunkIndex = Offset / HFileCacheChunk::CACHE_SIZE;
+	int32 ChunkIndex = (int32)Offset / HFileCacheChunk::CACHE_SIZE;
 	int32 ChunkOffset = Offset % HFileCacheChunk::CACHE_SIZE;
 
 	CurrFileCacheChunk = ChunkIndex;

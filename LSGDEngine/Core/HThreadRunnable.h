@@ -15,7 +15,9 @@ namespace lsgd { namespace thread {
 	class HThreadRunnable
 	{
 	public:
-		HThreadRunnable() {}
+		HThreadRunnable(const HString& InName)
+			: Name(InName)
+		{}
 		virtual ~HThreadRunnable() {}
 
 		virtual void Run() = 0;
@@ -26,5 +28,8 @@ namespace lsgd { namespace thread {
 
 		// currently binded thread
 		HPlatformThread* OwnerThread;
+
+		// thread name
+		HString Name;
 	};
 } }
