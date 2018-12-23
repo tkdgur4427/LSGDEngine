@@ -5,9 +5,9 @@ namespace lsgd
 	class HCString
 	{
 	public:
-		static void Strcpy(char* Dest, const char* const Src)
+		static void Strcpy(char* Dest, uint32 DestSize, const char* const Src)
 		{
-			strcpy(Dest, Src);
+			strcpy_s(Dest, DestSize, Src);
 		}
 
 		static uint32 Strlen(const char* InStr)
@@ -15,9 +15,9 @@ namespace lsgd
 			return strlen(InStr);
 		}
 
-		static void Itoa(int32 InNumber, char* OutCString, int32 InBase = 10)
+		static void Itoa(int32 InNumber, char* OutCString, int32 Size, int32 InBase = 10)
 		{
-			itoa(InNumber, OutCString, InBase);
+			_itoa_s(InNumber, OutCString, Size, InBase);
 		}
 
 		static void Atoi(char* InCString, int32& OutNumber)

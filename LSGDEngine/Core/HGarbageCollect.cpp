@@ -2,6 +2,7 @@
 #include "HGarbageCollect.h"
 #include "HReferenceCollector.h"
 #include "HObjectArray.h"
+#include "HGCSweepExecutor.h"
 
 using namespace lsgd;
 using namespace lsgd::gc;
@@ -16,5 +17,6 @@ void HGarbageCollect::MarkAndSweep()
 	Collector.Collect();
 
 	// sweep
-
+	HGCSweepExecutor SweepExecutor;
+	SweepExecutor.Sweep();
 }

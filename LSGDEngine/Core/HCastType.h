@@ -16,9 +16,9 @@ namespace lsgd {
 	template <class From, class To>
 	To* HCast(From* Src)
 	{
-		check(HTypeDatabaseUtils::ExistClass<From>());
-		check(HTypeDatabaseUtils::ExistClass<To>());
+		check(HTypeDatabaseUtils::template ExistClass<From>());
+		check(HTypeDatabaseUtils::template ExistClass<To>());
 
-		return HCastImpl::DoCast<From, To>::DoCast(Src);
+		return HCastImpl<From, To>::DoCast(Src);
 	}
-} }
+}

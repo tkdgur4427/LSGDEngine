@@ -51,14 +51,14 @@ void HNameEntry::Init(const char* InName, int32 InNumber)
 	check((InNumber >> MaxNumberSize) == 0);
 
 	char PostfixNumber[MaxNumberSize + 1] = { '_', };
-	HCString::Itoa(InNumber, PostfixNumber + 1);
+	HCString::Itoa(InNumber, PostfixNumber + 1, MaxNumberSize);
 
 	int32 NumberLen = HCString::Strlen(PostfixNumber);
 	int32 NameLen = HCString::Strlen(InName);
 	check(NumberLen + NameLen < MaxNameSize);
 
-	HCString::Strcpy(NameANSI, InName);
-	HCString::Strcpy(NameANSI + NameLen, PostfixNumber);
+	HCString::Strcpy(NameANSI, MaxNameSize, InName);
+	HCString::Strcpy(NameANSI + NameLen, MaxNameSize, PostfixNumber);
 }
 
 HNameEntryManager& HNameEntryManager::GetSingleton()

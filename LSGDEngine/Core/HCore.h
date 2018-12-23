@@ -27,6 +27,9 @@
 // HObject
 #include "HObject.h"
 
+// HCast
+#include "HCastType.h"
+
 // HPackage
 #include "HPackage.h"
 
