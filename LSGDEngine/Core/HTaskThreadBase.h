@@ -84,6 +84,18 @@ namespace lsgd { namespace async {
 		HThreadSafeCounter bTerminate;
 	};
 
+	class HNamedTaskThread : public HTaskThreadBase
+	{
+	public:
+		HNamedTaskThread();
+		virtual ~HNamedTaskThread();
+
+		virtual void Run() final;
+
+	protected:
+		HConcurrentQueue<shared_ptr<HBaseGraphTask>> Tasks;
+	};
+
 	template <class DataType>
 	class HTaskThreadSingleton : public HTaskThreadLocalStorage
 	{

@@ -133,3 +133,40 @@ bool HTaskThreadBase::IsValidTTLSIndex(uint32 Index)
 	}
 	return bResult;
 }
+
+HNamedTaskThread::HNamedTaskThread()
+	: HTaskThreadBase()
+{
+
+}
+
+HNamedTaskThread::~HNamedTaskThread()
+{
+
+}
+
+void HNamedTaskThread::Run()
+{
+	while (!(bTerminate.GetValue()))
+	{
+		// get the graph task (its own task from its own tasks)
+		shared_ptr<HBaseGraphTask> NewTask = Tasks.Pop();
+
+		// @todo ; if new task is nullptr, get job stealing from common tasks queue for task threads
+
+		if (NewTask == nullptr)
+		{
+			// if there is no available task, make it stalled (2ms)
+			HGenericPlatformMisc::Sleep(0.002);
+		}
+		else
+		{
+			// execute the task
+			NewTask->Execute();
+
+			// when it executes the new task, task should have refcount as 1
+			//	- it means when it is out-of-scope, it must be destroyed!
+			check(NewTask.use_count() == 1);
+		}
+	}
+}
