@@ -41,8 +41,6 @@ void HEngineLoop::Loop()
 {
 	while (!bTerminate)
 	{
-
-
 		// trigger gc
 		gc::HGarbageCollect GarbageCollect;
 		GarbageCollect.MarkAndSweep();
