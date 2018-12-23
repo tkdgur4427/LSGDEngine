@@ -64,6 +64,31 @@ namespace lsgd
 		// get the object array data
 		const HObjectArrayData& GetObjectArrayData() const { return State.ObjectArrayData; }
 
+		// IsA (RTTI)
+		template <class To>
+		bool IsA()
+		{
+			bool bResult = false;
+
+			// get the class descriptor
+			reflect::HTypeDescriptor TypeDesc = reflect::HTypeDatabaseUtils::GetTypeDescriptor<To>();
+			check(TypeDesc.ClassType != nullptr);
+			
+			const reflect::HStruct* SuperClass = Class;
+			while (SuperClass != nullptr)
+			{
+				if (SuperClass == TypeDesc.ClassType)
+				{
+					bResult = true;
+					break;
+				}
+
+				SuperClass = SuperClass->SuperStruct;
+			}
+
+			return true;
+		}
+
 	//protected:
 		void GenerateName();
 

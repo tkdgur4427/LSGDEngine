@@ -18,6 +18,9 @@ namespace lsgd { namespace reflect {
 
 		template <typename FunctionType>
 		static HFunctionDecomposeResult DecomposeFunction();
+
+		template <typename ClassType>
+		static bool ExistClass();
 	};
 
 	template <typename Type>
@@ -30,6 +33,12 @@ namespace lsgd { namespace reflect {
 	static HFunctionDecomposeResult HTypeDatabaseUtils::DecomposeFunction()
 	{
 		return HFunctionDecomposer<FunctionType>().Decompose();
+	}
+
+	template <typename ClassType>
+	bool HTypeDatabaseUtils::ExistClass()
+	{
+		return GetTypeDescriptor<ClassType>().ClassType != nullptr;
 	}
 }
 }
