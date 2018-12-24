@@ -4,11 +4,15 @@
 //
 
 #pragma once
+
+#ifndef SPDLOG_H
+#error "spdlog.h must be included before this file."
+#endif
+
 #include "spdlog/details/file_helper.h"
 #include "spdlog/details/null_mutex.h"
 #include "spdlog/fmt/fmt.h"
 #include "spdlog/sinks/base_sink.h"
-#include "spdlog/spdlog.h"
 
 #include <chrono>
 #include <cstdio>
@@ -40,7 +44,7 @@ struct daily_filename_calculator
  * Rotating file sink based on date. rotates at midnight
  */
 template<typename Mutex, typename FileNameCalc = daily_filename_calculator>
-class daily_file_sink SPDLOG_FINAL : public base_sink<Mutex>
+class daily_file_sink final : public base_sink<Mutex>
 {
 public:
     // create daily file sink which rotates on given time
