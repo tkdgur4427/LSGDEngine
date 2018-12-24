@@ -5,4 +5,4 @@ extern void LogError(const lsgd::HString& message);
 extern void Log(const lsgd::HString& message);
 
 #define check(condition) if(!(condition)) { LogError(#condition); Crash(); }
-#define debug(message) Log(#message);
+#define debugf(message) Log(#message);

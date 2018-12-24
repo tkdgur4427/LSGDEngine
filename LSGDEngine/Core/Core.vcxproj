@@ -88,7 +88,7 @@
     <ClCompile Include="HLinker.cpp" />
     <ClCompile Include="HLinkerLoad.cpp" />
     <ClCompile Include="HLinkerSave.cpp" />
-    <ClCompile Include="HLogger_spd.cpp">
+    <ClCompile Include="HLogger_spd.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HName.cpp" />

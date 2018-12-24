@@ -178,9 +178,6 @@
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
     <ClCompile Include="Core.cpp" />
-    <ClCompile Include="HLogger_spd.cpp">
-      <Filter>Log</Filter>
-    </ClCompile>
     <ClCompile Include="HGuid_crossguid.cpp">
       <Filter>Guid</Filter>
     </ClCompile>
@@ -256,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="HGCSweepExecutor.cpp">
       <Filter>GC</Filter>
+    </ClCompile>
+    <ClCompile Include="HLogger_spd.h">
+      <Filter>Log</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

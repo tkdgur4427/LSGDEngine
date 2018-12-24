@@ -31,4 +31,4 @@ namespace lsgd { namespace log {
 }
 }
 
-#include "HLogger_spd.cpp"
+#include "HLogger_spd.h"
