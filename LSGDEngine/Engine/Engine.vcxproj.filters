@@ -3,9 +3,6 @@
   <ItemGroup>
     <ClInclude Include="HEnginePCH.h" />
     <ClInclude Include="HEngineLoop.h" />
-    <ClInclude Include="HWindowsLaunch.h">
-      <Filter>Platform</Filter>
-    </ClInclude>
     <ClInclude Include="HEngine.h" />
   </ItemGroup>
   <ItemGroup>

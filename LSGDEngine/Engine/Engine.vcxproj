@@ -121,7 +121,6 @@
     <ClInclude Include="HEngine.h" />
     <ClInclude Include="HEngineLoop.h" />
     <ClInclude Include="HEnginePCH.h" />
-    <ClInclude Include="HWindowsLaunch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEngineLoop.cpp" />

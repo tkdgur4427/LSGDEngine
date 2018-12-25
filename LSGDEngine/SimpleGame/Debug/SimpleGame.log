@@ -1,1 +1,7 @@
-﻿  SimpleGame.vcxproj -> C:\Users\Brian Hong\source\repos\LSGDEngine\LSGDEngine\Debug\SimpleGame.exe
+﻿  HSimpleGamePCH.cpp
+c1xx : warning C4199: two-phase name lookup is not supported for C++/CLI, C++/CX, or OpenMP; use /Zc:twoPhase-
+c:\users\brian hong\source\repos\lsgdengine\lsgdengine\core\hnewdeleteoverride.h(7): warning C5043: 'operator new': exception specification does not match previous declaration
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\vcruntime_new.h(71): note: see declaration of 'operator new'
+c:\users\brian hong\source\repos\lsgdengine\lsgdengine\core\hnewdeleteoverride.h(8): warning C5043: 'operator new[]': exception specification does not match previous declaration
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\vcruntime_new.h(82): note: see declaration of 'operator new[]'
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\mutex(8): fatal error C1189: #error:  <mutex> is not supported when compiling with /clr or /clr:pure.
