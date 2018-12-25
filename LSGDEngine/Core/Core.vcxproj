@@ -27,6 +27,7 @@
     <ClInclude Include="HConcurrentQueue.h" />
     <ClInclude Include="HCore.h" />
     <ClInclude Include="HCorePCH.h" />
+    <ClInclude Include="HCriticalSection.h" />
     <ClInclude Include="HFileArchive.h" />
     <ClInclude Include="HGarbageCollect.h" />
     <ClInclude Include="HGCSweepExecutor.h" />
@@ -80,6 +81,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="HCriticalSection.cpp" />
     <ClCompile Include="HFileArchive.cpp" />
     <ClCompile Include="HGarbageCollect.cpp" />
     <ClCompile Include="HGCSweepExecutor.cpp" />

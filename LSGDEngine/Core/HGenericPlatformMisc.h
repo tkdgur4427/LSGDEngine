@@ -58,6 +58,16 @@ namespace lsgd {
 		shared_ptr<lsgd::thread::HThreadRunnable> Runnable;
 	};
 
+	class HPlatformCriticalSection
+	{
+	public:
+		HPlatformCriticalSection() {}
+		virtual ~HPlatformCriticalSection() {}
+
+		virtual void Lock() = 0;
+		virtual void Unlock() = 0;
+	};
+
 	// note that all definition of this class is reside in each platform misc.cpp (e.g. HWindowsPlatformMisc.cpp)
 	class HGenericPlatformMisc
 	{
@@ -70,6 +80,8 @@ namespace lsgd {
 		static unique_ptr<HPlatformThread> CreatePlatformThread(shared_ptr<lsgd::thread::HThreadRunnable>& InThreadRunnable);
 		// get the current thread Id
 		static uint32 GetCurrentThreadId();
+		// get the CS
+		static unique_ptr< HPlatformCriticalSection> CreateCriticalSection();
 		// sleep
 		static void Sleep(double InSecs);
 		// get the hardware thread

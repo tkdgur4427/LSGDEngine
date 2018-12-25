@@ -38,4 +38,16 @@ namespace lsgd
 		HANDLE ThreadHandle;
 		uint32 ThreadId;
 	};
+
+	class HWindowsPlatformCriticalSection : public HPlatformCriticalSection
+	{
+	public:
+		HWindowsPlatformCriticalSection();
+		virtual ~HWindowsPlatformCriticalSection();
+
+		virtual void Lock() override;
+		virtual void Unlock() override;
+
+		CRITICAL_SECTION CS;
+	};
 }

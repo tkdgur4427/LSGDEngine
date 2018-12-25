@@ -171,3 +171,27 @@ bool HWindowsPlatformThread::IsCurrThread() const
 	return HGenericPlatformMisc::GetCurrentThreadId() == ThreadId;
 }
 
+HWindowsPlatformCriticalSection::HWindowsPlatformCriticalSection()
+{
+	check(!InitializeCriticalSectionAndSpinCount(&CS, 0x00000400));
+}
+
+HWindowsPlatformCriticalSection::~HWindowsPlatformCriticalSection()
+{
+	DeleteCriticalSection(&CS);
+}
+
+void HWindowsPlatformCriticalSection::Lock()
+{
+	EnterCriticalSection(&CS);
+}
+
+void HWindowsPlatformCriticalSection::Unlock()
+{
+	LeaveCriticalSection(&CS);
+}
+
+unique_ptr<HPlatformCriticalSection> HGenericPlatformMisc::CreateCriticalSection()
+{
+	return make_unique<HPlatformCriticalSection, HWindowsPlatformCriticalSection>();
+}

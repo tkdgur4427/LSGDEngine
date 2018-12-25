@@ -12,7 +12,6 @@
 #include <queue>
 
 #include <tuple>
-#include <mutex>
 #include <atomic>
 
 // override std libraries with lsgd:: by type aliasing
@@ -182,7 +181,6 @@ namespace lsgd
 	}
 
 	// concurrent
-	using HCriticalSection = std::mutex;
 	using HCriticalSectionCallOnce = std::once_flag;
 
 	template <typename Type>

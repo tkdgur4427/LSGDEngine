@@ -8,12 +8,12 @@ namespace lsgd { namespace thread {
 		HScopedLock(HCriticalSection& InSyncObject)
 			: SyncObject(InSyncObject)
 		{
-			SyncObject.lock();
+			SyncObject.Lock();
 		}
 
 		~HScopedLock()
 		{
-			SyncObject.unlock();
+			SyncObject.Unlock();
 		}
 
 		HCriticalSection& SyncObject;

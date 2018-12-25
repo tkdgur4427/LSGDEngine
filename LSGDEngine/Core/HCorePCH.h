@@ -10,6 +10,8 @@
 
 #include "HStdOverrides.h"
 
+#include "HCriticalSection.h"
+
 #include "HScopedLock.h"
 
 #include "HCallOnceLock.h"
