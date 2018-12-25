@@ -26,6 +26,7 @@ void HEngineLoop::Init()
 {
 	// reflection post update
 	reflect::HTypeDatabase::GetSingleton()->ProcessPostProcessClassData();
+	//debugf("ProcessPostProcessClassData[%d]", 0);
 
 	// create named threads
 
@@ -43,7 +44,7 @@ void HEngineLoop::Loop()
 	{
 		// trigger gc
 		gc::HGarbageCollect GarbageCollect;
-		GarbageCollect.MarkAndSweep();
+		//GarbageCollect.MarkAndSweep();
 	}
 }
 

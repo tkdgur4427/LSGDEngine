@@ -1,6 +1,5 @@
 #include "HCorePCH.h"
 #include "HAssert.h"
-#include "HLogger.h"
 
 void Crash()
 {
@@ -10,9 +9,4 @@ void Crash()
 void LogError(const lsgd::HString& message)
 {
 	//lsgd::log::HAsyncLogger::GetSingleton()->LogError(message);
-}
-
-void Log(const lsgd::HString& message)
-{
-	//lsgd::log::HAsyncLogger::GetSingleton()->Log(message);
 }

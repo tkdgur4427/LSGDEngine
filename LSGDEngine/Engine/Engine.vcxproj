@@ -78,6 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HEnginePCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../../ThirdParty</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -117,26 +118,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.vcxproj">
-      <Project>{5c43060a-b2e6-4a5d-abe2-20439f3d900f}</Project>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="..\Memory\Memory.vcxproj">
-      <Project>{a159f7e8-c56b-441d-b361-e04e00ec2012}</Project>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="HEngine.h" />
     <ClInclude Include="HEngineLoop.h" />
     <ClInclude Include="HEnginePCH.h" />
+    <ClInclude Include="HWindowsLaunch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEngineLoop.cpp" />
     <ClCompile Include="HEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="HWindowsLaunch.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

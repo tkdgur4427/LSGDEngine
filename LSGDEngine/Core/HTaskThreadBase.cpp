@@ -106,7 +106,7 @@ void HTaskThreadBase::Run()
 		if (NewTask == nullptr)
 		{
 			// if there is no available task, make it stalled (2ms)
-			HGenericPlatformMisc::Sleep(0.002);
+			//HGenericPlatformMisc::Sleep(0.002);
 		}		
 		else
 		{
@@ -169,7 +169,7 @@ void HNamedTaskThread::Run()
 		if (NewTask == nullptr)
 		{
 			// if there is no available task, make it stalled (2ms)
-			HGenericPlatformMisc::Sleep(0.002);
+			//HGenericPlatformMisc::Sleep(0.002);
 		}
 		else
 		{
