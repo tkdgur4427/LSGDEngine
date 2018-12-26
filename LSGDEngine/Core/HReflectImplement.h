@@ -22,3 +22,10 @@
 		lsgd::reflect::HTypeDatabase::GetSingleton()->AddClassType<ClassType>(#ClassType, lsgd::HString()); \
 	} \
 	HStatic##ClassType Static##ClassType;
+
+#define IMPLEMENT_CLASS_TYPE1(ClassType, BaseClassType) \
+	HStatic##ClassType::HStatic##ClassType() \
+	{ \
+		lsgd::reflect::HTypeDatabase::GetSingleton()->AddClassType<ClassType>(#ClassType, #BaseClassType); \
+	} \
+	HStatic##ClassType Static##ClassType;

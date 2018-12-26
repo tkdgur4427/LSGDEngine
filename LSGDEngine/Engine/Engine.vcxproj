@@ -121,6 +121,7 @@
     <ClInclude Include="HEngine.h" />
     <ClInclude Include="HEngineLoop.h" />
     <ClInclude Include="HEnginePCH.h" />
+    <ClInclude Include="HWorld.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEngineLoop.cpp" />
@@ -128,6 +129,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="HWindowsLaunch.cpp" />
+    <ClCompile Include="HWorld.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

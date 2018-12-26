@@ -5,6 +5,9 @@
 
 #include "HObjectHandle.h"
 
+// HObject reflection
+#include "HReflectDeclare.h"
+
 // forward declarations
 namespace lsgd { namespace reflect {
 	class HClass;
@@ -56,10 +59,14 @@ namespace lsgd
 		HObjectArrayData ObjectArrayData;
 	};
 
+	DECLARE_CLASS_TYPE(HCoreObject)
 	class HCoreObject
 	{
 	public:
+		GENERATE_CLASS_BODY(HCoreObject)
+
 		HCoreObject();
+		virtual ~HCoreObject() {}
 
 		// get the object array data
 		const HObjectArrayData& GetObjectArrayData() const { return State.ObjectArrayData; }
@@ -94,6 +101,7 @@ namespace lsgd
 
 		// object's unique name
 		HName Name;
+
 		// class definition
 		const reflect::HClass* Class;
 
@@ -105,17 +113,21 @@ namespace lsgd
 
 	extern HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, const reflect::HClass* InClass);
 	
+	DECLARE_CLASS_TYPE1(HObject, HCoreObject)
 	class HObject : public HCoreObject
 	{
 	public:
+		GENERATE_CLASS_BODY(HObject)
+
 		HObject(HObjectInitializer& InObjectInitializer = *LObjectInitializer);
+		virtual ~HObject() {}
 
 		// virtual methods
 		virtual void Serialize(reflect::HReflectionContext& InContext);
 
 		// outer object
 		class HPackage* Package;
-	};	
+	};
 
 	// forward declaration
 	extern class HPackage* GTransientPackage;

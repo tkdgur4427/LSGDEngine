@@ -9,6 +9,8 @@
 #include "HObjectArray.h"
 // core tls
 #include "HCoreTls.h"
+// reflection
+#include "HReflectImplement.h"
 
 using namespace lsgd;
 using namespace lsgd::reflect;
@@ -40,6 +42,12 @@ void HCoreObject::GenerateName()
 	
 	// generate unique name
 	Name = HName(Class->Name.c_str());
+}
+
+void HCoreObject::Reflect()
+{
+	// add name field
+	HTypeDatabase::GetSingleton()->AddClassField("Name", &HCoreObject::Name);
 }
 
 void HCoreObjectState::TagObjectFlags(EObjectFlags InValue)
@@ -153,3 +161,6 @@ namespace lsgd
 		return AllocatedObject;
 	}
 }
+
+IMPLEMENT_CLASS_TYPE(HCoreObject)
+IMPLEMENT_CLASS_TYPE1(HObject, HCoreObject)

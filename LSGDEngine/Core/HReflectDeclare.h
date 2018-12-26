@@ -25,7 +25,8 @@
 	extern HStatic##PrimitiveType Static##PrimitiveType; 
 
 #define GENERATE_CLASS_BODY(ClassType) \
-	static lsgd::HString GetClassName() { return #ClassType; }
+	static lsgd::HString GetClassName() { return #ClassType; } \
+	static void Reflect() {} \
 
 // @todo need to support multiple base classes
 #define DECLARE_CLASS_TYPE(ClassType, ...) \
@@ -36,14 +37,14 @@
 		static bool IsClassType() { return true; } \
 		static lsgd::HString GetClassName() { return #ClassType; } \
 		static lsgd::HString GetBaseClassNames() { return lsgd::HString(); } \
-		static HCommonTypeHelperInterface* GetCommonTypeHelper() { static HCommonTypeHelper<ClassType> CommonTypeHelper; return &CommonTypeHelper; } \
+		static lsgd::reflect::HCommonTypeHelperInterface* GetCommonTypeHelper() { static lsgd::reflect::HCommonTypeHelper<ClassType> CommonTypeHelper; return &CommonTypeHelper; } \
 	}; \
 	class HStatic##ClassType \
 	{ \
 	public: \
 		HStatic##ClassType(); \
 	}; \
-	extern HStatic##ClassType Static##ClassType; 
+	extern HStatic##ClassType Static##ClassType;
 	
 // supporting only one base class inheritance
 #define DECLARE_CLASS_TYPE1(ClassType, BaseClassType) \
@@ -56,7 +57,7 @@
 		static bool IsClassType() { return true; } \
 		static lsgd::HString GetClassName() { return #ClassType; } \
 		static lsgd::HString GetBaseClassNames() { return #BaseClassType; } \
-		static HCommonTypeHelperInterface* GetCommonTypeHelper() { static HCommonTypeHelper<ClassType> CommonTypeHelper; return &CommonTypeHelper; } \
+		static lsgd::reflect::HCommonTypeHelperInterface* GetCommonTypeHelper() { static lsgd::reflect::HCommonTypeHelper<ClassType> CommonTypeHelper; return &CommonTypeHelper; } \
 	}; \
 	class HStatic##ClassType \
 	{ \

@@ -4,6 +4,9 @@
     <ClInclude Include="HEnginePCH.h" />
     <ClInclude Include="HEngineLoop.h" />
     <ClInclude Include="HEngine.h" />
+    <ClInclude Include="HWorld.h">
+      <Filter>World</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -11,10 +14,16 @@
     <ClCompile Include="HWindowsLaunch.cpp">
       <Filter>Platform</Filter>
     </ClCompile>
+    <ClCompile Include="HWorld.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
       <UniqueIdentifier>{80bcb6b7-9129-450f-9175-acf4623ce1ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{1febe45c-d71c-4e77-9dd1-dd57233bf5d0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -26,7 +26,6 @@ void HEngineLoop::Init()
 {
 	// reflection post update
 	reflect::HTypeDatabase::GetSingleton()->ProcessPostProcessClassData();
-	//debugf("ProcessPostProcessClassData[%d]", 0);
 
 	// create named threads
 

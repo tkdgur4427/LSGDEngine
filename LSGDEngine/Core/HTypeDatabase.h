@@ -686,7 +686,9 @@ namespace lsgd { namespace reflect {
 			return HMove(CreatePrimitiveProperty<Type>(InVariableName, InOffset, InSize, InArrayDim));
 		}
 
-		// second ...		
+		// second handling class type
+
+
 		return nullptr;
 	}
 
