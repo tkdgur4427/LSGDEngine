@@ -8,5 +8,5 @@ void Crash()
 
 void LogError(const lsgd::HString& message)
 {
-	//lsgd::log::HAsyncLogger::GetSingleton()->LogError(message);
+	lsgd::log::HAsyncLogger::GetSingleton()->LogError(message);
 }

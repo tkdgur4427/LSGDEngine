@@ -266,9 +266,6 @@
     <ClCompile Include="HGCSweepExecutor.cpp">
       <Filter>GC</Filter>
     </ClCompile>
-    <ClCompile Include="HLogger_spd.h">
-      <Filter>Log</Filter>
-    </ClCompile>
     <ClCompile Include="HCriticalSection.cpp">
       <Filter>Thread</Filter>
     </ClCompile>

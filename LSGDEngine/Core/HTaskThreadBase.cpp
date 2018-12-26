@@ -130,16 +130,12 @@ void HTaskThreadBase::Run()
 		if (NewTask == nullptr)
 		{
 			// if there is no available task, make it stalled (2ms)
-			//HGenericPlatformMisc::Sleep(0.002);
+			HGenericPlatformMisc::Sleep(0.002);
 		}		
 		else
 		{
 			// execute the task
 			NewTask->Execute();
-
-			// when it executes the new task, task should have refcount as 1
-			//	- it means when it is out-of-scope, it must be destroyed!
-			check(NewTask.use_count() == 1);
 		}
 	}
 }
@@ -199,7 +195,7 @@ void HNamedTaskThread::Run()
 		if (NewTask == nullptr)
 		{
 			// if there is no available task, make it stalled (2ms)
-			//HGenericPlatformMisc::Sleep(0.002);
+			HGenericPlatformMisc::Sleep(0.002);
 		}
 		else
 		{

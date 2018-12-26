@@ -13,22 +13,26 @@ namespace lsgd { namespace log {
 		struct LoggerInstance {};
 
 		template <typename... Arguments>
-		void Log(const HString& InStr, Arguments&&... InArguments);
-
-		template <typename... Arguments>
-		void LogError(const HString& InStr, Arguments&&... InArguments);
-
-	protected:
-		void CreateLoggerInstance();
-
-		HAsyncLogger() 
+		void Log(const HString& InStr, Arguments&&... InArguments)
 		{
-			CreateLoggerInstance();
+			HScopedLock Lock(CS);
+			printf(InStr.c_str(), InArguments...);
 		}
 
-		unique_ptr<LoggerInstance> Instance;
+		template <typename... Arguments>
+		void LogError(const HString& InStr, Arguments&&... InArguments)
+		{
+			HScopedLock Lock(CS);
+			printf(InStr.c_str(), InArguments...);
+		}
+
+	protected:
+		HAsyncLogger() 
+		{
+			
+		}
+
+		HCriticalSection CS;
 	};
 }
 }
-
-#include "HLogger_spd.h"
