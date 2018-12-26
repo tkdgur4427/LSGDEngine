@@ -75,18 +75,20 @@ namespace lsgd { namespace async {
 			template <typename... Args>
 			shared_ptr<HGraphEvent> ConstructAndDispatchWhenReady(Args&&... InArgs)
 			{
+				HGraphTask* RawOwner = (HGraphTask*)(Owner.get());
+
 				// construct the task instance into task storage
-				new ((void*)Owner->TaskStorage[0]) TaskType(std::forward<Args>(InArgs)...);
+				new ((void*)(&(RawOwner->TaskStorage[0]))) TaskType(std::forward<Args>(InArgs)...);
 				// set up the HGraphTask
-				return Owner->Setup(Prerequisites);				
+				return RawOwner->Setup(Prerequisites);
 			}
 
-			HConstructor(HGraphTask* InOwner, HArray<shared_ptr<HGraphEvent>>& InPrerequisitiesRef)
+			HConstructor(shared_ptr<HBaseGraphTask> InOwner, HArray<shared_ptr<HGraphEvent>>& InPrerequisitiesRef)
 				: Owner(InOwner)
 				, Prerequisites(InPrerequisitiesRef)
 			{}
 
-			HGraphTask* Owner;
+			shared_ptr<HBaseGraphTask> Owner;
 			HArray<shared_ptr<HGraphEvent>>& Prerequisites;
 		};
 
@@ -100,7 +102,7 @@ namespace lsgd { namespace async {
 			NewGraphTask->bNamedThread = InbNamedThread;
 			NewGraphTask->NamedThreadName = InNamedThreadName;
 			
-			return HConstructor(NewGraphTask, InPrerequisites);
+			return HConstructor(NewTask, InPrerequisites);
 		}
 
 		virtual ~HGraphTask();

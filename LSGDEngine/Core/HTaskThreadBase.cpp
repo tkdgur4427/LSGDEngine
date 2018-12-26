@@ -66,7 +66,9 @@ void HTaskThreadSharedContext::EnqueueGraphTaskToNamedThread(const HString& InNa
 
 shared_ptr<HBaseGraphTask> HTaskThreadSharedContext::DequeueGraphTask()
 {
-	return Tasks.Pop();
+	shared_ptr<HBaseGraphTask> Result;
+	Tasks.TryPop(&Result);
+	return Result;
 }
 
 void HTaskThreadSharedContext::CreateTaskThread()
@@ -189,7 +191,8 @@ void HNamedTaskThread::Run()
 	while (!(bTerminate.GetValue()))
 	{
 		// get the graph task (its own task from its own tasks)
-		shared_ptr<HBaseGraphTask> NewTask = Tasks.Pop();
+		shared_ptr<HBaseGraphTask> NewTask;
+		Tasks.TryPop(&NewTask);
 
 		// @todo ; if new task is nullptr, get job stealing from common tasks queue for task threads
 
@@ -202,10 +205,6 @@ void HNamedTaskThread::Run()
 		{
 			// execute the task
 			NewTask->Execute();
-
-			// when it executes the new task, task should have refcount as 1
-			//	- it means when it is out-of-scope, it must be destroyed!
-			check(NewTask.use_count() == 1);
 		}
 	}
 }

@@ -32,6 +32,21 @@ namespace lsgd { namespace container {
 			return Result;
 		}
 
+		bool TryPop(Type* OutValue)
+		{
+			HScopedLock Lock(SyncObject);
+			
+			bool bResult = false;
+
+			if (!Queue.empty())
+			{
+				*OutValue = Pop();
+				bResult = true;
+			}
+
+			return bResult;
+		}
+
 		uint32 Num() { HScopedLock Lock(SyncObject); return Queue.size(); }
 
 	private:
@@ -70,10 +85,9 @@ namespace lsgd { namespace container {
 			{
 				return false;
 			}
-
-			OutValue = HConcurrentQueue<Type>::Pop();
-			return true;
-		}
+						
+			return HConcurrentQueue<Type>::TryPop(&OutValue);
+		}		
 
 		uint32 Num()
 		{

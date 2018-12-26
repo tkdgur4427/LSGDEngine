@@ -173,7 +173,7 @@ bool HWindowsPlatformThread::IsCurrThread() const
 
 HWindowsPlatformCriticalSection::HWindowsPlatformCriticalSection()
 {
-	check(!InitializeCriticalSectionAndSpinCount(&CS, 0x00000400));
+	check(InitializeCriticalSectionAndSpinCount(&CS, 0x00000400));
 }
 
 HWindowsPlatformCriticalSection::~HWindowsPlatformCriticalSection()

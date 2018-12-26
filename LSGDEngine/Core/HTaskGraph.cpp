@@ -14,8 +14,8 @@ HGraphEvent::HGraphEvent()
 
 HGraphEvent::~HGraphEvent()
 {
-	SubsequentList.SetClosed(true);
 	check(SubsequentList.Num() == 0);
+	SubsequentList.SetClosed(true);	
 }
 
 shared_ptr<HGraphEvent> HGraphEvent::CreateGraphEvent()

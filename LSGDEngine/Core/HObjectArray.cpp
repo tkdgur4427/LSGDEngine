@@ -116,7 +116,10 @@ void HObjectArray::InitializeObjectArray()
 
 HObjectArrayData HObjectArray::RegisterObject(unique_ptr<HObject>& InObject, int64 InFlags)
 {
-	uint32 NewIndex = FreeIndices.Pop();
+	uint32 NewIndex = -1;
+	FreeIndices.TryPop(&NewIndex);
+	check(NewIndex != -1);
+
 	Objects[NewIndex]->Bind(InObject, InFlags, NewIndex);
 
 	return {Objects[NewIndex]->UniqueNumber, NewIndex};
