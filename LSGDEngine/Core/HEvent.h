@@ -18,7 +18,7 @@ namespace lsgd { namespace thread {
 
 		void Trigger();
 		void Reset();
-		bool Wait(uint32 WaitTime);
+		bool Wait(uint32 WaitTime = -1);
 
 	protected:
 		unique_ptr<HPlatformEvent> EventObject;

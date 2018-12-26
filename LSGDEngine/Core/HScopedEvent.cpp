@@ -12,7 +12,7 @@ HScopedEvent::HScopedEvent()
 
 HScopedEvent::~HScopedEvent()
 {
-	Event->Wait(0);
+	Event->Wait();
 }
 
 void HScopedEvent::Trigger()
