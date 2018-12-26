@@ -100,16 +100,15 @@ namespace lsgd
 		// object state
 		HCoreObjectState State;
 	};
-
-	//@todo - need to make separate thread local storage; for now, just temporary
-	extern thread_local HObjectInitializer LObjectInitializer;
+	
+	extern thread_local HObjectInitializer* LObjectInitializer;
 
 	extern HObject* AllocateHObjectInternal(HObjectInitializer& ObjectInitializer, const reflect::HClass* InClass);
 	
 	class HObject : public HCoreObject
 	{
 	public:
-		HObject(HObjectInitializer& InObjectInitializer = LObjectInitializer);
+		HObject(HObjectInitializer& InObjectInitializer = *LObjectInitializer);
 
 		// virtual methods
 		virtual void Serialize(reflect::HReflectionContext& InContext);

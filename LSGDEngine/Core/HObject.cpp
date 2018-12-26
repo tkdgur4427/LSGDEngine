@@ -7,11 +7,13 @@
 #include "HPackage.h"
 // HObjectArray
 #include "HObjectArray.h"
+// core tls
+#include "HCoreTls.h"
 
 using namespace lsgd;
 using namespace lsgd::reflect;
 
-thread_local lsgd::HObjectInitializer lsgd::LObjectInitializer;
+thread_local lsgd::HObjectInitializer* lsgd::LObjectInitializer;
 
 HObjectInitializer::HObjectInitializer()
 	: Object(nullptr)
@@ -74,45 +76,47 @@ namespace lsgd
 
 	HObjectArrayData AllocateHObjectInner(const reflect::HClass* InClass, class HPackage* InPackage)
 	{
+		LObjectInitializer = &(HCoreTls::Get()->ObjectInitializer);
+
 		// get the class name
 		const HString& ClassName = InClass->Name;
 		// get the common type helper
 		HCommonTypeHelperInterface* CommonTypeHelper = const_cast<HCommonTypeHelperInterface*>(reflect::HTypeDatabaseUtils::GetClassCommonTypeHelper(ClassName));
 
 		// set the package
-		LObjectInitializer.Package = InPackage;
+		LObjectInitializer->Package = InPackage;
 
 		// when there is no package, set the GTranscientPackage
 		bool bNeedRootSet = false;
-		if (LObjectInitializer.Package == nullptr)
+		if (LObjectInitializer->Package == nullptr)
 		{
-			LObjectInitializer.Package = GTransientPackage;
+			LObjectInitializer->Package = GTransientPackage;
 
 			// @todo - temporary
 			bNeedRootSet = true;
 		}
 
 		// set the real class size
-		LObjectInitializer.RealSize = CommonTypeHelper->GetSize();
+		LObjectInitializer->RealSize = CommonTypeHelper->GetSize();
 
 		// try to allocate HObject
-		HObject* NewObject = AllocateHObjectInternal(LObjectInitializer, InClass);
+		HObject* NewObject = AllocateHObjectInternal(*LObjectInitializer, InClass);
 		check(NewObject != nullptr);
 		//check(LObjectInitializer.TotalSize == sizeof(HObjectType));
-		check(LObjectInitializer.Object == NewObject);
+		check(LObjectInitializer->Object == NewObject);
 
 		// trigger constructor
 		// @todo : need to support arbitrary number of constructor parameters forwarding
 		CommonTypeHelper->TriggerConstructor(NewObject);
 
 		// set the class to NewObject
-		NewObject->Class = LObjectInitializer.Class;
+		NewObject->Class = LObjectInitializer->Class;
 
 		// generate unique object name
 		NewObject->GenerateName();
 
 		// reset the ObjectInitializer
-		LObjectInitializer.Reset();
+		LObjectInitializer->Reset();
 
 		// register new object to GObjectArray
 		unique_ptr<HObject> NewObjectPtr(NewObject);

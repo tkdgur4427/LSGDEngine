@@ -76,7 +76,7 @@ namespace lsgd { namespace async {
 			shared_ptr<HGraphEvent> ConstructAndDispatchWhenReady(Args&&... InArgs)
 			{
 				// construct the task instance into task storage
-				new ((void*)Owner->TaskStorage[0]) TaskType(forward<Args>(InArgs)...);
+				new ((void*)Owner->TaskStorage[0]) TaskType(std::forward<Args>(InArgs)...);
 				// set up the HGraphTask
 				return Owner->Setup(Prerequisites);				
 			}

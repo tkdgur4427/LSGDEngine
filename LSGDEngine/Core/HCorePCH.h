@@ -12,9 +12,11 @@
 
 #include "HCriticalSection.h"
 
+#include "HEvent.h"
+
 #include "HScopedLock.h"
 
-#include "HCallOnceLock.h"
+#include "HScopedEvent.h"
 
 #include "HThreadSafeCounter.h"
 

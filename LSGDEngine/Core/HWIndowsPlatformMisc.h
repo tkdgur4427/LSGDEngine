@@ -50,4 +50,17 @@ namespace lsgd
 
 		CRITICAL_SECTION CS;
 	};
+
+	class HWindowsPlatformEvent : public HPlatformEvent
+	{
+	public:
+		HWindowsPlatformEvent();
+		virtual ~HWindowsPlatformEvent();
+
+		virtual void Trigger() override;
+		virtual void Reset() override;
+		virtual bool Wait(uint32 WaitTime) override;
+
+		HANDLE Event; // holds the handle to the event
+	};
 }

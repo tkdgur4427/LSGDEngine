@@ -117,22 +117,24 @@ namespace lsgd { namespace async {
 	class HTaskThreadSingleton : public HTaskThreadLocalStorage
 	{
 	public:
-		HTaskThreadSingleton()
+		HTaskThreadSingleton(unique_ptr<DataType>& InData)
 			: HTaskThreadLocalStorage()
+			, Data(HMove(InData))
 		{}
 		virtual ~HTaskThreadSingleton() {}
 
+		static HCriticalSection AllocTTLSSyncObject;
 		static DataType* Get() 		
 		{
 			static uint32 TaskThreadLSIndex = -1;
 			if (TaskThreadLSIndex == -1)
 			{
 				// allocate ttls(task thread local storage); only call once
-				uint32& RefTaskThreadLSIndex = TaskThreadLSIndex;
-				HCallOnceLock Lock(SyncObject, [&RefTaskThreadLSIndex]()
-				{					
-					RefTaskThreadLSIndex = HTaskThreadBase::TaskThreadSharedContext.AllocTaskThreadLS();
-				});
+				HScopedLock Lock(AllocTTLSSyncObject);
+				if (TaskThreadLSIndex == -1)
+				{
+					TaskThreadLSIndex = HTaskThreadBase::TaskThreadSharedContext.AllocTaskThreadLS();
+				}				
 			}
 
 			// get the ttls
@@ -145,18 +147,16 @@ namespace lsgd { namespace async {
 
 			shared_ptr<HTaskThreadLocalStorage> TTLSInstance = TaskThread->GetTTLS(TaskThreadLSIndex, []()->shared_ptr<HTaskThreadLocalStorage>
 			{
-				return make_shared<HTaskThreadLocalStorage, HTaskThreadSingleton<DataType>>();
+				unique_ptr<DataType> NewData = make_unique<DataType>();
+				return make_shared<HTaskThreadLocalStorage, HTaskThreadSingleton<DataType>>(NewData);
 			});
 
-			return &(((HTaskThreadSingleton<DataType>*)(TTLSInstance.get()))->Data);
+			return (((HTaskThreadSingleton<DataType>*)(TTLSInstance.get()))->Data).get();
 		}
 
 	protected:
 		// thread local storage data
-		DataType Data;
-
-		// call_once flag (static methods)
-		static HCriticalSectionCallOnce SyncObject;
+		unique_ptr<DataType> Data;
 	};
 
 	template <typename CallableType>
@@ -175,5 +175,5 @@ namespace lsgd { namespace async {
 	}
 
 	template <class DataType>
-	HCriticalSectionCallOnce HTaskThreadSingleton<DataType>::SyncObject;
+	HCriticalSection HTaskThreadSingleton<DataType>::AllocTTLSSyncObject;
 } }

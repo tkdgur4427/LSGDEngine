@@ -195,3 +195,37 @@ unique_ptr<HPlatformCriticalSection> HGenericPlatformMisc::CreateCriticalSection
 {
 	return make_unique<HPlatformCriticalSection, HWindowsPlatformCriticalSection>();
 }
+
+unique_ptr<HPlatformEvent> HGenericPlatformMisc::CreateEventObject()
+{
+	return make_unique<HPlatformEvent, HWindowsPlatformEvent>();
+}
+
+HWindowsPlatformEvent::HWindowsPlatformEvent()
+{
+	Event = CreateEvent(nullptr, false, 0, nullptr);
+	check(Event != nullptr);
+}
+
+HWindowsPlatformEvent::~HWindowsPlatformEvent()
+{
+	if (Event != nullptr)
+	{
+		CloseHandle(Event);
+	}
+}
+
+void HWindowsPlatformEvent::Trigger()
+{
+	SetEvent(Event);
+}
+
+void HWindowsPlatformEvent::Reset()
+{
+	ResetEvent(Event);
+}
+
+bool HWindowsPlatformEvent::Wait(uint32 WaitTime)
+{
+	return WaitForSingleObject(Event, WaitTime) == WAIT_OBJECT_0;
+}

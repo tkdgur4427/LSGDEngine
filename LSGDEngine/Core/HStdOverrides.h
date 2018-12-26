@@ -179,18 +179,9 @@ namespace lsgd
 		TupleToFixedArray(Result, InTuple, HMakeIntegerSequence<size_t, sizeof...(Types)>());
 		return Result;
 	}
-
-	// concurrent
-	using HCriticalSectionCallOnce = std::once_flag;
-
+		
 	template <typename Type>
 	using HAtomic = std::atomic<Type>;
-
-	template <typename CallableType, typename... Args>
-	void HCallOnce(HCriticalSectionCallOnce& InSyncObject, CallableType&& InCallable, Args&&... InArguments)
-	{
-		std::call_once(InSyncObject, InCallable, InArguments...);
-	}
 }
 
 // reflection context declarations

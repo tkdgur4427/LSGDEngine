@@ -68,6 +68,17 @@ namespace lsgd {
 		virtual void Unlock() = 0;
 	};
 
+	class HPlatformEvent
+	{
+	public:
+		HPlatformEvent() {}
+		virtual ~HPlatformEvent() {}
+
+		virtual void Trigger() = 0;
+		virtual void Reset() = 0;
+		virtual bool Wait(uint32 WaitTime) = 0;
+	};
+
 	// note that all definition of this class is reside in each platform misc.cpp (e.g. HWindowsPlatformMisc.cpp)
 	class HGenericPlatformMisc
 	{
@@ -82,6 +93,8 @@ namespace lsgd {
 		static uint32 GetCurrentThreadId();
 		// get the CS
 		static unique_ptr< HPlatformCriticalSection> CreateCriticalSection();
+		// get the event
+		static unique_ptr<HPlatformEvent> CreateEventObject();
 		// sleep
 		static void Sleep(double InSecs);
 		// get the hardware thread

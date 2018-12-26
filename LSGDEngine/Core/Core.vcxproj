@@ -20,14 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HAssert.h" />
-    <ClInclude Include="HCallOnceLock.h" />
     <ClInclude Include="HCastType.h" />
     <ClInclude Include="HClassType.h" />
     <ClInclude Include="HCommonTypeHelper.h" />
     <ClInclude Include="HConcurrentQueue.h" />
     <ClInclude Include="HCore.h" />
     <ClInclude Include="HCorePCH.h" />
+    <ClInclude Include="HCoreTls.h" />
     <ClInclude Include="HCriticalSection.h" />
+    <ClInclude Include="HEvent.h" />
     <ClInclude Include="HFileArchive.h" />
     <ClInclude Include="HGarbageCollect.h" />
     <ClInclude Include="HGCSweepExecutor.h" />
@@ -54,6 +55,7 @@
     <ClInclude Include="HReflectionContext.h" />
     <ClInclude Include="HReflectionContextDeclareMacro.h" />
     <ClInclude Include="HReflectionContextImplementMacro.h" />
+    <ClInclude Include="HScopedEvent.h" />
     <ClInclude Include="HScopedLock.h" />
     <ClInclude Include="HSingletonTemplate.h" />
     <ClInclude Include="HStdOverrides.h" />
@@ -82,6 +84,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="HCriticalSection.cpp" />
+    <ClCompile Include="HEvent.cpp" />
     <ClCompile Include="HFileArchive.cpp" />
     <ClCompile Include="HGarbageCollect.cpp" />
     <ClCompile Include="HGCSweepExecutor.cpp" />
@@ -102,6 +105,7 @@
     <ClCompile Include="HReferenceCollector.cpp" />
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HReflectionContext.cpp" />
+    <ClCompile Include="HScopedEvent.cpp" />
     <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HTaskGraph.cpp" />
     <ClCompile Include="HTaskThreadBase.cpp" />

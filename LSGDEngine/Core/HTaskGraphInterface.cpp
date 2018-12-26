@@ -24,3 +24,24 @@ void HTaskGraph1::Destroy()
 {
 
 }
+
+class FTriggerEventGraphTasks
+{
+public:	
+	FTriggerEventGraphTasks(shared_ptr<HEvent> InEvent)
+		: Event(InEvent)
+	{}
+
+	void Execute()
+	{
+		Event->Trigger();
+	}
+
+	shared_ptr<HEvent> Event;
+};
+
+void HTaskGraph1::WaitUntilTasksComplete(HArray<shared_ptr<HGraphEvent>>& Tasks, bool InbNamedThread, const HString& NamedThreadName)
+{
+	HScopedEvent Event;		
+	HGraphTask<FTriggerEventGraphTasks>::CreateTask(Tasks, InbNamedThread, NamedThreadName).ConstructAndDispatchWhenReady(Event.Get());
+}

@@ -40,6 +40,9 @@
     <Filter Include="GC">
       <UniqueIdentifier>{8baf4ff1-c02a-4a9f-adaf-79ae6311d61e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tls">
+      <UniqueIdentifier>{a9bfdc38-c9b4-466c-9c31-3d24eb21f90d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HCore.h" />
@@ -149,9 +152,6 @@
     <ClInclude Include="HTaskThreadBase.h">
       <Filter>Async</Filter>
     </ClInclude>
-    <ClInclude Include="HCallOnceLock.h">
-      <Filter>Thread</Filter>
-    </ClInclude>
     <ClInclude Include="HTaskGraphInterface.h">
       <Filter>Async</Filter>
     </ClInclude>
@@ -176,6 +176,15 @@
     </ClInclude>
     <ClInclude Include="HCriticalSection.h">
       <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HEvent.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HScopedEvent.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="HCoreTls.h">
+      <Filter>Tls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -261,6 +270,12 @@
       <Filter>Log</Filter>
     </ClCompile>
     <ClCompile Include="HCriticalSection.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="HEvent.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="HScopedEvent.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
   </ItemGroup>
