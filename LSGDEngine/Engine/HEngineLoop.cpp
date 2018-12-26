@@ -38,13 +38,38 @@ void HEngineLoop::Init()
 	TaskGraph->Initialize();
 }
 
+class HEngineLoopTickTask
+{
+public:
+	HEngineLoopTickTask(HEngineLoop& InEngineLoop)
+		: EngineLoopRef(InEngineLoop)
+	{}
+
+	void Execute()
+	{
+		EngineLoopRef.Tick();
+	}
+
+	HEngineLoop& EngineLoopRef;
+};
+
 void HEngineLoop::Loop()
 {
-	while (!bTerminate)
+	// create named thread for main thread
+	HTaskThreadBase::TaskThreadSharedContext.CreateNamedThread("MainThread");
+	shared_ptr<HThreadRunnable> MainThreadRunnable = HTaskThreadBase::TaskThreadSharedContext.GetNamedThread("MainThread");
+
+	// convert to thread task base
+	HNamedTaskThread* RawMainThreadRunnabe = (HNamedTaskThread*)MainThreadRunnable.get();
+
+	while (!RawMainThreadRunnabe->IsTerminated())
 	{
-		// trigger gc
-		gc::HGarbageCollect GarbageCollect;
-		//GarbageCollect.MarkAndSweep();
+		// create task
+		HArray<shared_ptr<HGraphEvent>> NonPrerequisites;
+		shared_ptr<HGraphEvent> GraphEvent = HGraphTask<HEngineLoopTickTask>::CreateTask(NonPrerequisites, true, "MainThread").ConstructAndDispatchWhenReady(*this);
+
+		// wait unitil complete the task
+
 	}
 }
 
@@ -52,4 +77,11 @@ void HEngineLoop::Destroy()
 {
 	// destroy the task-graph
 	TaskGraph->Destroy();
+}
+
+void HEngineLoop::Tick()
+{
+	// trigger gc
+	gc::HGarbageCollect GarbageCollect;
+	//GarbageCollect.MarkAndSweep();
 }

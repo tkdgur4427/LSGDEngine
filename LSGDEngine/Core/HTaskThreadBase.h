@@ -23,9 +23,14 @@ namespace lsgd { namespace async {
 
 		shared_ptr<HBaseGraphTask> GetNextTask();
 
+		shared_ptr<HThreadRunnable> GetNamedThread(const HString& InName);
+
 		// enqueue/dequeue the graph task to the queue
 		void EnqueueGraphTask(shared_ptr<HBaseGraphTask> InTask);
 		shared_ptr<HBaseGraphTask> DequeueGraphTask();
+
+		// enqueue the graph task from named thread's own queue
+		void EnqueueGraphTaskToNamedThread(const HString& InNamedThread, shared_ptr<HBaseGraphTask> InTask);
 
 		// generate task threads
 		void CreateTaskThread();
@@ -72,6 +77,9 @@ namespace lsgd { namespace async {
 		virtual void Run() override;
 		virtual void Terminate() override;
 
+		// common method
+		bool IsTerminated() { return bTerminate.GetValue() != 0; }
+
 		template <typename CallableType>
 		shared_ptr<HTaskThreadLocalStorage> GetTTLS(uint32 Index, CallableType&& InCallable);
 
@@ -97,6 +105,9 @@ namespace lsgd { namespace async {
 		virtual ~HNamedTaskThread();
 
 		virtual void Run() final;
+
+		// enqueue the task
+		void EnqueueGraphTaskToOwnQueue(shared_ptr<HBaseGraphTask> InTask);
 
 	protected:
 		HConcurrentQueue<shared_ptr<HBaseGraphTask>> Tasks;

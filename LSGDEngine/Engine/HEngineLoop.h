@@ -18,6 +18,9 @@ namespace lsgd {
 		void Loop();
 		void Destroy();
 
+		// main tick
+		void Tick();
+
 	protected:
 		unique_ptr<async::HTaskGraphInterface> TaskGraph;
 		bool bTerminate;

@@ -32,6 +32,19 @@ shared_ptr<HThreadRunnable> HTaskThreadSharedContext::GetTaskThread()
 	return TaskThreads[GetTaskThreadIndex()];
 }
 
+shared_ptr<HThreadRunnable> HTaskThreadSharedContext::GetNamedThread(const HString& InName)
+{
+	for (auto& NamedThread : NamedThreads)
+	{
+		if (NamedThread->Name == InName)
+		{
+			return NamedThread;
+		}
+	}
+
+	return nullptr;
+}
+
 shared_ptr<HBaseGraphTask> HTaskThreadSharedContext::GetNextTask()
 {
 	return DequeueGraphTask();
@@ -40,6 +53,15 @@ shared_ptr<HBaseGraphTask> HTaskThreadSharedContext::GetNextTask()
 void HTaskThreadSharedContext::EnqueueGraphTask(shared_ptr<HBaseGraphTask> InTask)
 {
 	Tasks.Push(InTask);
+}
+
+void HTaskThreadSharedContext::EnqueueGraphTaskToNamedThread(const HString& InNamedThread, shared_ptr<HBaseGraphTask> InTask)
+{
+	shared_ptr<HThreadRunnable> NamedThread = GetNamedThread(InNamedThread);
+	check(NamedThread != nullptr);
+
+	HNamedTaskThread* RawNamedThread = (HNamedTaskThread*)NamedThread.get();
+	RawNamedThread->EnqueueGraphTaskToOwnQueue(InTask);
 }
 
 shared_ptr<HBaseGraphTask> HTaskThreadSharedContext::DequeueGraphTask()
@@ -155,6 +177,11 @@ HNamedTaskThread::HNamedTaskThread(const HString& InName)
 HNamedTaskThread::~HNamedTaskThread()
 {
 
+}
+
+void HNamedTaskThread::EnqueueGraphTaskToOwnQueue(shared_ptr<HBaseGraphTask> InTask)
+{
+	Tasks.Push(InTask);
 }
 
 void HNamedTaskThread::Run()

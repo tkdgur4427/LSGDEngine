@@ -24,9 +24,14 @@ namespace lsgd { namespace async {
 		void SetupCompletePrerequisities();
 		void ConditionalQueueTask();
 		void QueueTask();
+		void QueueTaskToNamedThread();
 
 		// short-cut for number of prerequisite task left
 		HThreadSafeCounter NumberOfPrerequisitiesOutstanding;
+				
+		// queuing task to different queue
+		bool bNamedThread;
+		HString NamedThreadName;
 	};
 
 	class HGraphEvent
@@ -38,7 +43,7 @@ namespace lsgd { namespace async {
 		static shared_ptr<HGraphEvent> CreateGraphEvent();
 
 		// methods
-		bool AddSubsequent(shared_ptr<HBaseGraphTask>& InSubsequent);
+		bool AddSubsequent(shared_ptr<HBaseGraphTask> InSubsequent);
 
 		HClosableConcurrentQueue<shared_ptr<HBaseGraphTask>> SubsequentList;
 		HArray<shared_ptr<HGraphEvent>> EventsToWaitFor;
@@ -62,7 +67,7 @@ namespace lsgd { namespace async {
 	public:
 		enum 
 		{
-			TaskSize = sizeof(TaskType);
+			TaskSize = sizeof(TaskType),
 		};
 
 		struct HConstructor
@@ -73,7 +78,7 @@ namespace lsgd { namespace async {
 				// construct the task instance into task storage
 				new ((void*)Owner->TaskStorage[0]) TaskType(forward<Args>(InArgs)...);
 				// set up the HGraphTask
-				Owner->Setup(Prerequisites);
+				return Owner->Setup(Prerequisites);				
 			}
 
 			HConstructor(HGraphTask* InOwner, HArray<shared_ptr<HGraphEvent>>& InPrerequisitiesRef)
@@ -86,11 +91,14 @@ namespace lsgd { namespace async {
 		};
 
 		// static method
-		static HConstructor CreateTask(HArray<shared_ptr<HGraphEvent>>& InPrerequisites)
+		static HConstructor CreateTask(HArray<shared_ptr<HGraphEvent>>& InPrerequisites, bool InbNamedThread = false, const HString& InNamedThreadName = "")
 		{
 			uint32 NumberOfPrerequisites = InPrerequisites.size();
 			shared_ptr<HBaseGraphTask> NewTask = make_shared<HBaseGraphTask, HGraphTask>(HGraphEvent::CreateGraphEvent(), NumberOfPrerequisites);
 			HGraphTask* NewGraphTask = (HGraphTask*)(NewTask.get());
+
+			NewGraphTask->bNamedThread = InbNamedThread;
+			NewGraphTask->NamedThreadName = InNamedThreadName;
 			
 			return HConstructor(NewGraphTask, InPrerequisites);
 		}
@@ -106,7 +114,6 @@ namespace lsgd { namespace async {
 		uint8 TaskStorage[TaskSize];
 		bool bTaskCounstructed;
 
-	protected:
 		// make it only allow to create by CreateTask static method
 		HGraphTask(shared_ptr<HGraphEvent>& InSubsequents, uint32 InNumberOfPrerequisities);
 	};
@@ -130,7 +137,7 @@ namespace lsgd { namespace async {
 	void HGraphTask<TaskType>::Execute()
 	{
 		check(bTaskCounstructed == true);
-		(TaskType*)(&TaskStorage)->Execute();
+		((TaskType*)(&TaskStorage))->Execute();
 	}
 
 	template <typename TaskType>
@@ -148,7 +155,7 @@ namespace lsgd { namespace async {
 				AlreadyCompletedPrerequisites++;
 			}
 		}
-		check((InPrerequisites.size() - AlreadyCompletedPrerequisites) == NumberOfPrerequisitiesOutstanding);
+		check((InPrerequisites.size() - AlreadyCompletedPrerequisites) == NumberOfPrerequisitiesOutstanding.GetValue());
 
 		SetupCompletePrerequisities();
 	}

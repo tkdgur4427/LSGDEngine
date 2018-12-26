@@ -1,7 +1,7 @@
 ﻿  HSimpleGamePCH.cpp
 c1xx : warning C4199: two-phase name lookup is not supported for C++/CLI, C++/CX, or OpenMP; use /Zc:twoPhase-
-c:\users\brian hong\source\repos\lsgdengine\lsgdengine\core\hnewdeleteoverride.h(7): warning C5043: 'operator new': exception specification does not match previous declaration
-  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\vcruntime_new.h(71): note: see declaration of 'operator new'
-c:\users\brian hong\source\repos\lsgdengine\lsgdengine\core\hnewdeleteoverride.h(8): warning C5043: 'operator new[]': exception specification does not match previous declaration
-  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.15.26726\include\vcruntime_new.h(82): note: see declaration of 'operator new[]'
-c:\users\brian hong\source\repos\lsgdengine\lsgdengine\core\hobject.h(105): error C2483: 'LObjectInitializer': object with destructor or non-aggregate type cannot be declared with thread storage duration in managed code
+c:\users\hsh6679\source\repos\lsgdengine\lsgdengine\core\hnewdeleteoverride.h(7): warning C5043: 'operator new': exception specification does not match previous declaration
+  c:\program files (x86)\microsoft visual studio\2017\professional\vc\tools\msvc\14.14.26428\include\vcruntime_new.h(67): note: see declaration of 'operator new'
+c:\users\hsh6679\source\repos\lsgdengine\lsgdengine\core\hnewdeleteoverride.h(8): warning C5043: 'operator new[]': exception specification does not match previous declaration
+  c:\program files (x86)\microsoft visual studio\2017\professional\vc\tools\msvc\14.14.26428\include\vcruntime_new.h(78): note: see declaration of 'operator new[]'
+c:\users\hsh6679\source\repos\lsgdengine\lsgdengine\core\hobject.h(105): error C2483: 'LObjectInitializer': object with destructor or non-aggregate type cannot be declared with thread storage duration in managed code
