@@ -47,7 +47,7 @@ void HCoreObject::GenerateName()
 void HCoreObject::Reflect()
 {
 	// add name field
-	HTypeDatabase::GetSingleton()->AddClassField("Name", &HCoreObject::Name);
+	//HTypeDatabase::GetSingleton()->AddClassField("Name", &HCoreObject::Name);
 }
 
 void HCoreObjectState::TagObjectFlags(EObjectFlags InValue)

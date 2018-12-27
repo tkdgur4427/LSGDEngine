@@ -26,7 +26,7 @@
 
 #define GENERATE_CLASS_BODY(ClassType) \
 	static lsgd::HString GetClassName() { return #ClassType; } \
-	static void Reflect() {} \
+	static void Reflect(); \
 
 // @todo need to support multiple base classes
 #define DECLARE_CLASS_TYPE(ClassType, ...) \
