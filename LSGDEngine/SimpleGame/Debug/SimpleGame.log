@@ -1,2 +1,0 @@
-﻿Core.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
-  SimpleGame.vcxproj -> C:\Users\hsh6679\Source\Repos\LSGDEngine\LSGDEngine\Debug\SimpleGame.exe
