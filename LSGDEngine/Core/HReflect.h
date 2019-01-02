@@ -3,11 +3,6 @@
 #include "HVariadicStack.h"
 using namespace lsgd::container;
 
-namespace lsgd
-{
-	class HObject;
-}
-
 namespace lsgd { namespace reflect {
 
 	class HTypeDescriptor;
@@ -366,15 +361,12 @@ namespace lsgd { namespace reflect {
 	class HObjectProperty : public HProperty
 	{
 	public:
-		HObjectProperty(const HString& InVariableName, int32 InOffset, HObject* InObject, int32 InArrayDim = 1)
-			: HProperty(InVariableName, InOffset, ReferenceSize, InArrayDim)
-			, Object(InObject)
+		HObjectProperty(const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
 		{
 		}
 
 		virtual ~HObjectProperty() {}
-
-		HObject* Object;
 	};
 
 	template <typename... ParamTypes/*, int16... Indices*/>

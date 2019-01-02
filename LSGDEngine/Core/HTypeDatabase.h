@@ -297,7 +297,7 @@ namespace lsgd { namespace reflect {
 		unique_ptr<HProperty> CreatePropertyByName(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
 
 		template <typename ObjectType>
-		unique_ptr<HProperty> CreateObjectProperty(const HString& InVariableName, ObjectType* InObject, int32 InOffset, int32 InArrayDim) const;
+		unique_ptr<HProperty> CreateObjectProperty(const HString& InVariableName, int32 InOffset, int32 InArrayDim) const;
 
 		template <class Type>
 		void AddClassType(const HString& InName, const HString& InSuperClassName);
@@ -718,9 +718,9 @@ namespace lsgd { namespace reflect {
 	}
 
 	template <typename ObjectType>
-	unique_ptr<HProperty> HTypeDatabase::CreateObjectProperty(const HString& InVariableName, ObjectType* InObject, int32 InOffset, int32 InArrayDim) const
+	unique_ptr<HProperty> HTypeDatabase::CreateObjectProperty(const HString& InVariableName, int32 InOffset, int32 InArrayDim) const
 	{
-		unique_ptr<HProperty> NewProperty = make_unique<HProperty, HObjectProperty>(InVariableName, InOffset, InObject, InArrayDim);
+		unique_ptr<HProperty> NewProperty = make_unique<HProperty, HObjectProperty>(InVariableName, InOffset, sizeof(HObjectHandleUnique<HObject>), InArrayDim);
 		return HMove(NewProperty);
 	}
 
@@ -736,22 +736,26 @@ namespace lsgd { namespace reflect {
 
 		unique_ptr<HProperty> NewProperty;
 
-		if (!HPrimitiveTypeHelper<FieldType>::IsPrimitiveType())
+		unique_ptr<HProperty> NewProperty;
+		if (HPrimitiveTypeHelper<FieldType>::IsPrimitiveType())
 		{
-			check(HIsObjectHandleUnique<FieldType>::Value);
-
+			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+		}
+		else if (HIsObjectHandleUnique<FieldType>::Value)
+		{
 			using ObjectType = typename HRemoveObjectHandleUnique<FieldType>::Type;
+			NewProperty = HMove(CreateObjectProperty<ObjectType>(InFieldName, FieldOffset));
+		}
+		else if (HClassTypeHelper<FieldType>::IsClassType())
+		{
+			check(ExistClass(HClassTypeHelper<FieldType>::GetClassName()));
 
-			HString ClassTypeName = HClassTypeHelper<ObjectType>::GetClassName();
-
-			// for class type, used as reference (pointer)
-			FieldSize = HProperty::ReferenceSize;
-
-			NewProperty = HMove(CreatePropertyByType<ObjectType>(InFieldName, FieldOffset, FieldSize));
+			FieldSize = GetClassCommonTypeHelper(HClassTypeHelper<FieldType>::GetClassName())->GetSize();
+			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
 		}
 		else
 		{
-			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+			check(0);
 		}
 
 		LinkProperty(ClassIndex, NewProperty);
@@ -775,17 +779,19 @@ namespace lsgd { namespace reflect {
 		else if (HIsObjectHandleUnique<FieldType>::Value)
 		{
 			using ObjectType = typename HRemoveObjectHandleUnique<FieldType>::Type;
+			NewProperty = HMove(CreateObjectProperty<ObjectType>(InFieldName, FieldOffset, 0));
+		}
+		else if (HClassTypeHelper<FieldType>::IsClassType())
+		{
+			check(ExistClass(HClassTypeHelper<FieldType>::GetClassName()));
 
-			// for class type, used as reference (pointer)
-			FieldSize = HProperty::ReferenceSize;
-
-			NewProperty = HMove(CreateObjectProperty<ObjectType>(InFieldName, nullptr, FieldOffset, 0));
+			FieldSize = GetClassCommonTypeHelper(HClassTypeHelper<FieldType>::GetClassName())->GetSize();
+			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize, 0));
 		}
 		else
 		{
 			check(0);
-			//NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize, 0));
-		}		
+		}
 		
 		LinkProperty(ClassIndex, NewProperty);
 	}
