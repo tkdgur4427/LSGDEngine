@@ -307,7 +307,8 @@ namespace lsgd { namespace reflect {
 		int32 GetClassIndex(const HString& InClassName) const;
 		const HClass* GetClass(const HString& InClassName) const;
 		HClass* GetClass(const HString& InClassName);
-		const HCommonTypeHelperInterface* GetClassCommonTypeHelper(const HString& InClassName);
+		const HCommonTypeHelperInterface* GetClassCommonTypeHelper(const HString& InClassName) const;
+		HCommonTypeHelperInterface* GetClassCommonTypeHelper(const HString& InClassName);
 
 		template <class ClassType, class FieldType>
 		void AddClassField(const HString& InFieldName, FieldType ClassType::*InField);
@@ -663,8 +664,6 @@ namespace lsgd { namespace reflect {
 		AddClassTypeInner(InName, InSuperClassName);
 		// add common type helper
 		ClassCommonTypeHelpers.push_back(HClassTypeHelper<Type>::GetCommonTypeHelper());
-		// reflect
-		Type::Reflect();
 	}
 
 	template <typename Type>
@@ -725,8 +724,26 @@ namespace lsgd { namespace reflect {
 		int32 FieldOffset = (int32)StructOffsetOf(InField);
 		int32 FieldSize = sizeof(FieldType);
 
-		// create property
-		unique_ptr<HProperty> NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+		unique_ptr<HProperty> NewProperty;
+
+		if (!HPrimitiveTypeHelper<FieldType>::IsPrimitiveType())
+		{
+			check(HIsObjectHandleUnique<FieldType>::Value);
+
+			using ObjectType = typename HRemoveObjectHandleUnique<FieldType>::Type;
+
+			HString ClassTypeName = HClassTypeHelper<ObjectType>::GetClassName();
+
+			// for class type, used as reference (pointer)
+			FieldSize = HProperty::ReferenceSize;
+
+			NewProperty = HMove(CreatePropertyByType<ObjectType>(InFieldName, FieldOffset, FieldSize));
+		}
+		else
+		{
+			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+		}
+
 		LinkProperty(ClassIndex, NewProperty);
 	}
 
@@ -753,11 +770,11 @@ namespace lsgd { namespace reflect {
 			// for class type, used as reference (pointer)
 			FieldSize = HProperty::ReferenceSize;
 
-			NewProperty = HMove(CreatePropertyByType<ObjectType>(InFieldName, FieldOffset, FieldSize));
+			NewProperty = HMove(CreatePropertyByType<ObjectType>(InFieldName, FieldOffset, FieldSize, 0));
 		}
 		else
 		{
-			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize, 0));
 		}		
 		
 		LinkProperty(ClassIndex, NewProperty);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HActor.h"
+
 namespace lsgd
 {
 	DECLARE_CLASS_TYPE1(HLevel, HObject)
@@ -10,5 +12,7 @@ namespace lsgd
 
 		HLevel() {}
 		virtual ~HLevel() {}
+
+		HArray<HObjectHandleUnique<HActor>> Actors;
 	};
 }

@@ -11,6 +11,10 @@ namespace lsgd { namespace reflect {
 	public:
 		static bool IsPrimitiveType() { return false; }
 		static HGuid GetGuid() { static HGuid Guid; return Guid; }
+		static bool IsNumber() { return false; }
+		static bool IsBoolean() { return false; }
+		static bool IsString() { return false; }
+		static class HCommonTypeHelperInterface* GetCommonTypeHelper() { return nullptr; }
 	};
 
 	enum EPrimitiveTypeFlags 

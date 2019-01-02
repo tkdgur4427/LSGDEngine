@@ -106,6 +106,9 @@ void HTypeDatabase::ProcessPostProcessClassData()
 		HClass* BaseClass = GetClass(BaseClassName);
 
 		Class->SuperStruct = BaseClass;
+
+		// trigger ClassType::Reflect();
+		GetClassCommonTypeHelper(ClassName)->Reflect();
 	}
 }
 
@@ -146,7 +149,12 @@ HClass* HTypeDatabase::GetClass(const HString& InClassName)
 	return Classes[GetClassIndex(InClassName)].get();
 }
 
-const HCommonTypeHelperInterface* HTypeDatabase::GetClassCommonTypeHelper(const HString& InClassName)
+const HCommonTypeHelperInterface* HTypeDatabase::GetClassCommonTypeHelper(const HString& InClassName) const
+{
+	return ClassCommonTypeHelpers[GetClassIndex(InClassName)];
+}
+
+HCommonTypeHelperInterface* HTypeDatabase::GetClassCommonTypeHelper(const HString& InClassName)
 {
 	return ClassCommonTypeHelpers[GetClassIndex(InClassName)];
 }
