@@ -13,6 +13,29 @@ namespace lsgd {
 	template <bool B, class T = void>
 	using HEnableIf = std::enable_if<B, T>;
 
+	template <class Type>
+	struct HIsPointer
+	{
+		static const bool Value = false;
+	};
+
+	template <class Type>
+	struct HIsPointer<Type*>
+	{
+		static const bool Value = true;
+	};	
+
+	template <class InType>
+	struct HRemovePointer
+	{
+		using Type = InType;
+	};
+
+	template <class InType>
+	struct HRemovePointer<InType*>
+	{
+		using Type = InType;
+	};
 }
 
 namespace lsgd { namespace TMP {

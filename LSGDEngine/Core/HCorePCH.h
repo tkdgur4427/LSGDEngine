@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HCoreBuild.h"
+
 #include "HNewDeleteOverride.h"
 
 #include "HTMPHelper.h"

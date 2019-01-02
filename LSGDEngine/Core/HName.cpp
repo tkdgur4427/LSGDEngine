@@ -132,6 +132,10 @@ HName::HName()
 HName::HName(const char* InName)
 {
 	HNameEntryManager::GetSingleton().AddNameEntry(InName, 0, NameEntryIndex, Number);
+
+#if LSGD_DEBUG_BUILD
+	DebugNameEntry = GetNameEntry();
+#endif
 }
 
 HName::HName(const char* InOriginalName, int32 InNumber)
@@ -141,6 +145,10 @@ HName::HName(const char* InOriginalName, int32 InNumber)
 	check(FoundNumber != InNumber);
 
 	HNameEntryManager::GetSingleton().AddNameEntry(InOriginalName, InNumber, NameEntryIndex, Number);
+
+#if LSGD_DEBUG_BUILD
+	DebugNameEntry = GetNameEntry();
+#endif
 }
 
 const HNameEntry* HName::GetNameEntry() const

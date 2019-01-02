@@ -99,11 +99,13 @@ namespace lsgd
 	//protected:
 		void GenerateName();
 
-		// object's unique name
-		HName Name;
-
 		// class definition
 		const reflect::HClass* Class;
+
+		// transient data
+
+		// object's unique name
+		HName Name;
 
 		// object state
 		HCoreObjectState State;

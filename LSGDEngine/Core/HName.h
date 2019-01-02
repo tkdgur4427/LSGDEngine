@@ -81,5 +81,9 @@ namespace lsgd
 
 	protected:
 		const HNameEntry* GetNameEntry() const;
+
+#if LSGD_DEBUG_BUILD
+		const HNameEntry* DebugNameEntry;
+#endif
 	};
 }

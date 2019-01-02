@@ -9,6 +9,9 @@
 #include "HVariadicStack.h"
 using namespace lsgd::container;
 
+// hobject handle
+#include "HObjectHandle.h"
+
 namespace lsgd { namespace reflect {
 
 	// type descriptor stored in HTypeDatabase
@@ -283,6 +286,11 @@ namespace lsgd { namespace reflect {
 
 		unique_ptr<HProperty> CreatePrimitiveProperty(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
 
+		template <typename ClassType>
+		unique_ptr<HProperty> CreateClassProperty(const HString& InVariableName, int32 InOffset, int32 InArrayDim = 1) const;
+
+		unique_ptr<HProperty> CreateClassProperty(const HString& InClassTypeName, const HString& InVariableName, int32 InOffset, int32 InArrayDim = 1) const;
+
 		template <typename Type>
 		unique_ptr<HProperty> CreatePropertyByType(const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
 
@@ -303,6 +311,9 @@ namespace lsgd { namespace reflect {
 
 		template <class ClassType, class FieldType>
 		void AddClassField(const HString& InFieldName, FieldType ClassType::*InField);
+
+		template <class ClassType, class FieldType>
+		void AddClassField(const HString& InFieldName, HArray<FieldType> ClassType::*InField);
 
 		template <class ClassMethodType>
 		void AddClassMethod(const HString& InMethodName, ClassMethodType InMethod);
@@ -652,6 +663,8 @@ namespace lsgd { namespace reflect {
 		AddClassTypeInner(InName, InSuperClassName);
 		// add common type helper
 		ClassCommonTypeHelpers.push_back(HClassTypeHelper<Type>::GetCommonTypeHelper());
+		// reflect
+		Type::Reflect();
 	}
 
 	template <typename Type>
@@ -677,6 +690,13 @@ namespace lsgd { namespace reflect {
 		return NewProperty;
 	}
 
+	template <typename ClassType>
+	unique_ptr<HProperty> HTypeDatabase::CreateClassProperty(const HString& InVariableName, int32 InOffset, int32 InArrayDim) const
+	{
+		const HString ClassTypeName = HClassTypeHelper<ClassType>::GetClassName();
+		return HMove(CreateClassProperty(ClassTypeName, InVariableName, InOffset, InArrayDim));
+	}
+
 	template <typename Type>
 	unique_ptr<HProperty> HTypeDatabase::CreatePropertyByType(const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim) const
 	{
@@ -687,7 +707,10 @@ namespace lsgd { namespace reflect {
 		}
 
 		// second handling class type
-
+		else if (HClassTypeHelper<Type>::IsClassType())
+		{
+			return HMove(CreateClassProperty<Type>(InVariableName, InOffset, InArrayDim));
+		}
 
 		return nullptr;
 	}
@@ -704,6 +727,39 @@ namespace lsgd { namespace reflect {
 
 		// create property
 		unique_ptr<HProperty> NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+		LinkProperty(ClassIndex, NewProperty);
+	}
+
+	template <class ClassType, class FieldType>
+	void HTypeDatabase::AddClassField(const HString& InFieldName, HArray<FieldType> ClassType::*InField)
+	{
+		HString ClassName = ClassType::GetClassName();
+		check(ExistClass(ClassName));
+
+		int32 ClassIndex = GetClassIndex(ClassName);
+		int32 FieldOffset = (int32)StructOffsetOf(InField);
+		int32 FieldSize = sizeof(FieldType);
+				
+		unique_ptr<HProperty> NewProperty;
+
+		if (!HPrimitiveTypeHelper<FieldType>::IsPrimitiveType())
+		{
+			check(HIsObjectHandleUnique<FieldType>::Value);
+
+			using ObjectType = typename HRemoveObjectHandleUnique<FieldType>::Type;
+
+			HString ClassTypeName = HClassTypeHelper<ObjectType>::GetClassName();
+
+			// for class type, used as reference (pointer)
+			FieldSize = HProperty::ReferenceSize;
+
+			NewProperty = HMove(CreatePropertyByType<ObjectType>(InFieldName, FieldOffset, FieldSize));
+		}
+		else
+		{
+			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+		}		
+		
 		LinkProperty(ClassIndex, NewProperty);
 	}
 

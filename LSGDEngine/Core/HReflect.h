@@ -22,6 +22,14 @@ namespace lsgd { namespace reflect {
 	class HProperty : public HField
 	{
 	public:
+		enum
+		{
+			ReferenceSize = sizeof(void*),
+		};
+
+		/*
+			InArrayDim: InArrayDim == 0; it means unbounded array (std::vector)
+		*/
 		explicit HProperty(const HString& InName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
 			: HField(InName)
 			, ArrayDim(InArrayDim)
@@ -30,6 +38,7 @@ namespace lsgd { namespace reflect {
 			, FunctionInputNext(nullptr)
 			, FunctionOutputNext(nullptr)
 			, bDynamicProperty(false)
+			, bDynamicArray(InArrayDim == 0)
 		{
 			TotalSize = ElementSize * ArrayDim;
 		}
@@ -41,6 +50,11 @@ namespace lsgd { namespace reflect {
 		// type descriptor
 		unique_ptr<HTypeDescriptor> TypeDescriptor;
 
+		// dynamic container (HArray)
+		//	- ArrayDim = 0 ; array dimension is unbounded
+		bool bDynamicArray;
+
+		// if ArrayDim == 0 && bDynamicArray; it is unbounded array (same as std::vector)
 		int32 ArrayDim;
 
 		int32 Offset;
@@ -323,9 +337,16 @@ namespace lsgd { namespace reflect {
 	class HClassProperty : public HProperty
 	{
 	public:
+		HClassProperty(const HString& InVariableName, int32 InOffset, const HClass* InClass, int32 InArrayDim = 1)
+			: HProperty(InVariableName, InOffset, ReferenceSize, InArrayDim)
+			, Class(InClass)
+		{
+		}
+
 		virtual ~HClassProperty() {}
 
-		HClass* Class;
+		// class reflection 
+		const HClass* Class;
 	};
 
 	class HStructProperty : public HProperty

@@ -7,6 +7,15 @@
     <ClInclude Include="HWorld.h">
       <Filter>World</Filter>
     </ClInclude>
+    <ClInclude Include="HLevel.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="HActor.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="HActorComponent.h">
+      <Filter>World</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -15,6 +24,15 @@
       <Filter>Platform</Filter>
     </ClCompile>
     <ClCompile Include="HWorld.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="HLevel.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="HActor.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="HActorComponent.cpp">
       <Filter>World</Filter>
     </ClCompile>
   </ItemGroup>

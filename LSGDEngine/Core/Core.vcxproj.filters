@@ -186,6 +186,7 @@
     <ClInclude Include="HCoreTls.h">
       <Filter>Tls</Filter>
     </ClInclude>
+    <ClInclude Include="HCoreBuild.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />

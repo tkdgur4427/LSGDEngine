@@ -191,6 +191,19 @@ unique_ptr<HProperty> HTypeDatabase::CreatePrimitiveProperty(const HString& InTy
 	return NewProperty;
 }
 
+unique_ptr<HProperty> HTypeDatabase::CreateClassProperty(const HString& InClassTypeName, const HString& InVariableName, int32 InOffset, int32 InArrayDim) const
+{
+	unique_ptr<HTypeDescriptor> NewDescriptor = make_unique<HTypeDescriptor>(HTypeDatabaseUtils::GetTypeDescriptor(InClassTypeName));
+	check(NewDescriptor->ClassType != nullptr);
+
+	unique_ptr<HProperty> NewProperty = make_unique<HProperty, HClassProperty>(InVariableName, InOffset, NewDescriptor->ClassType, InArrayDim);
+
+	// move the type descriptor instance (note that unique_ptr)
+	NewProperty->TypeDescriptor = HMove(NewDescriptor);
+
+	return NewProperty;
+}
+
 unique_ptr<HProperty> HTypeDatabase::CreatePropertyByName(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim) const
 {
 	// first handling primitive type

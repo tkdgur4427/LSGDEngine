@@ -25,6 +25,7 @@
     <ClInclude Include="HCommonTypeHelper.h" />
     <ClInclude Include="HConcurrentQueue.h" />
     <ClInclude Include="HCore.h" />
+    <ClInclude Include="HCoreBuild.h" />
     <ClInclude Include="HCorePCH.h" />
     <ClInclude Include="HCoreTls.h" />
     <ClInclude Include="HCriticalSection.h" />

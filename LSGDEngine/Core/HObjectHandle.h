@@ -157,6 +157,60 @@ namespace lsgd
 		ObjectType* Get() const { return GetObject<ObjectType>(); }
 		explicit operator bool() const { return (Get() != nullptr); }
 	};
+
+	template <class ObjectType>
+	struct HIsObjectHandleUnique
+	{
+		static const bool Value = false;
+	};
+
+	template <class ObjectType>
+	struct HIsObjectHandleUnique<HObjectHandleUnique<ObjectType>>
+	{
+		static const bool Value = true;
+	};
+
+	template <class ObjectType>
+	struct HIsObjectHandleWeak
+	{
+		static const bool Value = false;
+	};
+
+	template <class ObjectType>
+	struct HIsObjectHandleWeak<HObjectHandleWeak<ObjectType>>
+	{
+		static const bool Value = true;
+	};
+
+	template <class ObjectType>
+	struct HIsObjectHandle
+	{
+		static const bool Value = (HIsObjectHandleUnique<ObjectType>::Value || HIsObjectHandleWeak<ObjectType>::Value);
+	};
+
+	template <class ObjectType>
+	struct HRemoveObjectHandleUnique
+	{
+		
+	};
+
+	template <class ObjectType>
+	struct HRemoveObjectHandleUnique<HObjectHandleUnique<ObjectType>>
+	{
+		using Type = ObjectType;
+	};
+
+	template <class ObjectType>
+	struct HRemoveObjectHandleWeak
+	{
+
+	};
+
+	template <class ObjectType>
+	struct HRemoveObjectHandleWeak<HObjectHandleWeak<ObjectType>>
+	{
+		using Type = ObjectType;
+	};
 }
 
 template <class ObjectType>

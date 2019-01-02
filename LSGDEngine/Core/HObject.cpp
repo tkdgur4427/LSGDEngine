@@ -74,6 +74,10 @@ void HObject::Serialize(reflect::HReflectionContext& InContext)
 	Class->SerializeProperties(InContext, (uint8*)this);
 }
 
+void HObject::Reflect()
+{
+}
+
 namespace lsgd
 {
 	HObjectArrayData AllocateHObject(const HString& ClassName, class HPackage* InPackage)
