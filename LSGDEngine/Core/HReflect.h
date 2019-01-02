@@ -3,6 +3,11 @@
 #include "HVariadicStack.h"
 using namespace lsgd::container;
 
+namespace lsgd
+{
+	class HObject;
+}
+
 namespace lsgd { namespace reflect {
 
 	class HTypeDescriptor;
@@ -48,6 +53,7 @@ namespace lsgd { namespace reflect {
 		void SerializeItem(HReflectionContext& InContext, uint8* OutData);
 
 		// type descriptor
+		//	- for UObjectProperty, it will be nullptr
 		unique_ptr<HTypeDescriptor> TypeDescriptor;
 
 		// dynamic container (HArray)
@@ -355,6 +361,20 @@ namespace lsgd { namespace reflect {
 		virtual ~HStructProperty() {}
 
 		HStruct* Struct;
+	};
+
+	class HObjectProperty : public HProperty
+	{
+	public:
+		HObjectProperty(const HString& InVariableName, int32 InOffset, HObject* InObject, int32 InArrayDim = 1)
+			: HProperty(InVariableName, InOffset, ReferenceSize, InArrayDim)
+			, Object(InObject)
+		{
+		}
+
+		virtual ~HObjectProperty() {}
+
+		HObject* Object;
 	};
 
 	template <typename... ParamTypes/*, int16... Indices*/>
