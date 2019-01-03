@@ -118,8 +118,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="HEBContextPolicy.h" />
+    <ClInclude Include="HEBusContainer.h" />
+    <ClInclude Include="HEConnectionPolicy.h" />
+    <ClInclude Include="HEHandlerContainer.h" />
+    <ClInclude Include="HEQueuePolicy.h" />
     <ClInclude Include="HActor.h" />
     <ClInclude Include="HActorComponent.h" />
+    <ClInclude Include="HEBus.h" />
     <ClInclude Include="HEngine.h" />
     <ClInclude Include="HEngineLoop.h" />
     <ClInclude Include="HEnginePCH.h" />

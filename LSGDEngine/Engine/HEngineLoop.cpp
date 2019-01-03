@@ -8,13 +8,16 @@
 // gc
 #include "..\Core\HGarbageCollect.h"
 
+// ebus
+#include "HEBus.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
 HEngineLoop::HEngineLoop()
 	: bTerminate(false)
 {
-
+	HEBus<HEBusTraits> Bus;
 }
 
 HEngineLoop::~HEngineLoop()

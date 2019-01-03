@@ -16,6 +16,24 @@
     <ClInclude Include="HActorComponent.h">
       <Filter>World</Filter>
     </ClInclude>
+    <ClInclude Include="HEBus.h">
+      <Filter>EBus</Filter>
+    </ClInclude>
+    <ClInclude Include="HEQueuePolicy.h">
+      <Filter>EBus</Filter>
+    </ClInclude>
+    <ClInclude Include="HEHandlerContainer.h">
+      <Filter>EBus</Filter>
+    </ClInclude>
+    <ClInclude Include="HEBusContainer.h">
+      <Filter>EBus</Filter>
+    </ClInclude>
+    <ClInclude Include="HEConnectionPolicy.h">
+      <Filter>EBus</Filter>
+    </ClInclude>
+    <ClInclude Include="HEBContextPolicy.h">
+      <Filter>EBus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -42,6 +60,9 @@
     </Filter>
     <Filter Include="World">
       <UniqueIdentifier>{1febe45c-d71c-4e77-9dd1-dd57233bf5d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EBus">
+      <UniqueIdentifier>{100530f6-4cb6-4438-a2b5-89e461b20000}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
