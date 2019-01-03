@@ -5,6 +5,7 @@ namespace lsgd
 	template <class BusType>
 	class HEBusContainer
 	{
+	public:
 		using EBusIdType = typename BusType::EBusIdType;
 		using EBusType = BusType;
 		using EBusNode = shared_ptr<EBusType>;
@@ -14,7 +15,7 @@ namespace lsgd
 			check(Buses.find(InBusId) == Buses.end());
 
 			EBusNode NewNode = make_shared<EBusType>(InBusId);
-			Buses.insert(InBusId, NewNode);
+			Buses.insert({ InBusId, NewNode });
 		}
 
 		void Unregister(const EBusIdType& InBusId)

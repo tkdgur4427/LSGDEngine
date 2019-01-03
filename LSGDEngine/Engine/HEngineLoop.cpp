@@ -17,7 +17,7 @@ using namespace lsgd::async;
 HEngineLoop::HEngineLoop()
 	: bTerminate(false)
 {
-	HEBus<HEBusTraits> Bus;
+	HEBus<HEBusTraits>::Bind(0);
 }
 
 HEngineLoop::~HEngineLoop()
