@@ -34,6 +34,12 @@
     <ClInclude Include="HEBContextPolicy.h">
       <Filter>EBus</Filter>
     </ClInclude>
+    <ClInclude Include="HEBroadCasterPolicy.h">
+      <Filter>EBus</Filter>
+    </ClInclude>
+    <ClInclude Include="HEBusCallQueue.h">
+      <Filter>EBus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />

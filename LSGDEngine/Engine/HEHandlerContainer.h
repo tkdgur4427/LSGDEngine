@@ -21,6 +21,7 @@ namespace lsgd
 		using EBusIdType = BusIdType;
 		using EHandlerType = InterfaceType;
 		using EHandlerNode = shared_ptr<EHandlerType>;
+		using Iterator = EHandlerNode*;
 
 		void Register(EHandlerNode& InHandler)
 		{
@@ -51,6 +52,9 @@ namespace lsgd
 			}
 			return Result;
 		}
+
+		Iterator Begin() { return Handlers.begin(); }
+		Iterator End() { return Handlers.end(); }
 
 		// assigned bus id
 		BusIdType BusId;

@@ -13,6 +13,7 @@
 
 #include <tuple>
 #include <atomic>
+#include <functional>
 
 // override std libraries with lsgd:: by type aliasing
 namespace lsgd
@@ -68,6 +69,12 @@ namespace lsgd
 	{
 		return HMakeUnique<BaseType, Type>(InArguments...);
 	}
+
+	/*
+		2019.01.07 - I tested std::function is successfully get into overrided new() operator in HNewDeleteOverride.h
+	*/
+	template <class FunctionType>
+	using HFunctionObject = std::function<FunctionType>;
 
 	// enable_shared_from_this
 	template <class Type>

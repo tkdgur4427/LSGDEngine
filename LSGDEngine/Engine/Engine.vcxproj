@@ -119,7 +119,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="HEBContextPolicy.h" />
+    <ClInclude Include="HEBroadCasterPolicy.h" />
     <ClInclude Include="HEBusContainer.h" />
+    <ClInclude Include="HEBusCallQueue.h" />
     <ClInclude Include="HEConnectionPolicy.h" />
     <ClInclude Include="HEHandlerContainer.h" />
     <ClInclude Include="HEQueuePolicy.h" />
