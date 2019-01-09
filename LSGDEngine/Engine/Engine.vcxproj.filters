@@ -40,6 +40,36 @@
     <ClInclude Include="HEBusCallQueue.h">
       <Filter>EBus</Filter>
     </ClInclude>
+    <ClInclude Include="HTickTaskSequencer.h">
+      <Filter>World\TickTaskManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HTickFunction.h">
+      <Filter>World\TickTaskManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HTickTaskLevel.h">
+      <Filter>World\TickTaskManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HTickTaskManager.h">
+      <Filter>World\TickTaskManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HSceneComponent.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="HPrimitiveComponent.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="HScene.h">
+      <Filter>RenderWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="HPrimitiveSceneProxy.h">
+      <Filter>RenderWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="HPrimitiveSceneInfo.h">
+      <Filter>RenderWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="HDynamicRHI.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -59,6 +89,15 @@
     <ClCompile Include="HActorComponent.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="HTickFunction.cpp">
+      <Filter>World\TickTaskManager</Filter>
+    </ClCompile>
+    <ClCompile Include="HSceneComponent.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="HPrimitiveComponent.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
@@ -69,6 +108,15 @@
     </Filter>
     <Filter Include="EBus">
       <UniqueIdentifier>{100530f6-4cb6-4438-a2b5-89e461b20000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\TickTaskManager">
+      <UniqueIdentifier>{9fbfd471-512a-4e34-b173-d7fe5d74d500}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderWorld">
+      <UniqueIdentifier>{ed81f670-d1ad-4bd9-9989-b81a28e57ee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RHI">
+      <UniqueIdentifier>{714787d1-c7f5-426c-b257-16fc1ac07ba5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
