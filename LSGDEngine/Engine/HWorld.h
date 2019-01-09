@@ -13,6 +13,15 @@ namespace lsgd
 		HWorld() {}
 		virtual ~HWorld() {}
 
+		void Initialize();
+		void Destroy();
+
+		void Tick(float DeltaTime);
+
+		// levels
 		HArray<HObjectHandleUnique<HLevel>> Levels;
+
+		// tick task manager
+		shared_ptr<class HTickTaskManager> TickTaskManager;
 	};
 }

@@ -14,5 +14,8 @@ namespace lsgd
 		virtual ~HLevel() {}
 
 		HArray<HObjectHandleUnique<HActor>> Actors;
+
+		// transient members
+		shared_ptr<class HTickTaskLevel> TickTaskLevel;
 	};
 }

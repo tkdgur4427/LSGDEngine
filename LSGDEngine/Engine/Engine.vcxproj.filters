@@ -34,6 +34,36 @@
     <ClInclude Include="HEBContextPolicy.h">
       <Filter>EBus</Filter>
     </ClInclude>
+    <ClInclude Include="HScene.h">
+      <Filter>RenderWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="HSceneComponent.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="HPrimitiveComponent.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="HPrimitiveSceneInfo.h">
+      <Filter>RenderWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="HPrimitiveSceneProxy.h">
+      <Filter>RenderWorld</Filter>
+    </ClInclude>
+    <ClInclude Include="HDynamicRHI.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HTickTaskSequencer.h">
+      <Filter>World\HTickTaskManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HTickFunction.h">
+      <Filter>World\HTickTaskManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HTickTaskLevel.h">
+      <Filter>World\HTickTaskManager</Filter>
+    </ClInclude>
+    <ClInclude Include="HTickTaskManager.h">
+      <Filter>World\HTickTaskManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -53,6 +83,15 @@
     <ClCompile Include="HActorComponent.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="HSceneComponent.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="HPrimitiveComponent.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="HTickFunction.cpp">
+      <Filter>World\HTickTaskManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
@@ -63,6 +102,15 @@
     </Filter>
     <Filter Include="EBus">
       <UniqueIdentifier>{100530f6-4cb6-4438-a2b5-89e461b20000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderWorld">
+      <UniqueIdentifier>{c99452ae-65a1-48d3-9b29-8d5b1678da76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RHI">
+      <UniqueIdentifier>{54704213-0964-47e9-a657-e83afc1162be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\HTickTaskManager">
+      <UniqueIdentifier>{6045e7ca-6aa9-4e2e-b845-72c3798d89b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

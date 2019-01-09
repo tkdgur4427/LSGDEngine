@@ -10,5 +10,15 @@ namespace lsgd
 
 		HActorComponent() {}
 		virtual ~HActorComponent() {}
+
+		virtual void Initialize();
+		virtual void Destroy();
+		virtual void Tick(float DeltaTime);
+
+		// owner
+		HObjectHandleUnique<class HActor> Owner;
+
+		// primary tick function
+		shared_ptr<class HTickFunction> PrimaryTickFunction;
 	};
 }

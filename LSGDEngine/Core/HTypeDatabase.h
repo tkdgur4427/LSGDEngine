@@ -297,7 +297,7 @@ namespace lsgd { namespace reflect {
 		unique_ptr<HProperty> CreatePropertyByName(const HString& InTypeName, const HString& InVariableName, int32 InOffset, int32 InSize, int32 InArrayDim = 1) const;
 
 		template <typename ObjectType>
-		unique_ptr<HProperty> CreateObjectProperty(const HString& InVariableName, int32 InOffset, int32 InArrayDim) const;
+		unique_ptr<HProperty> CreateObjectProperty(const HString& InVariableName, int32 InOffset, int32 InArrayDim = 1) const;
 
 		template <class Type>
 		void AddClassType(const HString& InName, const HString& InSuperClassName);
@@ -733,8 +733,6 @@ namespace lsgd { namespace reflect {
 		int32 ClassIndex = GetClassIndex(ClassName);
 		int32 FieldOffset = (int32)StructOffsetOf(InField);
 		int32 FieldSize = sizeof(FieldType);
-
-		unique_ptr<HProperty> NewProperty;
 
 		unique_ptr<HProperty> NewProperty;
 		if (HPrimitiveTypeHelper<FieldType>::IsPrimitiveType())
