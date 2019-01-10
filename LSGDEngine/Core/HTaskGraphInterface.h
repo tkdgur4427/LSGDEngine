@@ -27,3 +27,5 @@ namespace lsgd { namespace async {
 
 	};
 } }
+
+extern lsgd::async::HTaskGraphInterface* GTaskGraphInterface;

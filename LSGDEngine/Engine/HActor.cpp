@@ -24,7 +24,7 @@ HActorTickFunction::~HActorTickFunction()
 
 }
 
-void HActorTickFunction::ExecuteTick()
+void HActorTickFunction::Execute()
 {
 	Target->Tick(0.0f);
 }

@@ -49,7 +49,7 @@ namespace lsgd
 
 		bool IsConnected() const { return Connector.HandlerNode; }
 
-		void Connect(BusIdType = 0)
+		void Connect(BusIdType InBusId = 0)
 		{
 			check(!IsConnected()); // only allowed connect once!
 
@@ -93,7 +93,7 @@ namespace lsgd
 			NewConnector.BusId = InBusId;
 			NewConnector.HandlerNode = this; // note that interface-type should inherits from 'enable_shared_from_this'
 
-			BusType::BindAndConnect(Connector.BusId, Connector.HandlerNode);
+			BusType::BindAndConnect(NewConnector.BusId, NewConnector.HandlerNode);
 
 			// add connectors
 			Connectors.push_back(NewConnector);

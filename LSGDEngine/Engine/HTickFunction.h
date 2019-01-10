@@ -1,9 +1,28 @@
 #pragma once
 
+namespace lsgd { namespace async {
+
+	class HBaseGraphTask;
+	class HGraphEvent;
+	
+} }
+
 namespace lsgd {
 
 	struct HTickFunctionContext
 	{
+		HTickFunctionContext()
+		{
+			Reset();
+		}
+
+		void Reset()
+		{
+			DeltaSeconds = 0.0f;
+			ThreadName = "";
+			World = nullptr;
+		}
+
 		// delta time to tick
 		float DeltaSeconds;
 
@@ -21,13 +40,19 @@ namespace lsgd {
 	};
 
 	// note that HTickFunction is abstract class
-	class HTickFunction
+	class HTickFunction : public enable_shared_from_this<HTickFunction>
 	{
 	public:
 		HTickFunction();
 		virtual ~HTickFunction();
 
-		virtual void ExecuteTick() = 0;
+		virtual void Execute() = 0;
+
+		// queue tick function
+		void QueueTickFunction(class HTickTaskSequencer& TTS, const HTickFunctionContext& InContext);
+
+		// get completion handler
+		shared_ptr<async::HGraphEvent> GetCompletionHandle();
 
 		enum class ETickState : uint8
 		{
@@ -38,9 +63,7 @@ namespace lsgd {
 
 		ETickState TickState;
 
-		// temporary scope of task pointer (whenever it finishes its execution, nullify)
-		//	- normally indicates 'HGraphTask<HTickFunctionTask>*'
-		void* TaskPointer;
+		shared_ptr<async::HBaseGraphTask> TaskPointer;
 
 		// prerequisites for this tick function
 		HArray<HTickFunctionPrerequisite> Prerequisites;
@@ -50,6 +73,9 @@ namespace lsgd {
 
 		// owner of tick task level
 		class HTickTaskLevel* TickTaskLevel;
+
+		// tick function running asynchronously
+		bool bRunOnTaskThreads;
 	};
 
 	/*
@@ -63,7 +89,7 @@ namespace lsgd {
 		HActorTickFunction();
 		virtual ~HActorTickFunction();
 
-		virtual void ExecuteTick();
+		virtual void Execute();
 
 		HObjectHandleWeak<class HActor> Target;
 	};
@@ -74,7 +100,7 @@ namespace lsgd {
 		HActorComponentTickFunction();
 		virtual ~HActorComponentTickFunction();
 
-		virtual void ExecuteTick();
+		virtual void Execute();
 
 		HObjectHandleWeak<class HActorComponent> Target;
 	};

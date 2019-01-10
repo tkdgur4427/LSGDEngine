@@ -11,6 +11,9 @@
 // ebus
 #include "HEBus.h"
 
+// world
+#include "HWorld.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
@@ -83,6 +86,12 @@ void HEngineLoop::Destroy()
 
 void HEngineLoop::Tick()
 {
+	// world tick
+	if (GWorld)
+	{
+		GWorld->Tick(0.f);
+	}
+
 	// trigger gc
 	gc::HGarbageCollect GarbageCollect;
 	//GarbageCollect.MarkAndSweep();

@@ -98,6 +98,15 @@
     <ClCompile Include="HPrimitiveComponent.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="HTickTaskManager.cpp">
+      <Filter>World\TickTaskManager</Filter>
+    </ClCompile>
+    <ClCompile Include="HTickTaskLevel.cpp">
+      <Filter>World\TickTaskManager</Filter>
+    </ClCompile>
+    <ClCompile Include="HTickTaskSequencer.cpp">
+      <Filter>World\TickTaskManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">

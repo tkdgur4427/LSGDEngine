@@ -28,9 +28,12 @@ bool HGraphEvent::AddSubsequent(shared_ptr<HBaseGraphTask> InSubsequent)
 	return SubsequentList.Push(InSubsequent);
 }
 
-void HBaseGraphTask::SetupCompletePrerequisities()
+void HBaseGraphTask::SetupCompletePrerequisities(bool bUnlock)
 {
-	ConditionalQueueTask();
+	if (bUnlock)
+	{
+		ConditionalQueueTask();
+	}
 }
 
 void HBaseGraphTask::ConditionalQueueTask()

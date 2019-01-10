@@ -25,3 +25,5 @@ namespace lsgd
 		shared_ptr<class HTickTaskManager> TickTaskManager;
 	};
 }
+
+extern lsgd::HWorld* GWorld;

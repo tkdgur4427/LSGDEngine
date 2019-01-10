@@ -5,6 +5,8 @@ using namespace lsgd::container;
 
 namespace lsgd { namespace async {
 
+	class HGraphEvent;
+
 	/*
 		note that
 			- for preventing dangling pointer situation, I add enable_shared_from_this class (different from UE4; compared to raw pointer management)
@@ -19,9 +21,11 @@ namespace lsgd { namespace async {
 		virtual ~HBaseGraphTask() {}
 
 		virtual void Execute() = 0;
+		virtual void Unlock() = 0;
+		virtual shared_ptr<HGraphEvent> GetCompletionEvent() = 0;
 
 		// methods
-		void SetupCompletePrerequisities();
+		void SetupCompletePrerequisities(bool bUnlock = true);
 		void ConditionalQueueTask();
 		void QueueTask();
 		void QueueTaskToNamedThread();
@@ -72,6 +76,7 @@ namespace lsgd { namespace async {
 
 		struct HConstructor
 		{
+			// after successfully create task dispatch right away
 			template <typename... Args>
 			shared_ptr<HGraphEvent> ConstructAndDispatchWhenReady(Args&&... InArgs)
 			{
@@ -81,6 +86,20 @@ namespace lsgd { namespace async {
 				new ((void*)(&(RawOwner->TaskStorage[0]))) TaskType(std::forward<Args>(InArgs)...);
 				// set up the HGraphTask
 				return RawOwner->Setup(Prerequisites);
+			}
+
+			// after create task, just hold it
+			template <typename... Args>
+			shared_ptr<HBaseGraphTask> ConstructAndHold(Args&&... InArgs)
+			{
+				HGraphTask* RawOwner = (HGraphTask*)(Owner.get());
+
+				// construct the task instance into task storage
+				new ((void*)(&(RawOwner->TaskStorage[0]))) TaskType(std::forward<Args>(InArgs)...);
+				// set up the HGraphTask (note that 
+				RawOwner->Setup(Prerequisites, false);
+
+				return Owner;
 			}
 
 			HConstructor(shared_ptr<HBaseGraphTask> InOwner, HArray<shared_ptr<HGraphEvent>>& InPrerequisitiesRef)
@@ -107,10 +126,14 @@ namespace lsgd { namespace async {
 
 		virtual ~HGraphTask();
 		virtual void Execute() override;
+		virtual void Unlock() override;
+
+		// get subsequent completion handle
+		virtual shared_ptr<HGraphEvent> GetCompletionEvent() { return Subsequents; }
 
 		// helper methods
-		shared_ptr<HGraphEvent> Setup(HArray<shared_ptr<HGraphEvent>>& InPrerequisites);
-		void SetupPrerequisites(HArray<shared_ptr<HGraphEvent>>& InPrerequisites);
+		shared_ptr<HGraphEvent> Setup(HArray<shared_ptr<HGraphEvent>>& InPrerequisites, bool bUnlock = true);
+		void SetupPrerequisites(HArray<shared_ptr<HGraphEvent>>& InPrerequisites, bool bUnlock = true);
 
 		shared_ptr<HGraphEvent> Subsequents;
 		uint8 TaskStorage[TaskSize];
@@ -143,7 +166,13 @@ namespace lsgd { namespace async {
 	}
 
 	template <typename TaskType>
-	void HGraphTask<TaskType>::SetupPrerequisites(HArray<shared_ptr<HGraphEvent>>& InPrerequisites)
+	void HGraphTask<TaskType>::Unlock()
+	{
+		ConditionalQueueTask();
+	}
+
+	template <typename TaskType>
+	void HGraphTask<TaskType>::SetupPrerequisites(HArray<shared_ptr<HGraphEvent>>& InPrerequisites, bool bUnlock)
 	{
 		// now set up task is constructed
 		bTaskCounstructed = true;
@@ -159,14 +188,15 @@ namespace lsgd { namespace async {
 		}
 		check((InPrerequisites.size() - AlreadyCompletedPrerequisites) == NumberOfPrerequisitiesOutstanding.GetValue());
 
-		SetupCompletePrerequisities();
+		// if bUnlock is false, skip the queue the task to the task queue
+		SetupCompletePrerequisities(bUnlock);
 	}
 
 	template <typename TaskType>
-	shared_ptr<HGraphEvent> HGraphTask<TaskType>::Setup(HArray<shared_ptr<HGraphEvent>>& InPrerequisites)
+	shared_ptr<HGraphEvent> HGraphTask<TaskType>::Setup(HArray<shared_ptr<HGraphEvent>>& InPrerequisites, bool bUnlock)
 	{
 		shared_ptr<HGraphEvent> ReturnGraphEvent = Subsequents;
-		SetupPrerequisites(InPrerequisites);
+		SetupPrerequisites(InPrerequisites, bUnlock);
 		return ReturnGraphEvent;
 	}
 } }

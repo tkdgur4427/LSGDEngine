@@ -23,7 +23,7 @@ HActorComponentTickFunction::~HActorComponentTickFunction()
 
 }
 
-void HActorComponentTickFunction::ExecuteTick()
+void HActorComponentTickFunction::Execute()
 {
 	Target->Tick(0.0f);
 }

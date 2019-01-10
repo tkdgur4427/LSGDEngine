@@ -155,6 +155,9 @@
     <ClCompile Include="HPrimitiveComponent.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
     <ClCompile Include="HTickFunction.cpp" />
+    <ClCompile Include="HTickTaskLevel.cpp" />
+    <ClCompile Include="HTickTaskManager.cpp" />
+    <ClCompile Include="HTickTaskSequencer.cpp" />
     <ClCompile Include="HWindowsLaunch.cpp" />
     <ClCompile Include="HWorld.cpp" />
   </ItemGroup>

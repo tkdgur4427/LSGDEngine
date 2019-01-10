@@ -7,6 +7,8 @@
 using namespace lsgd;
 using namespace lsgd::async;
 
+HTaskGraphInterface* GTaskGraphInterface = nullptr;
+
 void HTaskGraph1::Initialize()
 {
 	// generate task graph threads
@@ -18,6 +20,9 @@ void HTaskGraph1::Initialize()
 	{
 		HTaskThreadBase::TaskThreadSharedContext.CreateTaskThread();
 	}
+
+	// set the global task graph interface
+	GTaskGraphInterface = this;
 }
 
 void HTaskGraph1::Destroy()
