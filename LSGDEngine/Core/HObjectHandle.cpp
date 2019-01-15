@@ -21,6 +21,11 @@ void HObjectHelper::SetAsRootSet(const HObjectArrayData& InData)
 	HObjectArray::GetSingleton()->SetAsRootSet(InData.Index, InData.SerialNumber);
 }
 
+void HObjectHelper::UnsetAsRootSet(const HObjectArrayData& InData)
+{
+	HObjectArray::GetSingleton()->UnsetAsRootSet(InData.Index, InData.SerialNumber);
+}
+
 void HObjectHelper::MarkGC(const HObjectArrayData& InData)
 {
 	HObjectArray::GetSingleton()->MarkGC(InData.Index, InData.SerialNumber);

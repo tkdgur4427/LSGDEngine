@@ -1,6 +1,6 @@
 #pragma once
 
-template <class ClassType, class... BaseClassTypes>
+template <class ClassType>
 struct HClassTypeHelper
 {
 	static bool IsClassType() { return false; }

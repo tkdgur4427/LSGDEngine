@@ -197,6 +197,29 @@ void HObjectArray::SetAsRootSet(uint32 Index, uint32 SerialNumber)
 	RootSetObjects.push_back(Index);
 }
 
+void HObjectArray::UnsetAsRootSet(uint32 Index, uint32 SerialNumber)
+{
+	check(IsValidObject(Index, SerialNumber));
+
+	HObjectItem* ObjectItem = Objects[Index].get();
+	ObjectItem->UnsetFlag(EObjectItemFlags::RootSet);
+
+	// remove fast look-up table for rootset
+	uint32 Offset = 0;
+	uint32 FoundOffset = -1;
+	for (auto& RootSetObject : RootSetObjects)
+	{
+		if (RootSetObject == Index)
+		{
+			FoundOffset = Offset;
+			break;
+		}
+		Offset++;
+	}
+	check(FoundOffset != -1);
+	RootSetObjects.erase(RootSetObjects.begin() + FoundOffset);
+}
+
 void HObjectArray::MarkGC(uint32 Index, uint32 SerialNumber)
 {
 	check(IsValidObject(Index, SerialNumber));

@@ -79,6 +79,7 @@ namespace lsgd
 		// mark proper flags
 		void SetAsDestroyed(uint32 Index, uint32 SerialNumber);
 		void SetAsRootSet(uint32 Index, uint32 SerialNumber);
+		void UnsetAsRootSet(uint32 Index, uint32 SerialNumber);
 		void MarkGC(uint32 Index, uint32 SerialNumber);
 		void UnMarkGC(uint32 Index, uint32 SerialNumber);
 		

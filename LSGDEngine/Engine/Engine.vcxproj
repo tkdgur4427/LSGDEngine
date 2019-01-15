@@ -78,7 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HEnginePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../ThirdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,12 +118,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="HBaseEngine.h" />
+    <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
     <ClInclude Include="HEBContextPolicy.h" />
     <ClInclude Include="HEBroadCasterPolicy.h" />
     <ClInclude Include="HEBusContainer.h" />
     <ClInclude Include="HEBusCallQueue.h" />
     <ClInclude Include="HEConnectionPolicy.h" />
+    <ClInclude Include="HEditorEngine.h" />
     <ClInclude Include="HEHandlerContainer.h" />
     <ClInclude Include="HEQueuePolicy.h" />
     <ClInclude Include="HActor.h" />
@@ -132,6 +135,7 @@
     <ClInclude Include="HEngine.h" />
     <ClInclude Include="HEngineLoop.h" />
     <ClInclude Include="HEnginePCH.h" />
+    <ClInclude Include="HGameInstance.h" />
     <ClInclude Include="HLevel.h" />
     <ClInclude Include="HPrimitiveComponent.h" />
     <ClInclude Include="HPrimitiveSceneInfo.h" />
@@ -142,15 +146,19 @@
     <ClInclude Include="HTickTaskLevel.h" />
     <ClInclude Include="HTickTaskManager.h" />
     <ClInclude Include="HTickTaskSequencer.h" />
+    <ClInclude Include="HMath.h" />
     <ClInclude Include="HWorld.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HActor.cpp" />
     <ClCompile Include="HActorComponent.cpp" />
+    <ClCompile Include="HBaseEngine.cpp" />
+    <ClCompile Include="HDXMath.cpp" />
     <ClCompile Include="HEngineLoop.cpp" />
     <ClCompile Include="HEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="HGameInstance.cpp" />
     <ClCompile Include="HLevel.cpp" />
     <ClCompile Include="HPrimitiveComponent.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />

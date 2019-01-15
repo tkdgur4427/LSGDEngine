@@ -70,6 +70,21 @@
     <ClInclude Include="HDynamicRHI.h">
       <Filter>RHI</Filter>
     </ClInclude>
+    <ClInclude Include="HDXMath.h">
+      <Filter>Math\DXMath</Filter>
+    </ClInclude>
+    <ClInclude Include="HMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="HGameInstance.h">
+      <Filter>Game Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="HBaseEngine.h">
+      <Filter>EngineInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="HEditorEngine.h">
+      <Filter>EngineInstance</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -107,6 +122,15 @@
     <ClCompile Include="HTickTaskSequencer.cpp">
       <Filter>World\TickTaskManager</Filter>
     </ClCompile>
+    <ClCompile Include="HDXMath.cpp">
+      <Filter>Math\DXMath</Filter>
+    </ClCompile>
+    <ClCompile Include="HGameInstance.cpp">
+      <Filter>Game Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="HBaseEngine.cpp">
+      <Filter>EngineInstance</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
@@ -126,6 +150,18 @@
     </Filter>
     <Filter Include="RHI">
       <UniqueIdentifier>{714787d1-c7f5-426c-b257-16fc1ac07ba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{9c0594bc-82e7-4e82-9dc6-ca0c8a1fe19f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math\DXMath">
+      <UniqueIdentifier>{33c151d8-9fca-4237-9b6d-ccbb913f7877}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Framework">
+      <UniqueIdentifier>{0260caa7-4299-40f8-a78e-8aa2fc57b7cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineInstance">
+      <UniqueIdentifier>{48b47805-4d71-4853-aaa4-3ef3b374244b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

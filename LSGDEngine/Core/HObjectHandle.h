@@ -23,6 +23,7 @@ namespace lsgd
 		static HObject* GetObject(uint32 Index, uint32 SerialNumber);
 		static void SetAsDestroyed(const HObjectArrayData& InData);
 		static void SetAsRootSet(const HObjectArrayData& InData);
+		static void UnsetAsRootSet(const HObjectArrayData& InData);
 		static void MarkGC(const HObjectArrayData& InData);
 		static void UnMarkGC(const HObjectArrayData& InData);
 	};
@@ -50,9 +51,22 @@ namespace lsgd
 			return (ObjectType*)HObjectHelper::GetObject(Data.Index, Data.SerialNumber);
 		}
 
+		void SetRoot()
+		{
+			bIsRootSet = true;
+			HObjectHelper::SetAsRootSet(Data);
+		}
+
+		void UnsetRoot()
+		{
+			HObjectHelper::UnsetAsRootSet(Data);
+			bIsRootSet = false;
+		}
+
 	protected:
 		HObjectHandle(bool InbIsOwned)
 			: bIsOwned(InbIsOwned)
+			, bIsRootSet(false)
 		{
 			Data.Reset();
 		}
@@ -67,6 +81,7 @@ namespace lsgd
 
 		HObjectArrayData Data;
 		bool bIsOwned;
+		bool bIsRootSet;
 	};
 
 	template <typename ObjectType>
@@ -86,6 +101,7 @@ namespace lsgd
 
 		virtual ~HObjectHandleUnique()
 		{
+			check(!bIsRootSet);
 			HObjectHelper::SetAsDestroyed(Data);
 		}
 
