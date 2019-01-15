@@ -24,7 +24,7 @@ void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag, uint32 InIn
 	Object = HMove(InObject);
 
 	// set the object's state as binded object array data
-	Object->State.ObjectArrayData = { UniqueNumber, InIndex };
+	Object->State.ObjectArrayData = HObjectArrayData(UniqueNumber, InIndex);
 }
 
 void HObjectItem::Unbind()
@@ -122,7 +122,7 @@ HObjectArrayData HObjectArray::RegisterObject(unique_ptr<HObject>& InObject, int
 
 	Objects[NewIndex]->Bind(InObject, InFlags, NewIndex);
 
-	return {Objects[NewIndex]->UniqueNumber, NewIndex};
+	return HObjectArrayData(Objects[NewIndex]->UniqueNumber, NewIndex);
 }
 
 void HObjectArray::DeregisterObject(uint32 Index, uint32 SerialNumber)

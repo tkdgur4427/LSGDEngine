@@ -7,6 +7,16 @@ namespace lsgd
 	// object array data (common data)
 	struct HObjectArrayData
 	{
+		HObjectArrayData()
+		{
+			Reset();
+		}
+
+		HObjectArrayData(uint32 InSerialNumber, uint32 InIndex)
+			: SerialNumber(InSerialNumber)
+			, Index(InIndex)
+		{}
+
 		void Reset()
 		{
 			SerialNumber = -1;

@@ -22,6 +22,7 @@ namespace lsgd {
 		void Tick();
 
 	protected:
+		unique_ptr<class HBaseEngine> EngineInstance;
 		unique_ptr<async::HTaskGraphInterface> TaskGraph;
 		bool bTerminate;
 	};

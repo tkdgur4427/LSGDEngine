@@ -274,6 +274,9 @@ namespace lsgd { namespace reflect {
 		template<typename Type>
 		HString GetTypeName() const;
 
+		template<class Type>
+		HString GetClassName() const;
+
 		template <class Type>
 		void AddPrimitiveType(const HString& InName);
 
@@ -621,10 +624,17 @@ namespace lsgd { namespace reflect {
 
 		if (HClassTypeHelper<Type>::IsClassType())
 		{
-			return HClassTypeHelper<Type>::template GetClassName();
+			return GetClassName<Type>();
 		}		
 		
 		return HString();
+	}
+
+	template<class Type>
+	HString HTypeDatabase::GetClassName() const
+	{
+		check(HClassTypeHelper<Type>::IsClassType());
+		return Type::GetClassName();
 	}
 
 	template <class Type>

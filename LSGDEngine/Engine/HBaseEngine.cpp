@@ -7,12 +7,10 @@ using namespace lsgd;
 
 void HBaseEngine::Initialize()
 {
-	auto Temp = reflect::HTypeDatabase::GetSingleton()->GetTypeName<HGameInstance>();
-	//reflect::HTypeDescriptor ClassType = reflect::HTypeDatabaseUtils::GetTypeDescriptor<HGameInstance>();
 	// create game instance
-	//GameInstance = AllocateHObject<HGameInstance>();
+	GameInstance = AllocateHObject<HGameInstance>();
 	// add it to the root set
-	//GameInstance.SetRoot();
+	GameInstance.SetRoot();
 }
 
 void HBaseEngine::Destroy()

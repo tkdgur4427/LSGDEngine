@@ -14,6 +14,9 @@
 // world
 #include "HWorld.h"
 
+// engine instance
+#include "HEditorEngine.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
@@ -41,6 +44,10 @@ void HEngineLoop::Init()
 	// create task graph
 	TaskGraph = make_unique<HTaskGraphInterface, HTaskGraph1>();
 	TaskGraph->Initialize();
+
+	// engine instance
+	EngineInstance = make_unique<HBaseEngine, HEditorEngine>();
+	EngineInstance->Initialize();
 }
 
 class HEngineLoopTickTask
@@ -80,12 +87,17 @@ void HEngineLoop::Loop()
 
 void HEngineLoop::Destroy()
 {
+	// destroy engine instance
+	EngineInstance->Destroy();
+
 	// destroy the task-graph
 	TaskGraph->Destroy();
 }
 
 void HEngineLoop::Tick()
 {
+	EngineInstance->Tick(0.f);
+
 	// world tick
 	if (GWorld)
 	{
