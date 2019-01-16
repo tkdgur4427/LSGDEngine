@@ -19,9 +19,13 @@ namespace lsgd {
 		void Destroy();
 
 		// main tick
-		void Tick();
+		void Tick();		
 
-	protected:
+		// initialize/destroy in named thread
+		void InitializeInNamedThread();
+		void DestroyInNamedThread();
+
+	protected:		
 		unique_ptr<class HBaseEngine> EngineInstance;
 		unique_ptr<async::HTaskGraphInterface> TaskGraph;
 		bool bTerminate;

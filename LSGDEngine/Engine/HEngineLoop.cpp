@@ -43,12 +43,23 @@ void HEngineLoop::Init()
 
 	// create task graph
 	TaskGraph = make_unique<HTaskGraphInterface, HTaskGraph1>();
-	TaskGraph->Initialize();
-
-	// engine instance
-	EngineInstance = make_unique<HBaseEngine, HEditorEngine>();
-	EngineInstance->Initialize();
+	TaskGraph->Initialize();	
 }
+
+class HEngineLoopInitializeTask
+{
+public:
+	HEngineLoopInitializeTask(HEngineLoop& InEngineLoop)
+		: EngineLoopRef(InEngineLoop)
+	{}
+
+	void Execute()
+	{
+		EngineLoopRef.InitializeInNamedThread();
+	}
+
+	HEngineLoop& EngineLoopRef;
+};
 
 class HEngineLoopTickTask
 {
@@ -74,10 +85,15 @@ void HEngineLoop::Loop()
 	// convert to thread task base
 	HNamedTaskThread* RawMainThreadRunnabe = (HNamedTaskThread*)MainThreadRunnable.get();
 
+	// initialize in named thread
+	HArray<shared_ptr<HGraphEvent>> Prerequisites;
+	shared_ptr<HGraphEvent> InitializeEvent = HGraphTask<HEngineLoopInitializeTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndDispatchWhenReady(*this);
+
 	while (!RawMainThreadRunnabe->IsTerminated())
 	{
 		// create task
 		HArray<shared_ptr<HGraphEvent>> Prerequisites;
+		Prerequisites.push_back(InitializeEvent);
 		shared_ptr<HGraphEvent> GraphEvent = HGraphTask<HEngineLoopTickTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndDispatchWhenReady(*this);
 
 		// wait until complete the task 'HEngineLoopTickTask'		
@@ -87,11 +103,19 @@ void HEngineLoop::Loop()
 
 void HEngineLoop::Destroy()
 {
-	// destroy engine instance
+	// destroy game instance
+	// @todo think about how to handle this in named thread...
 	EngineInstance->Destroy();
 
 	// destroy the task-graph
 	TaskGraph->Destroy();
+}
+
+void HEngineLoop::InitializeInNamedThread()
+{
+	// engine instance
+	EngineInstance = make_unique<HBaseEngine, HEditorEngine>();
+	EngineInstance->Initialize();
 }
 
 void HEngineLoop::Tick()

@@ -30,7 +30,7 @@ namespace lsgd
 
 	// HArray
 	template <class ValueType>
-	using HArray = std::vector<ValueType>;
+	using HArray = std::vector<ValueType, HStdAllocator<ValueType>>;
 
 	// array
 	template <class ValueType, int Size>

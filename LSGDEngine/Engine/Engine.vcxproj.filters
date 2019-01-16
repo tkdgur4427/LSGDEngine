@@ -77,7 +77,7 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="HGameInstance.h">
-      <Filter>Game Framework</Filter>
+      <Filter>GameFramework</Filter>
     </ClInclude>
     <ClInclude Include="HBaseEngine.h">
       <Filter>EngineInstance</Filter>
@@ -126,7 +126,7 @@
       <Filter>Math\DXMath</Filter>
     </ClCompile>
     <ClCompile Include="HGameInstance.cpp">
-      <Filter>Game Framework</Filter>
+      <Filter>GameFramework</Filter>
     </ClCompile>
     <ClCompile Include="HBaseEngine.cpp">
       <Filter>EngineInstance</Filter>
@@ -157,11 +157,11 @@
     <Filter Include="Math\DXMath">
       <UniqueIdentifier>{33c151d8-9fca-4237-9b6d-ccbb913f7877}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game Framework">
-      <UniqueIdentifier>{0260caa7-4299-40f8-a78e-8aa2fc57b7cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EngineInstance">
       <UniqueIdentifier>{48b47805-4d71-4853-aaa4-3ef3b374244b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework">
+      <UniqueIdentifier>{0260caa7-4299-40f8-a78e-8aa2fc57b7cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

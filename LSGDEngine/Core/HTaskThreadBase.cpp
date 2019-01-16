@@ -29,7 +29,18 @@ shared_ptr<HThreadRunnable> HTaskThreadSharedContext::GetTaskThread()
 		return nullptr;
 	}
 
-	return TaskThreads[GetTaskThreadIndex()];
+	return TaskThreads[TaskThreadIndex];
+}
+
+shared_ptr<HThreadRunnable> HTaskThreadSharedContext::GetNamedThread()
+{
+	uint32 ThreadIndex = GetNamedThreadIndex();
+	if (ThreadIndex == -1)
+	{
+		return nullptr;
+	}
+
+	return NamedThreads[ThreadIndex];
 }
 
 shared_ptr<HThreadRunnable> HTaskThreadSharedContext::GetNamedThread(const HString& InName)
@@ -108,6 +119,23 @@ int32 HTaskThreadSharedContext::GetTaskThreadIndex()
 	return Result;
 }
 
+int32 HTaskThreadSharedContext::GetNamedThreadIndex()
+{
+	int32 Result = -1;
+
+	int32 ThreadIndex = 0;
+	for (auto&& NamedThread : NamedThreads)
+	{
+		if (NamedThread->IsCurrThread())
+		{
+			Result = ThreadIndex;
+		}
+		ThreadIndex++;
+	}
+
+	return Result;
+}
+
 HTaskThreadBase::HTaskThreadBase()
 	: HThreadRunnable("TaskThread")
 	, UniqueId(TaskThreadSharedContext.GenerateTaskThreadId())
@@ -149,6 +177,11 @@ void HTaskThreadBase::Terminate()
 bool HTaskThreadBase::IsValidTTLSIndex(uint32 Index)
 {
 	bool bResult = true;
+	if (TaskThreadLocalStorages.size() == 0)
+	{
+		return false;
+	}
+
 	if (TaskThreadLocalStorages.size() <= Index && Index < 0)
 	{
 		// if it is out of range

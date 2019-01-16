@@ -69,6 +69,8 @@ HNameEntryManager& HNameEntryManager::GetSingleton()
 
 void HNameEntryManager::AddNameEntry(const char* InName, int32 InNumber, int32& OutNameEntryIndex, int32& OutNumber)
 {
+	HScopedLock Lock(SyncObject);
+
 	OutNumber = FindNameEntry(InName, InNumber);
 	
 	HNameEntry* NameEntry = nullptr;
@@ -91,6 +93,8 @@ void HNameEntryManager::AddNameEntry(const char* InName, int32 InNumber, int32& 
 
 int32 HNameEntryManager::FindNameEntry(const char* InName, int32 InNumber)
 {
+	HScopedLock Lock(SyncObject);
+
 	int32 OutNumber = InNumber;
 	
 	// note that this algorithm is very very inefficient, but for fast implementation, I choose this way
@@ -117,8 +121,9 @@ int32 HNameEntryManager::FindNameEntry(const char* InName, int32 InNumber)
 	return OutNumber;
 }
 
-const HNameEntry* HNameEntryManager::GetNameEntry(int32 Index) const
+const HNameEntry* HNameEntryManager::GetNameEntry(int32 Index)
 {
+	HScopedLock Lock(SyncObject);
 	return &NameEntries[Index];
 }
 

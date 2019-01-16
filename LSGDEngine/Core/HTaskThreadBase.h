@@ -23,6 +23,8 @@ namespace lsgd { namespace async {
 
 		shared_ptr<HBaseGraphTask> GetNextTask();
 
+		shared_ptr<HThreadRunnable> GetNamedThread();
+
 		shared_ptr<HThreadRunnable> GetNamedThread(const HString& InName);
 
 		// enqueue/dequeue the graph task to the queue
@@ -40,6 +42,7 @@ namespace lsgd { namespace async {
 
 	protected:
 		int32 GetTaskThreadIndex();
+		int32 GetNamedThreadIndex();
 
 		// accumulated tasks
 		HConcurrentQueue<shared_ptr<HBaseGraphTask>> Tasks;	
@@ -141,8 +144,13 @@ namespace lsgd { namespace async {
 			HTaskThreadBase* TaskThread = (HTaskThreadBase*)(HTaskThreadBase::TaskThreadSharedContext.GetTaskThread().get());
 			if (TaskThread == nullptr)
 			{
-				// no valid running task thread exists
-				return nullptr;
+				// try to find a named thread
+				TaskThread = (HTaskThreadBase*)(HTaskThreadBase::TaskThreadSharedContext.GetNamedThread().get());
+				if (TaskThread == nullptr)
+				{
+					// no valid running task thread exists
+					return nullptr;
+				}				
 			}
 
 			shared_ptr<HTaskThreadLocalStorage> TTLSInstance = TaskThread->GetTTLS(TaskThreadLSIndex, []()->shared_ptr<HTaskThreadLocalStorage>

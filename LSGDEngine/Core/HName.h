@@ -48,7 +48,7 @@ namespace lsgd
 		// note that if return value is same as InNumber, it means no collision, otherwise it has collision, so return new number
 		int32 FindNameEntry(const char* InName, int32 InNumber);
 
-		const HNameEntry* GetNameEntry(int32 Index) const;
+		const HNameEntry* GetNameEntry(int32 Index);
 
 	protected:
 		// prevent instantiation except for GetSingleton()
@@ -58,6 +58,9 @@ namespace lsgd
 		HArray<HNameEntry> NameEntries;
 		HArray<uint32> FreeNameEntries;
 		HArray<uint32> UsedNameEntries;
+
+		// sync object
+		HCriticalSection SyncObject;
 	};
 
 	/*

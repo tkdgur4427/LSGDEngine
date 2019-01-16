@@ -50,3 +50,11 @@ void HTaskGraph1::WaitUntilTasksComplete(HArray<shared_ptr<HGraphEvent>>& Tasks,
 	HScopedEvent Event;		
 	HGraphTask<FTriggerEventGraphTasks>::CreateTask(Tasks, InbNamedThread, NamedThreadName).ConstructAndDispatchWhenReady(Event.Get());
 }
+
+void HTaskGraph1::WaitUntilTaskComplete(shared_ptr<HGraphEvent>& Task, bool InbNamedThread, const HString& NamedThreadName)
+{
+	HScopedEvent Event;
+	HArray<shared_ptr<HGraphEvent>> Tasks;
+	Tasks.push_back(Task);
+	HGraphTask<FTriggerEventGraphTasks>::CreateTask(Tasks, InbNamedThread, NamedThreadName).ConstructAndDispatchWhenReady(Event.Get());
+}
