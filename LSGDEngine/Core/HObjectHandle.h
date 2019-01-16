@@ -73,10 +73,17 @@ namespace lsgd
 			bIsRootSet = false;
 		}
 
+		void Invalidate()
+		{
+			bIsRootSet = false;
+			bIsInvalidate = true;
+		}
+
 	protected:
 		HObjectHandle(bool InbIsOwned)
 			: bIsOwned(InbIsOwned)
 			, bIsRootSet(false)
+			, bIsInvalidate(false)
 		{
 			Data.Reset();
 		}
@@ -89,9 +96,10 @@ namespace lsgd
 		virtual ~HObjectHandle()
 		{}
 
-		HObjectArrayData Data;
-		bool bIsOwned;
-		bool bIsRootSet;
+		HObjectArrayData Data;		
+		uint32 bIsOwned : 1;
+		uint32 bIsRootSet : 1;
+		uint32 bIsInvalidate : 1;
 	};
 
 	template <typename ObjectType>
@@ -106,13 +114,16 @@ namespace lsgd
 		explicit HObjectHandleUnique(const HObjectArrayData& InData)
 			: HObjectHandle(InData, true)
 		{
-			check(IsValid()); // for explicit constructor, object should be valid
+			
 		}
 
 		virtual ~HObjectHandleUnique()
 		{
 			check(!bIsRootSet);
-			HObjectHelper::SetAsDestroyed(Data);
+			if (!bIsInvalidate)
+			{
+				HObjectHelper::SetAsDestroyed(Data);
+			}				
 		}
 
 		// constructor/assignment that allows move semantics
@@ -145,8 +156,10 @@ namespace lsgd
 		}
 
 		void Swap(HObjectHandleUnique& InUnqiueHandle) noexcept
-		{
+		{			
 			HSwap(Data, InUnqiueHandle.Data);
+			// after swap, invalidate the source unique
+			Invalidate();
 		}
 
 		void Reset()

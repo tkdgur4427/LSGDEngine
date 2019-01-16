@@ -50,15 +50,20 @@ void HNameEntry::Init(const char* InName, int32 InNumber)
 {
 	check((InNumber >> MaxNumberSize) == 0);
 
-	char PostfixNumber[MaxNumberSize + 1] = { '_', };
+	char PostfixNumber[MaxNumberSize + 1];
+	HGenericMemory::MemZero(&PostfixNumber[0], '\0', sizeof(PostfixNumber));
+	PostfixNumber[0] = '_';
 	HCString::Itoa(InNumber, PostfixNumber + 1, MaxNumberSize);
 
 	int32 NumberLen = HCString::Strlen(PostfixNumber);
 	int32 NameLen = HCString::Strlen(InName);
 	check(NumberLen + NameLen < MaxNameSize);
 
-	HCString::Strcpy(NameANSI, MaxNameSize, InName);
-	HCString::Strcpy(NameANSI + NameLen, MaxNameSize, PostfixNumber);
+	// um... wtf...
+	HGenericMemory::MemCopy(&NameANSI[0], &InName[0], NameLen);
+	HGenericMemory::MemCopy(NameANSI + NameLen, &PostfixNumber[0], NumberLen + 1);
+	//HCString::Strcpy(NameANSI, MaxNameSize-1, InName);
+	//HCString::Strcpy(NameANSI + NameLen, MaxNameSize-1, PostfixNumber);
 }
 
 HNameEntryManager& HNameEntryManager::GetSingleton()
@@ -84,7 +89,7 @@ void HNameEntryManager::AddNameEntry(const char* InName, int32 InNumber, int32& 
 	else
 	{
 		OutNameEntryIndex = NameEntries.size();
-		NameEntries.push_back(HNameEntry());		
+		NameEntries.push_back(HNameEntry());
 	}
 
 	NameEntries[OutNameEntryIndex].Init(InName, InNumber);

@@ -15,7 +15,7 @@ HObjectItem::HObjectItem()
 
 void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag, uint32 InIndex)
 {
-	check(Flags == 0);
+	check(Flags == -1);
 
 	Flags = InFlag;
 	UniqueNumber = UniqueNumberGenerator.Increment();
@@ -30,14 +30,17 @@ void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag, uint32 InIn
 void HObjectItem::Unbind()
 {
 	// reset the unique number and flags
-	Flags = 0;
+	Flags = -1;
 	UniqueNumber = -1;
 
 	// reset the data
-	Object->State.ObjectArrayData.Reset();
+	if ((bool)Object)
+	{
+		Object->State.ObjectArrayData.Reset();
 
-	// release the Object binded in this item slot
-	Object.reset();
+		// release the Object binded in this item slot
+		Object.reset();
+	}	
 }
 
 void HObjectItem::SetFlag(uint64 InFlags)
@@ -108,7 +111,10 @@ void HObjectArray::InitializeObjectArray()
 	uint32 Index = 0;
 	for (auto&& ObjectItem : Objects)
 	{
-		ObjectItem->Unbind();
+		HObjectItem* NewObjectItem = new HObjectItem();
+		ObjectItem = unique_ptr<HObjectItem>(NewObjectItem);
+
+		ObjectItem->Unbind();		
 		FreeIndices.Push(Index);
 		Index++;
 	}

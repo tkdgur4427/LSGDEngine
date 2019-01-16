@@ -165,7 +165,7 @@ namespace lsgd
 	}
 
 	template <typename Type>
-	void HSwap(Type InValA, Type InValB)
+	void HSwap(Type& InValA, Type& InValB)
 	{
 		std::swap(InValA, InValB);
 	}
