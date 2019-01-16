@@ -35,7 +35,7 @@
 	struct HClassTypeHelper<ClassType> \
 	{ \
 		static bool IsClassType() { return true; } \
-		static lsgd::HString GetClassTypeName() { return #ClassType; } \
+		static lsgd::HString GetClassName() { return #ClassType; } \
 		static lsgd::HString GetBaseClassNames() { return lsgd::HString(); } \
 		static lsgd::reflect::HCommonTypeHelperInterface* GetCommonTypeHelper() { static lsgd::reflect::HCommonClassTypeHelper<ClassType> CommonTypeHelper; return &CommonTypeHelper; } \
 	}; \

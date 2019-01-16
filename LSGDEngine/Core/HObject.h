@@ -137,19 +137,4 @@ namespace lsgd
 	extern HObjectArrayData AllocateHObjectInner(const reflect::HClass* InClass, class HPackage* InPackage);
 
 	extern HObjectArrayData AllocateHObject(const HString& ClassName, class HPackage* InPackage = nullptr);
-
-	template <typename ObjectType>
-	HObjectHandleUnique<ObjectType> AllocateHObject(class HPackage* InPackage = nullptr)
-	{
-		// get the HClass type with template parameter, HObjectType
-		reflect::HTypeDescriptor ClassType = reflect::HTypeDatabaseUtils::GetTypeDescriptor<ObjectType>();
-		check(ClassType.ClassType != nullptr);
-
-		// get HClass
-		const reflect::HClass* Class = ClassType.ClassType;
-
-		// @todo - need to dynamic RTTI checking for whether this class is derived or not
-		HObjectArrayData NewData = AllocateHObjectInner(Class, InPackage);
-		return HObjectHandleUnique<ObjectType>(NewData);
-	}
 }

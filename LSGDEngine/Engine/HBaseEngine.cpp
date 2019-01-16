@@ -7,11 +7,8 @@ using namespace lsgd;
 
 void HBaseEngine::Initialize()
 {
-	HString name = HGameInstance::GetClassName();
-
 	// create game instance
-	//GameInstance = AllocateHObject<HGameInstance>();
-	GameInstance = HObjectHandleUnique<HGameInstance>(AllocateHObject("HGameInstance"));
+	GameInstance = HObjectHandleUnique<HGameInstance>(AllocateHObject(HGameInstance::GetClassName()));
 	// add it to the root set
 	GameInstance.SetRoot();
 }

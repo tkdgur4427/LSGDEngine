@@ -6,7 +6,7 @@ namespace lsgd
 	class HGameInstance : public HObject
 	{
 	public:
-		GENERATE_CLASS_BODY(HGameInstance);
+		GENERATE_CLASS_BODY(HGameInstance)
 
 		HGameInstance() {}
 		virtual ~HGameInstance() {}

@@ -197,10 +197,15 @@ void HObjectArray::SetAsRootSet(uint32 Index, uint32 SerialNumber)
 	check(IsValidObject(Index, SerialNumber));
 
 	HObjectItem* ObjectItem = Objects[Index].get();
-	ObjectItem->SetFlag(EObjectItemFlags::RootSet);
 
-	// add to fast look-up table for rootset
-	RootSetObjects.push_back(Index);
+	// prevent overlapped flag setting
+	if (!ObjectItem->HasFlags(EObjectItemFlags::RootSet))
+	{
+		ObjectItem->SetFlag(EObjectItemFlags::RootSet);
+
+		// add to fast look-up table for rootset
+		RootSetObjects.push_back(Index);
+	}	
 }
 
 void HObjectArray::UnsetAsRootSet(uint32 Index, uint32 SerialNumber)
