@@ -85,6 +85,39 @@
     <ClInclude Include="HEditorEngine.h">
       <Filter>EngineInstance</Filter>
     </ClInclude>
+    <ClInclude Include="HLocalPlayer.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="HPlayer.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="HPlayerController.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="HPawn.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="HController.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="HCharacter.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="HPlayerCameraManager.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="HCameraActor.h">
+      <Filter>GameFramework\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="HCameraComponent.h">
+      <Filter>GameFramework\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="HPlayerInput.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="HHUD.h">
+      <Filter>GameFramework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -131,6 +164,39 @@
     <ClCompile Include="HBaseEngine.cpp">
       <Filter>EngineInstance</Filter>
     </ClCompile>
+    <ClCompile Include="HPlayer.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HLocalPlayer.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HPlayerController.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HPawn.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HController.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HCharacter.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HPlayerCameraManager.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HCameraActor.cpp">
+      <Filter>GameFramework\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="HCameraComponent.cpp">
+      <Filter>GameFramework\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="HPlayerInput.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HHUD.cpp">
+      <Filter>GameFramework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
@@ -162,6 +228,9 @@
     </Filter>
     <Filter Include="GameFramework">
       <UniqueIdentifier>{0260caa7-4299-40f8-a78e-8aa2fc57b7cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameFramework\Camera">
+      <UniqueIdentifier>{3ee96a72-dcdd-499a-855d-ae037b998c13}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

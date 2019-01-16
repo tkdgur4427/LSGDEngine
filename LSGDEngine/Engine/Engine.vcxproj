@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -119,6 +119,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="HBaseEngine.h" />
+    <ClInclude Include="HCameraActor.h" />
+    <ClInclude Include="HCameraComponent.h" />
+    <ClInclude Include="HCharacter.h" />
+    <ClInclude Include="HController.h" />
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
     <ClInclude Include="HEBContextPolicy.h" />
@@ -136,7 +140,14 @@
     <ClInclude Include="HEngineLoop.h" />
     <ClInclude Include="HEnginePCH.h" />
     <ClInclude Include="HGameInstance.h" />
+    <ClInclude Include="HHUD.h" />
     <ClInclude Include="HLevel.h" />
+    <ClInclude Include="HLocalPlayer.h" />
+    <ClInclude Include="HPawn.h" />
+    <ClInclude Include="HPlayer.h" />
+    <ClInclude Include="HPlayerCameraManager.h" />
+    <ClInclude Include="HPlayerController.h" />
+    <ClInclude Include="HPlayerInput.h" />
     <ClInclude Include="HPrimitiveComponent.h" />
     <ClInclude Include="HPrimitiveSceneInfo.h" />
     <ClInclude Include="HPrimitiveSceneProxy.h" />
@@ -153,13 +164,24 @@
     <ClCompile Include="HActor.cpp" />
     <ClCompile Include="HActorComponent.cpp" />
     <ClCompile Include="HBaseEngine.cpp" />
+    <ClCompile Include="HCameraActor.cpp" />
+    <ClCompile Include="HCameraComponent.cpp" />
+    <ClCompile Include="HCharacter.cpp" />
+    <ClCompile Include="HController.cpp" />
     <ClCompile Include="HDXMath.cpp" />
     <ClCompile Include="HEngineLoop.cpp" />
     <ClCompile Include="HEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="HGameInstance.cpp" />
+    <ClCompile Include="HHUD.cpp" />
     <ClCompile Include="HLevel.cpp" />
+    <ClCompile Include="HLocalPlayer.cpp" />
+    <ClCompile Include="HPawn.cpp" />
+    <ClCompile Include="HPlayer.cpp" />
+    <ClCompile Include="HPlayerCameraManager.cpp" />
+    <ClCompile Include="HPlayerController.cpp" />
+    <ClCompile Include="HPlayerInput.cpp" />
     <ClCompile Include="HPrimitiveComponent.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
     <ClCompile Include="HTickFunction.cpp" />

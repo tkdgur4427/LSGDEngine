@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HLocalPlayer.h"
+
 namespace lsgd
 {
 	DECLARE_CLASS_TYPE1(HGameInstance, HObject)
@@ -13,6 +15,8 @@ namespace lsgd
 
 		virtual void Initialize();
 		virtual void Destroy();
-		virtual void Tick(float DeltaTime);		
+		virtual void Tick(float DeltaTime);
+
+		HArray<HObjectHandleUnique<HLocalPlayer>> LocalPlayers;
 	};
 }

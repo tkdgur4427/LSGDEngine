@@ -21,5 +21,6 @@ void HBaseEngine::Destroy()
 
 void HBaseEngine::Tick(float DeltaTime)
 {
-
+	// ticking game instance
+	GameInstance->Tick(DeltaTime);
 }

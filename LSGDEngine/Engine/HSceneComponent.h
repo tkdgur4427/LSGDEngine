@@ -12,5 +12,7 @@ namespace lsgd
 
 		HSceneComponent() {}
 		virtual ~HSceneComponent() {}
+
+
 	};
 }
