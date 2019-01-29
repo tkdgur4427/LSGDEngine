@@ -139,6 +139,12 @@
     <ClInclude Include="HShaderResource.h">
       <Filter>RHI</Filter>
     </ClInclude>
+    <ClInclude Include="HRefCountPtr.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HRHIResource.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -230,6 +236,9 @@
     <ClCompile Include="HRenderingThread.cpp">
       <Filter>RHI</Filter>
     </ClCompile>
+    <ClCompile Include="HRHIResource.cpp">
+      <Filter>RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
@@ -264,6 +273,12 @@
     </Filter>
     <Filter Include="GameFramework\Camera">
       <UniqueIdentifier>{3ee96a72-dcdd-499a-855d-ae037b998c13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RHI\Platform">
+      <UniqueIdentifier>{dbfb141b-0027-4c07-9392-95765451c05f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RHI\Platform\DirectX12">
+      <UniqueIdentifier>{5fe7b6dc-484e-4d67-9d00-feb013ff871d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

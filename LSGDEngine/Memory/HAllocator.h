@@ -54,4 +54,10 @@ public:
 	HStdAllocator& operator= (const HStdAllocator<OtherType>&) { return *this; }
 };
 
+template <class T, class U>
+bool operator==(const HStdAllocator<T>&, const HStdAllocator<U>&) { return true; }
+
+template <class T, class U>
+bool operator!=(const HStdAllocator<T>&, const HStdAllocator<U>&) { return false; }
+
 #endif

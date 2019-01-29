@@ -50,7 +50,7 @@ void EnqueueUniqueRenderCommand(LambdaType&& InLambda)
 {
 	using EURCType = TEnqueueUniqueRenderCommandType<LambdaType>;
 	HArray<shared_ptr<lsgd::async::HGraphEvent>> Tasks;
-	lsgd::async::HGraphTask<EURCType>::CreateTask(Tasks, true, "RenderingThread").ConstructAndDispatchWhenReady(forward<LambdaType>(Lambda));
+	lsgd::async::HGraphTask<EURCType>::CreateTask(Tasks, true, "RenderingThread").ConstructAndDispatchWhenReady(forward<LambdaType>(InLambda));
 }
 
 #define ENQUEUE_UNIQUE_RENDER_COMMAND(TypeName, Code) \

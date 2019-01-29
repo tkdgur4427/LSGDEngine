@@ -126,6 +126,8 @@
     <ClInclude Include="HDeferredCleanupInterface.h" />
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
+    <ClInclude Include="HRefCountPtr.h" />
+    <ClInclude Include="HRHIResource.h" />
     <ClInclude Include="HShaderResource.h" />
     <ClInclude Include="HEBContextPolicy.h" />
     <ClInclude Include="HEBroadCasterPolicy.h" />
@@ -193,6 +195,7 @@
     <ClCompile Include="HPrimitiveComponent.cpp" />
     <ClCompile Include="HRenderingThread.cpp" />
     <ClCompile Include="HRenderResource.cpp" />
+    <ClCompile Include="HRHIResource.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
     <ClCompile Include="HShader.cpp" />
     <ClCompile Include="HTickFunction.cpp" />

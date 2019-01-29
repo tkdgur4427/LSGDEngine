@@ -101,4 +101,10 @@ namespace lsgd {
 		static uint32 GetHardwareThreadNum();
 	};
 
+	class HGenericPlatformAtomics
+	{
+	public:
+		static int32 InterlockedCompareSwap(volatile int32* Dest, int32 Exchange, int32 Comparand);
+		static int64 InterlockedCompareSwap(volatile int64* Dest, int64 Exchange, int64 Comparand);
+	};
 }

@@ -229,3 +229,13 @@ bool HWindowsPlatformEvent::Wait(uint32 WaitTime)
 {
 	return WaitForSingleObject(Event, WaitTime) == WAIT_OBJECT_0;
 }
+
+int32 HGenericPlatformAtomics::InterlockedCompareSwap(volatile int32* Dest, int32 Exchange, int32 Comparand)
+{
+	return (int32)_InterlockedCompareExchange((long*)Dest, (long)Exchange, (long)Comparand);
+}
+
+int64 HGenericPlatformAtomics::InterlockedCompareSwap(volatile int64* Dest, int64 Exchange, int64 Comparand)
+{
+	return (int64)_InterlockedCompareExchange64(Dest, Exchange, Comparand);
+}
