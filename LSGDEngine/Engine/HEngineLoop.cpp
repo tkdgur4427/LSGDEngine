@@ -17,6 +17,9 @@
 // engine instance
 #include "HEditorEngine.h"
 
+// rendering thread
+#include "HRenderingThread.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
@@ -39,7 +42,7 @@ void HEngineLoop::Init()
 	// create named threads
 
 	// 1. rendering thread
-	HTaskThreadBase::TaskThreadSharedContext.CreateNamedThread("RenderingThread");
+	InitializeRenderingThread();
 
 	// create task graph
 	TaskGraph = make_unique<HTaskGraphInterface, HTaskGraph1>();
@@ -103,6 +106,8 @@ void HEngineLoop::Loop()
 
 void HEngineLoop::Destroy()
 {
+	DestroyRenderingThread();
+
 	// destroy game instance
 	// @todo think about how to handle this in named thread...
 	EngineInstance->Destroy();

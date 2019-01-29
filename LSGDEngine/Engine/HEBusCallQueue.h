@@ -1,7 +1,5 @@
 #pragma once
 
-#include "..\Core\HConcurrentQueue.h"
-
 using namespace lsgd::container;
 
 namespace lsgd {

@@ -32,6 +32,16 @@ namespace lsgd { namespace container {
 			return Result;
 		}
 
+		void PopAll(HArray<Type>& Result)
+		{
+			HScopedLock Lock(SyncObject);
+
+			while (Num())
+			{
+				Result.push_back(Pop());
+			}			
+		}
+
 		bool TryPop(Type* OutValue)
 		{
 			HScopedLock Lock(SyncObject);

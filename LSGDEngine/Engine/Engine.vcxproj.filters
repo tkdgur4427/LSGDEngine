@@ -118,6 +118,27 @@
     <ClInclude Include="HHUD.h">
       <Filter>GameFramework</Filter>
     </ClInclude>
+    <ClInclude Include="HGlobalShader.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HShader.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HShaderType.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HDeferredCleanupInterface.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HRenderResource.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HRenderingThread.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HShaderResource.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -196,6 +217,18 @@
     </ClCompile>
     <ClCompile Include="HHUD.cpp">
       <Filter>GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="HDeferredCleanupInterface.cpp">
+      <Filter>RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="HShader.cpp">
+      <Filter>RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="HRenderResource.cpp">
+      <Filter>RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="HRenderingThread.cpp">
+      <Filter>RHI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

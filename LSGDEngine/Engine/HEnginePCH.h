@@ -7,3 +7,5 @@
 #include "d3d12.h"
 
 #include "HMath.h"
+
+#include "HRenderingThread.h"

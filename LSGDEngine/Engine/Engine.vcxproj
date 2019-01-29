@@ -123,8 +123,10 @@
     <ClInclude Include="HCameraComponent.h" />
     <ClInclude Include="HCharacter.h" />
     <ClInclude Include="HController.h" />
+    <ClInclude Include="HDeferredCleanupInterface.h" />
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
+    <ClInclude Include="HShaderResource.h" />
     <ClInclude Include="HEBContextPolicy.h" />
     <ClInclude Include="HEBroadCasterPolicy.h" />
     <ClInclude Include="HEBusContainer.h" />
@@ -140,6 +142,7 @@
     <ClInclude Include="HEngineLoop.h" />
     <ClInclude Include="HEnginePCH.h" />
     <ClInclude Include="HGameInstance.h" />
+    <ClInclude Include="HGlobalShader.h" />
     <ClInclude Include="HHUD.h" />
     <ClInclude Include="HLevel.h" />
     <ClInclude Include="HLocalPlayer.h" />
@@ -151,8 +154,12 @@
     <ClInclude Include="HPrimitiveComponent.h" />
     <ClInclude Include="HPrimitiveSceneInfo.h" />
     <ClInclude Include="HPrimitiveSceneProxy.h" />
+    <ClInclude Include="HRenderingThread.h" />
+    <ClInclude Include="HRenderResource.h" />
     <ClInclude Include="HScene.h" />
     <ClInclude Include="HSceneComponent.h" />
+    <ClInclude Include="HShader.h" />
+    <ClInclude Include="HShaderType.h" />
     <ClInclude Include="HTickFunction.h" />
     <ClInclude Include="HTickTaskLevel.h" />
     <ClInclude Include="HTickTaskManager.h" />
@@ -168,6 +175,7 @@
     <ClCompile Include="HCameraComponent.cpp" />
     <ClCompile Include="HCharacter.cpp" />
     <ClCompile Include="HController.cpp" />
+    <ClCompile Include="HDeferredCleanupInterface.cpp" />
     <ClCompile Include="HDXMath.cpp" />
     <ClCompile Include="HEngineLoop.cpp" />
     <ClCompile Include="HEnginePCH.cpp">
@@ -183,7 +191,10 @@
     <ClCompile Include="HPlayerController.cpp" />
     <ClCompile Include="HPlayerInput.cpp" />
     <ClCompile Include="HPrimitiveComponent.cpp" />
+    <ClCompile Include="HRenderingThread.cpp" />
+    <ClCompile Include="HRenderResource.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
+    <ClCompile Include="HShader.cpp" />
     <ClCompile Include="HTickFunction.cpp" />
     <ClCompile Include="HTickTaskLevel.cpp" />
     <ClCompile Include="HTickTaskManager.cpp" />

@@ -10,6 +10,7 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include <list>
 
 #include <tuple>
 #include <atomic>
@@ -43,6 +44,10 @@ namespace lsgd
 	// queue
 	template <class Type>
 	using HQueue = std::queue<Type>;
+
+	// list
+	template <class Type>
+	using HList = std::list<Type>;
 
 	// pair
 	template <class KeyType, class ValueType>
