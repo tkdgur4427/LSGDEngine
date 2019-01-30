@@ -9,3 +9,5 @@
 #include "HMath.h"
 
 #include "HRenderingThread.h"
+
+#include "HRHICommon.h"

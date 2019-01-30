@@ -124,9 +124,6 @@
     <ClInclude Include="HShader.h">
       <Filter>RHI</Filter>
     </ClInclude>
-    <ClInclude Include="HShaderType.h">
-      <Filter>RHI</Filter>
-    </ClInclude>
     <ClInclude Include="HDeferredCleanupInterface.h">
       <Filter>RHI</Filter>
     </ClInclude>
@@ -143,6 +140,24 @@
       <Filter>RHI</Filter>
     </ClInclude>
     <ClInclude Include="HRHIResource.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HD3D12ShaderCommon.h">
+      <Filter>RHI\Platform\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="HRHIShaderCommon.h">
+      <Filter>RHI\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="HD3D12Shaders.h">
+      <Filter>RHI\Platform\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="HRHICommon.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HShaderPipeline.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
+    <ClInclude Include="HVertexFactory.h">
       <Filter>RHI</Filter>
     </ClInclude>
   </ItemGroup>
@@ -237,6 +252,9 @@
       <Filter>RHI</Filter>
     </ClCompile>
     <ClCompile Include="HRHIResource.cpp">
+      <Filter>RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="HShaderResource.cpp">
       <Filter>RHI</Filter>
     </ClCompile>
   </ItemGroup>

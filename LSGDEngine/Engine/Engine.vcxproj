@@ -123,11 +123,16 @@
     <ClInclude Include="HCameraComponent.h" />
     <ClInclude Include="HCharacter.h" />
     <ClInclude Include="HController.h" />
+    <ClInclude Include="HD3D12ShaderCommon.h" />
+    <ClInclude Include="HD3D12Shaders.h" />
     <ClInclude Include="HDeferredCleanupInterface.h" />
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
     <ClInclude Include="HRefCountPtr.h" />
+    <ClInclude Include="HRHICommon.h" />
     <ClInclude Include="HRHIResource.h" />
+    <ClInclude Include="HRHIShaderCommon.h" />
+    <ClInclude Include="HShaderPipeline.h" />
     <ClInclude Include="HShaderResource.h" />
     <ClInclude Include="HEBContextPolicy.h" />
     <ClInclude Include="HEBroadCasterPolicy.h" />
@@ -161,12 +166,12 @@
     <ClInclude Include="HScene.h" />
     <ClInclude Include="HSceneComponent.h" />
     <ClInclude Include="HShader.h" />
-    <ClInclude Include="HShaderType.h" />
     <ClInclude Include="HTickFunction.h" />
     <ClInclude Include="HTickTaskLevel.h" />
     <ClInclude Include="HTickTaskManager.h" />
     <ClInclude Include="HTickTaskSequencer.h" />
     <ClInclude Include="HMath.h" />
+    <ClInclude Include="HVertexFactory.h" />
     <ClInclude Include="HWorld.h" />
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +203,7 @@
     <ClCompile Include="HRHIResource.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
     <ClCompile Include="HShader.cpp" />
+    <ClCompile Include="HShaderResource.cpp" />
     <ClCompile Include="HTickFunction.cpp" />
     <ClCompile Include="HTickTaskLevel.cpp" />
     <ClCompile Include="HTickTaskManager.cpp" />

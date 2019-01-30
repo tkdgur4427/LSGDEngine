@@ -2,6 +2,40 @@
 
 namespace lsgd
 {
+	// base class of reference counted objects
+	class HRefCountedObject
+	{
+	public:
+		HRefCountedObject()
+			: NumRefs(0)
+		{}
+
+		virtual ~HRefCountedObject() { check(NumRefs == 0); }
+
+		uint32 AddRef() const
+		{
+			return uint32(++NumRefs);
+		}
+
+		uint32 Release() const
+		{
+			uint32 Refs = uint32(--NumRefs);
+			if (Refs == 0)
+			{
+				delete this;
+			}
+			return Refs;
+		}
+
+		uint32 GetRefCount() const
+		{
+			return uint32(NumRefs);
+		}
+
+	private:
+		mutable int32 NumRefs;
+	};
+
 	// smart pointer to an object which implements AddRef/Release (think of COM ptr)
 	template <typename ReferencedType>
 	class HRefCountPtr

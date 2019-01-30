@@ -95,5 +95,5 @@ namespace lsgd
 	};
 
 	class HRHIVertexShader : public HRHIShader {};
-	class HRHIPixelSHader : public HRHIShader {};
+	class HRHIPixelShader : public HRHIShader {};
 }
