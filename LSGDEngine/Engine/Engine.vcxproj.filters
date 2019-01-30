@@ -160,6 +160,9 @@
     <ClInclude Include="HVertexFactory.h">
       <Filter>RHI</Filter>
     </ClInclude>
+    <ClInclude Include="HShaderCompilerEnvironment.h">
+      <Filter>RHI\ShaderCompiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -297,6 +300,9 @@
     </Filter>
     <Filter Include="RHI\Platform\DirectX12">
       <UniqueIdentifier>{5fe7b6dc-484e-4d67-9d00-feb013ff871d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RHI\ShaderCompiler">
+      <UniqueIdentifier>{8a1c9bed-79d0-43ab-bec5-64151422923e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

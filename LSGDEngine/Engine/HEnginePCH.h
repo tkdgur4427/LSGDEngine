@@ -11,3 +11,5 @@
 #include "HRenderingThread.h"
 
 #include "HRHICommon.h"
+
+#include "HRefCountPtr.h"

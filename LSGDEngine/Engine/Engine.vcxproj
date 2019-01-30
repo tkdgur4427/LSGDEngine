@@ -132,6 +132,7 @@
     <ClInclude Include="HRHICommon.h" />
     <ClInclude Include="HRHIResource.h" />
     <ClInclude Include="HRHIShaderCommon.h" />
+    <ClInclude Include="HShaderCompilerEnvironment.h" />
     <ClInclude Include="HShaderPipeline.h" />
     <ClInclude Include="HShaderResource.h" />
     <ClInclude Include="HEBContextPolicy.h" />

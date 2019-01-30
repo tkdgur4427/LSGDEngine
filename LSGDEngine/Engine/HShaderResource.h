@@ -13,8 +13,8 @@ namespace lsgd {
 		virtual ~HShaderResource();
 
 		// reference to the RHI shader; only one of these is ever valid
-		HRefCountPtr<HRHIVertexShader> VertexShader;
-		HRefCountPtr<HRHIPixelShader> PixelShader;
+		HRefCountPtr<class HRHIVertexShader> VertexShader;
+		HRefCountPtr<class HRHIPixelShader> PixelShader;
 
 		HShaderTarget ShaderTarget;
 

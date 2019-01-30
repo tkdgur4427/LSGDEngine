@@ -59,7 +59,7 @@ namespace lsgd
 		HRefCountPtr(const HRefCountPtr& Copy)
 		{
 			Reference = Copy.Reference;
-			if (Reference && bAddRef)
+			if (Reference)
 			{
 				Reference->AddRef();
 			}
@@ -100,7 +100,7 @@ namespace lsgd
 			return *this = InPtr.Reference;
 		}
 
-		HRefCountPtr& operator(HRefCountPtr&& InPtr)
+		HRefCountPtr& operator=(HRefCountPtr&& InPtr)
 		{
 			if (this != &InPtr)
 			{
