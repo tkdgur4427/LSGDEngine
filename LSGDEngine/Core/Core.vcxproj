@@ -35,6 +35,7 @@
     <ClInclude Include="HGCSweepExecutor.h" />
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
     <ClInclude Include="HGenericPlatformMisc.h" />
+    <ClInclude Include="HGlobalLinkedList.h" />
     <ClInclude Include="HGuid.h" />
     <ClInclude Include="HLinker.h" />
     <ClInclude Include="HLinkerLoad.h" />

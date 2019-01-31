@@ -12,6 +12,27 @@ namespace lsgd {
 		HShaderResource();
 		virtual ~HShaderResource();
 
+		// to be used in HRefCountPtr
+		uint32 AddRef() const
+		{
+			return uint32(++NumRefs);
+		}
+
+		uint32 Release() const
+		{
+			uint32 Refs = uint32(--NumRefs);
+			if (Refs == 0)
+			{
+				delete this;
+			}
+			return Refs;
+		}
+
+		uint32 GetRefCount() const
+		{
+			return uint32(NumRefs);
+		}
+
 		// reference to the RHI shader; only one of these is ever valid
 		HRefCountPtr<class HRHIVertexShader> VertexShader;
 		HRefCountPtr<class HRHIPixelShader> PixelShader;

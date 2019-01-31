@@ -81,6 +81,11 @@ HString HGenericPlatformMisc::GetGameDir()
 	return HString();
 }
 
+HString HGenericPlatformMisc::GetShaderSourceDir()
+{
+	return HString("..//Shaders//");
+}
+
 uint32 HGenericPlatformMisc::GetCurrentThreadId()
 {
 	HANDLE CurrThreadHandle = nullptr;

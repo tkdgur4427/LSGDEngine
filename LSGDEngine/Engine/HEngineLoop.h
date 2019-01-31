@@ -28,6 +28,8 @@ namespace lsgd {
 	protected:		
 		unique_ptr<class HBaseEngine> EngineInstance;
 		unique_ptr<async::HTaskGraphInterface> TaskGraph;
+		unique_ptr<class HShaderCompilingManager> ShaderCompilingManager;
+
 		bool bTerminate;
 	};
 

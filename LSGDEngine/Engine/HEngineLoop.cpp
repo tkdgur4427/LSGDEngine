@@ -20,6 +20,12 @@
 // rendering thread
 #include "HRenderingThread.h"
 
+// shader compiling manager
+#include "HShaderCompilingManager.h"
+
+// shader compiler util
+#include "HShaderCompilerUtil.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
@@ -46,7 +52,14 @@ void HEngineLoop::Init()
 
 	// create task graph
 	TaskGraph = make_unique<HTaskGraphInterface, HTaskGraph1>();
-	TaskGraph->Initialize();	
+	TaskGraph->Initialize();
+
+	// create shader compiling manager
+	ShaderCompilingManager = make_unique<HShaderCompilingManager>();
+	ShaderCompilingManager->Initialize();
+
+	// shader type initializations
+	HShaderCompilerUtil::InitializeShaderTypes();
 }
 
 class HEngineLoopInitializeTask
@@ -106,7 +119,10 @@ void HEngineLoop::Loop()
 
 void HEngineLoop::Destroy()
 {
-	DestroyRenderingThread();
+	// destroy shader compiling manager
+	ShaderCompilingManager->Destroy();
+
+	DestroyRenderingThread();	
 
 	// destroy game instance
 	// @todo think about how to handle this in named thread...

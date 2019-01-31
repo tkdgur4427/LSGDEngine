@@ -133,6 +133,8 @@
     <ClInclude Include="HRHIResource.h" />
     <ClInclude Include="HRHIShaderCommon.h" />
     <ClInclude Include="HShaderCompilerEnvironment.h" />
+    <ClInclude Include="HShaderCompilerUtil.h" />
+    <ClInclude Include="HShaderCompilingManager.h" />
     <ClInclude Include="HShaderPipeline.h" />
     <ClInclude Include="HShaderResource.h" />
     <ClInclude Include="HEBContextPolicy.h" />
@@ -204,11 +206,14 @@
     <ClCompile Include="HRHIResource.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
     <ClCompile Include="HShader.cpp" />
+    <ClCompile Include="HShaderCompilerUtil.cpp" />
+    <ClCompile Include="HShaderCompilingManager.cpp" />
     <ClCompile Include="HShaderResource.cpp" />
     <ClCompile Include="HTickFunction.cpp" />
     <ClCompile Include="HTickTaskLevel.cpp" />
     <ClCompile Include="HTickTaskManager.cpp" />
     <ClCompile Include="HTickTaskSequencer.cpp" />
+    <ClCompile Include="HVertexFactory.cpp" />
     <ClCompile Include="HWindowsLaunch.cpp" />
     <ClCompile Include="HWorld.cpp" />
   </ItemGroup>

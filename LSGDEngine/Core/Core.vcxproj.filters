@@ -187,6 +187,7 @@
       <Filter>Tls</Filter>
     </ClInclude>
     <ClInclude Include="HCoreBuild.h" />
+    <ClInclude Include="HGlobalLinkedList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />

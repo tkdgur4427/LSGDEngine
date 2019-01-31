@@ -17,6 +17,17 @@ namespace lsgd
 
 	struct HShaderTarget
 	{
+		friend bool operator==(const HShaderTarget& A, const HShaderTarget& B)
+		{
+			return (A.Frequency == B.Frequency)
+				&& (A.Platform == B.Platform);
+		}
+
+		friend bool operator!=(const HShaderTarget& A, const HShaderTarget& B)
+		{
+			return !(A == B);
+		}
+
 		uint32 Frequency;
 		uint32 Platform;
 	};

@@ -85,6 +85,9 @@ namespace lsgd {
 	public:
 		// get game directory
 		static HString GetGameDir();
+		// get the shader directory
+		static HString GetShaderSourceDir();
+
 		// create platform file io instance
 		static unique_ptr<HPlatformFileIO> CreatePlatformFileIO();
 		// create platform thread instance

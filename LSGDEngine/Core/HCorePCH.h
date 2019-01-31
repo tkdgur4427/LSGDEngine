@@ -24,6 +24,8 @@
 
 #include "HSingletonTemplate.h"
 
+#include "HGlobalLinkedList.h"
+
 #include "HConcurrentQueue.h"
 
 #include "HCString.h"

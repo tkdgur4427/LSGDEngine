@@ -4,11 +4,32 @@
 #include "HShaderResource.h"
 
 namespace lsgd {
-
 	// uniquely identifies an HShader; used to link HMaterialShaderMaps and HShader on load
 	class HShaderId
 	{
 	public:
+		HShaderId() {}
+		~HShaderId() {}
+
+		friend inline uint32 GetTypeHash(const HShaderId& Id)
+		{
+			// @todo override...
+			return 0;
+		}
+
+		friend bool operator==(const HShaderId& A, const HShaderId& B)
+		{
+			return (A.ShaderPipeline == B.ShaderPipeline)
+				&& (A.VertexFactoryType == B.VertexFactoryType)
+				&& (A.ShaderType == B.ShaderType)
+				&& (A.Target == B.Target);
+		}
+
+		friend bool operator!=(const HShaderId& A, const HShaderId& B)
+		{
+			return !(A == B);
+		}
+
 		/*
 			hash of the material shader map id, since this shader depends on the generated material code from that shader map
 			a hash is used instead of the full shader map id to shorten the key length, even though this will result in a hash being hashed
@@ -33,9 +54,15 @@ namespace lsgd {
 		// shader platform and freqeuncy
 		HShaderTarget Target;
 	};
+}
+
+// override std::hash
+USE_HASH_OVERRIDE(lsgd::HShaderId)
+
+namespace lsgd {
 
 	// an object which is used to serialize/deserialize, compile, and cache a particular shader class
-	class HShaderType
+	class HShaderType : public HGlobalLinkedList<HShaderType>
 	{
 	public:
 		enum class HShaderTypeForDynamicCast : uint32
@@ -44,6 +71,11 @@ namespace lsgd {
 			Material,
 			MeshMaterial,
 		};
+
+		HShaderType();
+		~HShaderType();
+
+		static void Initialize();
 
 		typedef class HShader* (*ConstructSerializedType)();
 		
@@ -88,7 +120,28 @@ namespace lsgd {
 		HShader();
 		virtual ~HShader();		
 
-		virtual void FinishCleanup();
+		virtual void FinishCleanup();		
+
+		// to be used in HRefCountPtr
+		uint32 AddRef() const
+		{
+			return uint32(++NumRefs);
+		}
+
+		uint32 Release() const
+		{
+			uint32 Refs = uint32(--NumRefs);
+			if (Refs == 0)
+			{
+				delete this;
+			}
+			return Refs;
+		}
+
+		uint32 GetRefCount() const
+		{
+			return uint32(NumRefs);
+		}
 
 		// indexed the same as UniformBufferParameter; packed densely for coherent traversal
 		// TArray<FUniformBufferStruct*> UniformBufferParameterStructs;
@@ -134,6 +187,32 @@ namespace lsgd {
 		static const uint32 ShaderMagic_CleaningUp = 0xdc67f93b;
 		// canary is set to this if the FShader is a valid pointer and initialized
 		static const uint32 ShaderMagic_Initialized = 0x335b43ab;
+	};
+
+	// a collection of shaders of different types, but the same meta type
+	template <typename ShaderMetaType>
+	class HShaderMap
+	{
+	public:
+		// container for serialized shader pipeline stages to be registered on the game thread
+		struct HSerializedShaderPipeline
+		{
+			const class HShaderPipelineType* ShaderPipelineType;
+			HArray<HRefCountPtr<HShader>> ShaderStages;
+		};
+
+		// list of serialized shaders to be processed and registered on the game thread
+		HArray<HShader*> SerializedShaders;
+		// list of serialized shader pipeline stages to be processed and registered on the game thread
+		HArray<HSerializedShaderPipeline*> SerializedShaderPipelines;
+
+		HShaderPlatform Platform;
+
+		// flag that make sure this shader isn't used until all shader have been registered
+		bool bHasBeeenRegistered;
+
+		HHashMap<HShaderType*, HRefCountPtr<HShader>> Shaders;
+		HHashMap<const class HShaderPipelineType*, class HShaderPipeline*> ShaderPipelines;
 	};
 }
 

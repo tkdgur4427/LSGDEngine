@@ -196,6 +196,23 @@ namespace lsgd
 	using HAtomic = std::atomic<Type>;
 }
 
+// macro for defining std::hash override as GetTypeHash()
+//	- to override it, need to implement 'friend inline uint32 GetTypeHash(Type& InValue)'
+#define USE_HASH_OVERRIDE(Type) \
+	namespace std \
+	{ \
+		template <> \
+		struct hash<Type> \
+		{ \
+			typedef Type argument_type; \
+			typedef std::size_t result_type; \
+			result_type operator()(argument_type const& InValue) \
+			{ \
+				return (std::size_t)GetTypeHash(InValue); \
+			} \
+		}; \
+	}
+
 // reflection context declarations
 
 // forward declaration

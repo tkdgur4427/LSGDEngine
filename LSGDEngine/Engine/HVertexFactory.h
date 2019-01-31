@@ -9,16 +9,19 @@ namespace lsgd
 	};
 
 	// an object used to represent the type of a VF
-	class HVertexFactoryType
+	class HVertexFactoryType : public HGlobalLinkedList<HVertexFactoryType>
 	{
 	public:
+		HVertexFactoryType();
+		~HVertexFactoryType();
+
 		typedef HVertexFactoryShaderParameters* (*ConstructParameterType)(HShaderFrequency ShaderFrequency);
 		typedef bool (*ShouldCacheType)(HShaderPlatform, const class HMaterial*, const class HShaderType*);
 		typedef void (*ModifyCompilationEnvironmentType)(HShaderPlatform, const class HMaterial*, class HShaderCompilerEnvironment&);
 		typedef bool (*SupportsTessellationShaderType)();
 
 		HString Name;
-		HString ShaderFilename;
+		HString SourceFilename;
 		uint32 bUsedWithMaterials : 1;
 		uint32 bSupportsStaticLighting : 1;
 		uint32 bSupportsDynamicLighting : 1;

@@ -23,6 +23,7 @@ namespace lsgd
 
 	class HGlobalShader : public HShader
 	{
-
+		DECLARE_SHADER_TYPE(HGlobalShader, Global);
+	public:
 	};
 }
