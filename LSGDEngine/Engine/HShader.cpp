@@ -1,9 +1,13 @@
 #include "HEnginePCH.h"
 #include "HShader.h"
 
+// global shader
+#include "HGlobalShader.h"
+
 using namespace lsgd;
 
-HShaderType::HShaderType()
+HShaderType::HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast)
+	: ShaderTypeForDynamicCast(InShaderTypeForDynamicCast)
 {
 	AddToGlobalList(this);
 }
@@ -11,6 +15,15 @@ HShaderType::HShaderType()
 HShaderType::~HShaderType()
 {
 	RemvoeFromGlobalList(this);
+}
+
+HGlobalShaderType* HShaderType::GetGlobalShaderType()
+{
+	if (ShaderTypeForDynamicCast == HShaderType::HShaderTypeForDynamicCast::Global)
+	{
+		return (HGlobalShaderType*)this;
+	}
+	return nullptr;
 }
 
 void HShaderType::Initialize()
@@ -23,7 +36,7 @@ void HShaderType::Initialize()
 	}
 }
 
-HShader::HShader()
+HShader::HShader(const CompiledShaderInitializerType&)
 	: NumRefs(0)
 {
 

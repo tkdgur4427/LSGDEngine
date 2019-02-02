@@ -11,6 +11,9 @@ namespace lsgd
 	class HShaderCommonCompileJob : public HRefCountedObject
 	{
 	public:
+		HShaderCommonCompileJob() {}
+		virtual ~HShaderCommonCompileJob() {}
+
 		// id of the shader map this shader belongs to
 		uint32 Id;
 		// true if the results of the shader compile have been processed
@@ -86,6 +89,12 @@ namespace lsgd
 	class HShaderCompileJob : public HShaderCommonCompileJob
 	{
 	public:
+		HShaderCompileJob(class HShaderType* InShaderType)
+			: ShaderType(InShaderType)
+		{}
+
+		virtual ~HShaderCompileJob() {}
+
 		class HVertexFactoryType* VFType;	// VF type that this shader belongs to, may be NULL
 		class HShaderType* ShaderType;		// shader type that this shader belongs to, must be VALID
 

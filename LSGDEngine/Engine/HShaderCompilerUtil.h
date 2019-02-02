@@ -19,5 +19,13 @@ namespace lsgd
 		static void AddShaderSourceFileEntry(HArray<HString>& ShaderSourceFiles, const HString& ShaderFilename);
 
 		static void CompileGlobalShaderMap(HShaderPlatform Platform, bool bRefreshShaderMap);
+
+		// make sure all global shaders are loaded and/or compiled for the passed in platform
+		static void VerifyGlobalShaders(HShaderPlatform Platform, bool bLoadedFromCacheFile);
+
+		// enqueues a shader compile job with GShaderCompilingManager
+		static void GlobalBeginCompileShader(const HString& DebugGroupName, class HVertexFactoryType* VFType, class HShaderType* ShaderType,
+			const class HShaderPipelineType* ShaderPipelineType, const HString& SourceFilename, const HString& FunctionName, HShaderTarget Target,
+			class HShaderCompileJob* NewJob, HArray<class HShaderCommonCompileJob*>& NewJobs, bool bAllowDevelopmentShaderCompile);
 	};
 }

@@ -54,6 +54,33 @@ namespace lsgd {
 		// shader platform and freqeuncy
 		HShaderTarget Target;
 	};
+
+	// define a shader permutation uniquely according to its type, and permutation id
+	template <typename MetaShaderType>
+	struct HShaderTypePermutation
+	{
+		HShaderTypePermutation() {}
+		~HShaderTypePermutation() {}
+
+		friend inline uint32 GetTypeHash(const HShaderTypePermutation& Id)
+		{
+			// @todo override...
+			return 0;
+		}
+
+		friend bool operator==(const HShaderTypePermutation& A, const HShaderTypePermutation& B)
+		{
+			return (A.Type == B.Type) && (A.PermutationId == B.PermutationId);
+		}
+
+		friend bool operator!=(const HShaderTypePermutation& A, const HShaderTypePermutation& B)
+		{
+			return !(A == B);
+		}
+
+		MetaShaderType* const Type;
+		const int32 PermutationId;
+	};
 }
 
 // override std::hash
@@ -72,8 +99,10 @@ namespace lsgd {
 			MeshMaterial,
 		};
 
-		HShaderType();
-		~HShaderType();
+		HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast);
+		virtual ~HShaderType();
+
+		class HGlobalShaderType* GetGlobalShaderType();
 
 		static void Initialize();
 
@@ -106,6 +135,11 @@ namespace lsgd {
 	public:
 		struct CompiledShaderInitializerType
 		{
+			CompiledShaderInitializerType() 
+				: ParameterMap(HShaderParameterMap())
+				, Code(HArray<uint8>())
+			{}
+
 			HShaderType* Type;
 			HShaderTarget Target;
 			const HArray<uint8>& Code;
@@ -117,10 +151,12 @@ namespace lsgd {
 			class HVertexFactoryType* VertexFactoryType;
 		};
 
-		HShader();
+		HShader(const CompiledShaderInitializerType&);
 		virtual ~HShader();		
 
-		virtual void FinishCleanup();		
+		virtual void FinishCleanup();
+
+		virtual uint32 GetTypeSize() const { return sizeof(this); }
 
 		// to be used in HRefCountPtr
 		uint32 AddRef() const
@@ -194,6 +230,12 @@ namespace lsgd {
 	class HShaderMap
 	{
 	public:
+		HShaderMap(HShaderPlatform InPlatform)
+			: Platform(InPlatform)
+		{}
+
+		virtual ~HShaderMap() {}
+
 		// container for serialized shader pipeline stages to be registered on the game thread
 		struct HSerializedShaderPipeline
 		{
@@ -214,12 +256,37 @@ namespace lsgd {
 		HHashMap<HShaderType*, HRefCountPtr<HShader>> Shaders;
 		HHashMap<const class HShaderPipelineType*, class HShaderPipeline*> ShaderPipelines;
 	};
+
+	// encapsulate a dependency on shader type and saved state from that shader type
+	class HShaderTypeDependency
+	{
+	public:
+		// shader type
+		HShaderType* ShaderType;
+
+		// unique permutation identifier of the global shader type
+		int32 PermutationId;
+
+		// used to detect changes to the shader source files
+		// FSHAHash StageSourceHash;
+	};
+
+	class HShaderPipelineTypeDependency
+	{
+	public:
+		const class HShaderPipelineType* ShaderPipelineType;
+
+		// FSHAHash StageSourceHash;
+	};
 }
+
+// hacky hacky... need to fix later @todo
+USE_HASH_OVERRIDE(lsgd::HShaderTypePermutation<const lsgd::HShaderType>)
 
 // a macro to declare a new shader type; this should be called in the class body of the new shader type
 #define DECLARE_EXPORTED_SHADER_TYPE(ShaderClass, ShaderMetaTypeShortcut) \
 	public: \
-		typedef lsgd::H##ShaderMetaTypeShortcut##ShaderClass ShaderMetaType; \
+		typedef lsgd::H##ShaderMetaTypeShortcut##ShaderType ShaderMetaType; \
 		static ShaderMetaType StaticType; \
 		static lsgd::HShader* ConstructSerializedInstance() { return new ShaderClass; } \
 		static lsgd::HShader* ConstructCompiledInstance(const ShaderMetaType::CompiledShaderInitializerType& Initializer) \

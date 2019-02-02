@@ -169,6 +169,9 @@
     <ClInclude Include="HShaderCompilerUtil.h">
       <Filter>RHI\ShaderCompiler</Filter>
     </ClInclude>
+    <ClInclude Include="HGlobalShaderTypeCompiler.h">
+      <Filter>RHI\ShaderCompiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -274,6 +277,15 @@
     </ClCompile>
     <ClCompile Include="HVertexFactory.cpp">
       <Filter>RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="HGlobalShader.cpp">
+      <Filter>RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="HGlobalShaderTypeCompiler.cpp">
+      <Filter>RHI\ShaderCompiler</Filter>
+    </ClCompile>
+    <ClCompile Include="HShaderCompilerEnvironment.cpp">
+      <Filter>RHI\ShaderCompiler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
