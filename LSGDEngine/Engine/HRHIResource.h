@@ -43,7 +43,7 @@ namespace lsgd
 				}
 				else
 				{
-					if (HGenericPlatformAtomics::InterlockedCompareSwap(&MarkedForDelete, 1, 0) == 0)
+					if (HGenericPlatformAtomics::HInterlockedCompareSwap(&MarkedForDelete, 1, 0) == 0)
 					{
 						PendingDeletes.Push(const_cast<HRHIResource*>(this));
 					}

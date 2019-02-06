@@ -129,6 +129,7 @@
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
     <ClInclude Include="HGlobalShaderTypeCompiler.h" />
+    <ClInclude Include="HMaterialCommon.h" />
     <ClInclude Include="HRefCountPtr.h" />
     <ClInclude Include="HRHICommon.h" />
     <ClInclude Include="HRHIResource.h" />
@@ -136,6 +137,9 @@
     <ClInclude Include="HShaderCompilerEnvironment.h" />
     <ClInclude Include="HShaderCompilerUtil.h" />
     <ClInclude Include="HShaderCompilingManager.h" />
+    <ClInclude Include="HShaderFormat.h" />
+    <ClInclude Include="HShaderFormatD3D12.h" />
+    <ClInclude Include="HShaderId.h" />
     <ClInclude Include="HShaderPipeline.h" />
     <ClInclude Include="HShaderResource.h" />
     <ClInclude Include="HEBContextPolicy.h" />
@@ -212,6 +216,9 @@
     <ClCompile Include="HShaderCompilerEnvironment.cpp" />
     <ClCompile Include="HShaderCompilerUtil.cpp" />
     <ClCompile Include="HShaderCompilingManager.cpp" />
+    <ClCompile Include="HShaderFormat.cpp" />
+    <ClCompile Include="HShaderFormatD3D12.cpp" />
+    <ClCompile Include="HShaderId.cpp" />
     <ClCompile Include="HShaderResource.cpp" />
     <ClCompile Include="HTickFunction.cpp" />
     <ClCompile Include="HTickTaskLevel.cpp" />

@@ -27,5 +27,11 @@ namespace lsgd
 		static void GlobalBeginCompileShader(const HString& DebugGroupName, class HVertexFactoryType* VFType, class HShaderType* ShaderType,
 			const class HShaderPipelineType* ShaderPipelineType, const HString& SourceFilename, const HString& FunctionName, HShaderTarget Target,
 			class HShaderCompileJob* NewJob, HArray<class HShaderCommonCompileJob*>& NewJobs, bool bAllowDevelopmentShaderCompile);
+
+		static void ProcessCompiledGlobalShaders(const HArray<class HShaderCommonCompileJob*>& CompilationResults);
+
+		static class HShader* ProcessCompiledJob(class HShaderCompileJob* SingleJob, const class HShaderPipelineType* Pipeline, HArray<HShaderPlatform>& ShaderPlatformProcessed, HArray<const class HShaderPipelineType*>& OutSharedPipelines);
+
+		static void ProcessCompilationJob(const class HShaderCompilerInput& Input, class HShaderCompilerOutput& Output, const HString& WorkingDirectory);
 	};
 }

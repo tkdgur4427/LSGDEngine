@@ -13,6 +13,9 @@
 // global shader compiler
 #include "HGlobalShaderTypeCompiler.h"
 
+// shader format
+#include "HShaderFormat.h"
+
 using namespace lsgd;
 
 void HShaderCompilerUtil::InitializeShaderTypes()
@@ -120,6 +123,63 @@ void HShaderCompilerUtil::GlobalBeginCompileShader(const HString& DebugGroupName
 	NewJobs.push_back(NewJob);
 }
 
+void HShaderCompilerUtil::ProcessCompilationJob(const HShaderCompilerInput& Input, HShaderCompilerOutput& Output, const HString& WorkingDirectory)
+{
+	HShaderFormat* Compiler = HShaderFormat::FindOrCreateShaderFormat(Input.ShaderFormat);
+	check(Compiler);
+	Compiler->CompileShader(Input, Output, WorkingDirectory);
+}
+
+HShader* HShaderCompilerUtil::ProcessCompiledJob(HShaderCompileJob* SingleJob, const HShaderPipelineType* Pipeline, HArray<HShaderPlatform>& ShaderPlatformProcessed, HArray<const HShaderPipelineType*>& OutSharedPipelines)
+{
+	HGlobalShaderType* GlobalShaderType = SingleJob->ShaderType->GetGlobalShaderType();
+	check(GlobalShaderType);
+
+	HShader* Shader = HGlobalShaderTypeCompiler::FinishCompileShader(GlobalShaderType, *SingleJob, Pipeline);
+	if (Shader != nullptr)
+	{
+		// add the new global shader instance to the global shader map if it's a shared shader
+		HShaderPlatform Platform = (HShaderPlatform)SingleJob->Input.Target.Platform;
+		GGlobalShaderMap[Platform]->AddShader(GlobalShaderType, Shader);
+		if (!Pipeline)
+		{
+			//...
+		}
+	}
+	else
+	{
+		//...
+	}
+
+	return Shader;
+}
+
+void HShaderCompilerUtil::ProcessCompiledGlobalShaders(const HArray<HShaderCommonCompileJob*>& CompilationResults)
+{
+	HArray<HShaderPlatform> ShaderPlatformsProcessed;
+	HArray<const HShaderPipelineType*> SharedPipelines;
+
+	for (int32 ResultIndex = 0; ResultIndex < CompilationResults.size(); ++ResultIndex)
+	{
+		const HShaderCommonCompileJob& CurrentJob = *(CompilationResults[ResultIndex]);
+		HShaderCompileJob* SingleJob = nullptr;
+
+		if ((SingleJob = CurrentJob.GetSingleShaderJob()) != nullptr)
+		{
+			ProcessCompiledJob(SingleJob, nullptr, ShaderPlatformsProcessed, SharedPipelines);
+		}
+		else
+		{
+			// processing pipelining @todo
+		}
+	}
+
+	//.. processing pipelines @todo
+
+	// save the global shader map for any platforms that were recompiled
+	// SaveGlobalShaderMapToDerivedDataCache(ShaderPlatformsProcessed[PlatformIndex]);
+}
+
 void HShaderCompilerUtil::VerifyGlobalShaders(HShaderPlatform Platform, bool bLoadedFromCacheFile)
 {
 	// all jobs, single & pipeline
@@ -141,6 +201,22 @@ void HShaderCompilerUtil::VerifyGlobalShaders(HShaderPlatform Platform, bool bLo
 
 		// compile this global shader type
 		auto* Job = HGlobalShaderTypeCompiler::BeginCompileShader(GlobalShaderType, 0, Platform, nullptr, GlobalShaderJobs);
+
+		//SharedShaderJobs.Add(GlobalShaderType, Job);
+	}
+
+	// now the pipeline jobs; if it's a sharable pipeline, do not add duplicate jobs
+	//...
+
+	if (GlobalShaderJobs.size() > 0)
+	{
+		check(GShaderCompilerManager != nullptr);
+		GShaderCompilerManager->AddJobs(GlobalShaderJobs);
+
+		if (!GShaderCompilerManager->bAllowAsynchronousShaderCompiles)
+		{
+			
+		}
 	}
 }
 

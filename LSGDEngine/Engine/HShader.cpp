@@ -4,6 +4,12 @@
 // global shader
 #include "HGlobalShader.h"
 
+#include "HVertexFactory.h"
+
+#include "HShaderResource.h"
+
+#include "HShaderCompilingManager.h"
+
 using namespace lsgd;
 
 HShaderType::HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast)
@@ -26,6 +32,16 @@ HGlobalShaderType* HShaderType::GetGlobalShaderType()
 	return nullptr;
 }
 
+HShader* HShaderType::FindShaderById(const HShaderId& Id)
+{
+	auto ResultIter = ShaderIdMap.find(Id);
+	if (ResultIter != ShaderIdMap.end())
+	{
+		return ResultIter->second;
+	}
+	return nullptr;
+}
+
 void HShaderType::Initialize()
 {
 	HList<HShaderType*>& ShaderTypes = *(GetList());
@@ -34,6 +50,23 @@ void HShaderType::Initialize()
 		// GenerateReferencedUniformBuffer(...); - @todo
 		// ...
 	}
+}
+
+lsgd::HShader::CompiledShaderInitializerType::CompiledShaderInitializerType(
+	HShaderType* InShaderType,
+	const HShaderCompilerOutput& InOutput,
+	HShaderResource* InResource,
+	HShaderPipelineType* InShaderPipelineType,
+	HVertexFactoryType* InVertexFactoryType)
+	: Type(InShaderType)
+	, Target(InOutput.Target)
+	, Resource(InResource)
+	, ShaderPipeline(InShaderPipelineType)
+	, VertexFactoryType(InVertexFactoryType)
+	, ParameterMap(InOutput.ParameterMap)
+	, Code(InOutput.ShaderCode.ShaderCodeWithOptionalData)
+{
+
 }
 
 HShader::HShader(const CompiledShaderInitializerType&)

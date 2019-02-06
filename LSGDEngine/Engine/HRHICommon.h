@@ -17,6 +17,20 @@ namespace lsgd
 
 	struct HShaderTarget
 	{
+		HShaderTarget()
+			: Frequency(0)
+			, Platform(0)
+		{}
+
+		HShaderTarget(uint32 InFrequency, uint32 InPlatform)
+			: Frequency(InFrequency), Platform(InPlatform)
+		{}
+
+		HShaderTarget(const HShaderTarget& InTarget)
+			: Frequency(InTarget.Frequency)
+			, Platform(InTarget.Platform)
+		{}
+
 		friend bool operator==(const HShaderTarget& A, const HShaderTarget& B)
 		{
 			return (A.Frequency == B.Frequency)

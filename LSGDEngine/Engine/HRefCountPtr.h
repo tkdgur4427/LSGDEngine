@@ -120,7 +120,9 @@ namespace lsgd
 
 		friend uint32 GetTypeHash(const HRefCountPtr& InPtr)
 		{
-			return GetTypeHash(InPtr.Reference);
+			//return GetTypeHash(InPtr.Reference);
+			// @todo - temporary...
+			return 0;
 		}
 
 		ReferenceType** GetInitReference()

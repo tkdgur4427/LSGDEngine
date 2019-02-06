@@ -2,89 +2,7 @@
 
 #include "HDeferredCleanupInterface.h"
 #include "HShaderResource.h"
-
-namespace lsgd {
-	// uniquely identifies an HShader; used to link HMaterialShaderMaps and HShader on load
-	class HShaderId
-	{
-	public:
-		HShaderId() {}
-		~HShaderId() {}
-
-		friend inline uint32 GetTypeHash(const HShaderId& Id)
-		{
-			// @todo override...
-			return 0;
-		}
-
-		friend bool operator==(const HShaderId& A, const HShaderId& B)
-		{
-			return (A.ShaderPipeline == B.ShaderPipeline)
-				&& (A.VertexFactoryType == B.VertexFactoryType)
-				&& (A.ShaderType == B.ShaderType)
-				&& (A.Target == B.Target);
-		}
-
-		friend bool operator!=(const HShaderId& A, const HShaderId& B)
-		{
-			return !(A == B);
-		}
-
-		/*
-			hash of the material shader map id, since this shader depends on the generated material code from that shader map
-			a hash is used instead of the full shader map id to shorten the key length, even though this will result in a hash being hashed
-		*/
-		// FSHAHash MaterialShaderMapHash;
-
-		// shader pipeline linked to this shader, needed since a single might be used on different pipelines
-		const class HShaderPipelineType* ShaderPipeline;
-
-		// vertex factory type that the shader was created for, this is needed in the id since a single shader type will be compiled for multiple vertex factories within a material shader map will be NULL for global shaders
-		class HVertexFactoryType* VertexFactoryType;
-
-		// used to detect changes to the VF source files
-		// FSHAHash VFSourceHash;
-
-		// shader type
-		class HShaderType* ShaderType;
-
-		// used to detect changes to the shader source files
-		// FSHAHash SourceHash;
-
-		// shader platform and freqeuncy
-		HShaderTarget Target;
-	};
-
-	// define a shader permutation uniquely according to its type, and permutation id
-	template <typename MetaShaderType>
-	struct HShaderTypePermutation
-	{
-		HShaderTypePermutation() {}
-		~HShaderTypePermutation() {}
-
-		friend inline uint32 GetTypeHash(const HShaderTypePermutation& Id)
-		{
-			// @todo override...
-			return 0;
-		}
-
-		friend bool operator==(const HShaderTypePermutation& A, const HShaderTypePermutation& B)
-		{
-			return (A.Type == B.Type) && (A.PermutationId == B.PermutationId);
-		}
-
-		friend bool operator!=(const HShaderTypePermutation& A, const HShaderTypePermutation& B)
-		{
-			return !(A == B);
-		}
-
-		MetaShaderType* const Type;
-		const int32 PermutationId;
-	};
-}
-
-// override std::hash
-USE_HASH_OVERRIDE(lsgd::HShaderId)
+#include "HShaderId.h"
 
 namespace lsgd {
 
@@ -103,6 +21,8 @@ namespace lsgd {
 		virtual ~HShaderType();
 
 		class HGlobalShaderType* GetGlobalShaderType();
+
+		class HShader* FindShaderById(const HShaderId& Id);
 
 		static void Initialize();
 
@@ -135,10 +55,18 @@ namespace lsgd {
 	public:
 		struct CompiledShaderInitializerType
 		{
-			CompiledShaderInitializerType() 
-				: ParameterMap(HShaderParameterMap())
-				, Code(HArray<uint8>())
+			// temporary
+			CompiledShaderInitializerType()
+				: Code(HArray<uint8>())
+				, ParameterMap(HShaderParameterMap())
 			{}
+
+			CompiledShaderInitializerType(
+				class HShaderType* InShaderType,
+				const class HShaderCompilerOutput& InOutput,
+				class HShaderResource* InResource,
+				class HShaderPipelineType* InShaderPipelineType,
+				class HVertexFactoryType* InVertexFactoryType);
 
 			HShaderType* Type;
 			HShaderTarget Target;
@@ -243,6 +171,8 @@ namespace lsgd {
 			HArray<HRefCountPtr<HShader>> ShaderStages;
 		};
 
+		void AddShader(class HShaderType* ShaderType, class HShader* InShader);
+
 		// list of serialized shaders to be processed and registered on the game thread
 		HArray<HShader*> SerializedShaders;
 		// list of serialized shader pipeline stages to be processed and registered on the game thread
@@ -278,6 +208,18 @@ namespace lsgd {
 
 		// FSHAHash StageSourceHash;
 	};
+
+	// template class implementations
+
+	template <typename ShaderMetaType>
+	void HShaderMap<ShaderMetaType>::AddShader(HShaderType* ShaderType, HShader* InShader)
+	{
+		auto ResultIter = Shaders.find(ShaderType);
+		if (ResultIter == Shaders.end())
+		{
+			Shaders.insert({ ShaderType, InShader });
+		}
+	}
 }
 
 // hacky hacky... need to fix later @todo

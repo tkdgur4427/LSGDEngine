@@ -206,7 +206,7 @@ namespace lsgd
 		{ \
 			typedef Type argument_type; \
 			typedef std::size_t result_type; \
-			result_type operator()(argument_type const& InValue) \
+			result_type operator()(argument_type const& InValue) const \
 			{ \
 				return (std::size_t)GetTypeHash(InValue); \
 			} \

@@ -107,7 +107,9 @@ namespace lsgd {
 	class HGenericPlatformAtomics
 	{
 	public:
-		static int32 InterlockedCompareSwap(volatile int32* Dest, int32 Exchange, int32 Comparand);
-		static int64 InterlockedCompareSwap(volatile int64* Dest, int64 Exchange, int64 Comparand);
+		static int32 HInterlockedCompareSwap(volatile int32* Dest, int32 Exchange, int32 Comparand);
+		static int64 HInterlockedCompareSwap(volatile int64* Dest, int64 Exchange, int64 Comparand);
+		static int32 HInterlockedAdd(volatile int32* Dest, int32 Value);
+		static int64 HInterlockedAdd(volatile int64* Dest, int64 Value);
 	};
 }

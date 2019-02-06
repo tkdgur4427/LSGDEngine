@@ -235,12 +235,22 @@ bool HWindowsPlatformEvent::Wait(uint32 WaitTime)
 	return WaitForSingleObject(Event, WaitTime) == WAIT_OBJECT_0;
 }
 
-int32 HGenericPlatformAtomics::InterlockedCompareSwap(volatile int32* Dest, int32 Exchange, int32 Comparand)
+int32 HGenericPlatformAtomics::HInterlockedCompareSwap(volatile int32* Dest, int32 Exchange, int32 Comparand)
 {
 	return (int32)_InterlockedCompareExchange((long*)Dest, (long)Exchange, (long)Comparand);
 }
 
-int64 HGenericPlatformAtomics::InterlockedCompareSwap(volatile int64* Dest, int64 Exchange, int64 Comparand)
+int64 HGenericPlatformAtomics::HInterlockedCompareSwap(volatile int64* Dest, int64 Exchange, int64 Comparand)
 {
 	return (int64)_InterlockedCompareExchange64(Dest, Exchange, Comparand);
+}
+
+int32 HGenericPlatformAtomics::HInterlockedAdd(volatile int32* Dest, int32 Value)
+{
+	return (int32)InterlockedAdd((long*)Dest, Value);
+}
+
+int64 HGenericPlatformAtomics::HInterlockedAdd(volatile int64* Dest, int64 Value)
+{
+	return (int64)InterlockedAdd64(Dest, Value);
 }
