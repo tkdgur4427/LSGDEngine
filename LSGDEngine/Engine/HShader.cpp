@@ -12,8 +12,13 @@
 
 using namespace lsgd;
 
-HShaderType::HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast)
+HShaderType::HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast, const HString& InSourceFilename,
+	const HString& InFunctionName, int32 InFrequency, ConstructSerializedType ConstructSerialized)
 	: ShaderTypeForDynamicCast(InShaderTypeForDynamicCast)
+	, ConstructSerializedRef(ConstructSerialized)
+	, SourceFilename(InSourceFilename)
+	, FunctionName(InFunctionName)
+	, Frequency(InFrequency)
 {
 	AddToGlobalList(this);
 }

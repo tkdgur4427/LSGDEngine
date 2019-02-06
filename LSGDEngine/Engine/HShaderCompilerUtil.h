@@ -2,6 +2,9 @@
 
 namespace lsgd
 {
+	struct HShaderCompilerInput;
+	class HShaderCompilerOutput;
+
 	// a collection of static method for clear classification
 	class HShaderCompilerUtil
 	{
@@ -32,6 +35,6 @@ namespace lsgd
 
 		static class HShader* ProcessCompiledJob(class HShaderCompileJob* SingleJob, const class HShaderPipelineType* Pipeline, HArray<HShaderPlatform>& ShaderPlatformProcessed, HArray<const class HShaderPipelineType*>& OutSharedPipelines);
 
-		static void ProcessCompilationJob(const class HShaderCompilerInput& Input, class HShaderCompilerOutput& Output, const HString& WorkingDirectory);
+		static void ProcessCompilationJob(const HShaderCompilerInput& Input, HShaderCompilerOutput& Output, const HString& WorkingDirectory);
 	};
 }

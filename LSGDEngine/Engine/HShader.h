@@ -17,7 +17,10 @@ namespace lsgd {
 			MeshMaterial,
 		};
 
-		HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast);
+		typedef class HShader* (*ConstructSerializedType)();
+
+		HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast, const HString& InSourceFilename, 
+			const HString& InFunctionName, int32 InFrequency, ConstructSerializedType ConstructSerialized);
 		virtual ~HShaderType();
 
 		class HGlobalShaderType* GetGlobalShaderType();
@@ -25,8 +28,6 @@ namespace lsgd {
 		class HShader* FindShaderById(const HShaderId& Id);
 
 		static void Initialize();
-
-		typedef class HShader* (*ConstructSerializedType)();
 		
 		HShaderTypeForDynamicCast ShaderTypeForDynamicCast;
 		uint32 HashIndex;
@@ -242,11 +243,11 @@ USE_HASH_OVERRIDE(lsgd::HShaderTypePermutation<const lsgd::HShaderType>)
 	TemplatePrefix \
 	lsgd::ShaderClass::ShaderMetaType lsgd::ShaderClass::StaticType( \
 		#SourceFilename, \
-		FunctionName, \
+		#FunctionName, \
 		Frequency, \
-		lsgd::ShaderClass::ConstructSerializedInstance, \
-		lsgd::ShaderClass::ConstructCompiledInstance, \
-		lsgd::ShaderClass::ModifyCompilationEnvironment, \
-		lsgd::ShaderClass::ShouldCache, \
+		&lsgd::ShaderClass::ConstructSerializedInstance, \
+		&lsgd::ShaderClass::ConstructCompiledInstance, \
+		&lsgd::ShaderClass::ShouldCache, \
+		&lsgd::ShaderClass::ModifyCompilationEnvironment \
 		);
 		

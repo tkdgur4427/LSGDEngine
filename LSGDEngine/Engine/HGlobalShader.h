@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HShader.h"
+#include "HShaderCompilerEnvironment.h"
 
 namespace lsgd
 {
@@ -11,19 +12,19 @@ namespace lsgd
 	class HGlobalShaderType : public HShaderType
 	{
 	public:
-		HGlobalShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast);
-		virtual ~HGlobalShaderType();
-
-		// set up the environment used to compile an instance of this shader type
-		void SetupCompileEnvironment(HShaderPlatform Platform, class HShaderCompilerEnvironment& Environment)
-		{
-			ModifyCompilationEnvironmentRef(Platform, Environment);
-		}
-
 		typedef HShader::CompiledShaderInitializerType CompiledShaderInitializerType;
 		typedef HShader* (*ConstructCompiledType)(const CompiledShaderInitializerType&);
 		typedef bool (*ShouldCacheType)(HShaderPlatform);
-		typedef void(*ModifyCompilationEnvironmentType)(HShaderPlatform, class HShaderCompilerEnvironment&);
+		typedef void (*ModifyCompilationEnvironmentType)(HShaderPlatform, HShaderCompilerEnvironment&);
+
+		HGlobalShaderType(const HString& InSourceFilename, const HString& InFunctionName, int32 InFrequency, ConstructSerializedType ConstructSerialized, ConstructCompiledType ConstructCompiled, ShouldCacheType ShouldCache, ModifyCompilationEnvironmentType ModifyCompilationEnvironment);
+		virtual ~HGlobalShaderType();
+
+		// set up the environment used to compile an instance of this shader type
+		void SetupCompileEnvironment(HShaderPlatform Platform, HShaderCompilerEnvironment& Environment)
+		{
+			ModifyCompilationEnvironmentRef(Platform, Environment);
+		}
 
 		ConstructCompiledType ConstructCompiledRef;
 		ShouldCacheType ShouldCacheRef;
@@ -32,7 +33,7 @@ namespace lsgd
 
 	class HGlobalShader : public HShader
 	{
-		DECLARE_SHADER_TYPE(HGlobalShader, Global);
+		//DECLARE_SHADER_TYPE(HGlobalShader, Global);
 	public:
 		HGlobalShader()
 			: HShader(CompiledShaderInitializerType())

@@ -123,13 +123,6 @@ void HShaderCompilerUtil::GlobalBeginCompileShader(const HString& DebugGroupName
 	NewJobs.push_back(NewJob);
 }
 
-void HShaderCompilerUtil::ProcessCompilationJob(const HShaderCompilerInput& Input, HShaderCompilerOutput& Output, const HString& WorkingDirectory)
-{
-	HShaderFormat* Compiler = HShaderFormat::FindOrCreateShaderFormat(Input.ShaderFormat);
-	check(Compiler);
-	Compiler->CompileShader(Input, Output, WorkingDirectory);
-}
-
 HShader* HShaderCompilerUtil::ProcessCompiledJob(HShaderCompileJob* SingleJob, const HShaderPipelineType* Pipeline, HArray<HShaderPlatform>& ShaderPlatformProcessed, HArray<const HShaderPipelineType*>& OutSharedPipelines)
 {
 	HGlobalShaderType* GlobalShaderType = SingleJob->ShaderType->GetGlobalShaderType();
@@ -241,4 +234,11 @@ void HShaderCompilerUtil::CompileGlobalShaderMap(HShaderPlatform Platform, bool 
 		// if any shaders weren't loaded, compile them now
 		VerifyGlobalShaders(Platform, bLoadedFromCacheFile);
 	}
+}
+
+void HShaderCompilerUtil::ProcessCompilationJob(const HShaderCompilerInput& Input, HShaderCompilerOutput& Output, const HString& WorkingDirectory)
+{
+	HShaderFormat* Compiler = HShaderFormat::FindOrCreateShaderFormat(Input.ShaderFormat);
+	check(Compiler);
+	Compiler->CompileShader(Input, Output, WorkingDirectory);
 }

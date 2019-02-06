@@ -184,6 +184,9 @@
     <ClInclude Include="HShaderFormatD3D12.h">
       <Filter>RHI\ShaderCompiler\Platform\DirectX12</Filter>
     </ClInclude>
+    <ClInclude Include="HImGuiShaders.h">
+      <Filter>Slate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -308,6 +311,9 @@
     <ClCompile Include="HShaderFormat.cpp">
       <Filter>RHI\ShaderCompiler\Platform</Filter>
     </ClCompile>
+    <ClCompile Include="HImGuiShaders.cpp">
+      <Filter>Slate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
@@ -357,6 +363,9 @@
     </Filter>
     <Filter Include="RHI\ShaderCompiler\Platform\DirectX12">
       <UniqueIdentifier>{5aa3f9e7-cd88-40be-b5c3-dae2ae6fdf93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Slate">
+      <UniqueIdentifier>{9a988924-a2d9-422e-b9cc-95215df8cc01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

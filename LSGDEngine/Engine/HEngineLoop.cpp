@@ -62,6 +62,8 @@ void HEngineLoop::Init()
 
 	// shader type initializations
 	HShaderCompilerUtil::InitializeShaderTypes();
+
+	HShaderCompilerUtil::CompileGlobalShaderMap(HShaderPlatform::SP_SM5, false);
 }
 
 class HEngineLoopInitializeTask
