@@ -7,6 +7,9 @@
 // shader compiler utils
 #include "HShaderCompilerUtil.h"
 
+// thread manager
+#include "../Core/HThreadManager.h"
+
 using namespace lsgd;
 
 HShaderCompilingManager* lsgd::GShaderCompilerManager = nullptr;
@@ -23,6 +26,9 @@ HShaderCompileJob* HShaderCommonCompileJob::GetSingleShaderJob() const
 
 HShaderCompilingManager::HShaderCompilingManager()
 	: bAllowAsynchronousShaderCompiles(false) // currently, set the default value as false
+	// @todo - temporary (magic number belows...)
+	, NumShaderCompilingThreads(1) 
+	, MaxShaderJobBatchSize(10)
 {
 
 }
@@ -34,7 +40,12 @@ HShaderCompilingManager::~HShaderCompilingManager()
 
 void HShaderCompilingManager::Initialize()
 {
-
+	// create shader compile thread
+	shared_ptr<HThreadRunnable> ShaderCompileThreadRunnable = make_shared<HThreadRunnable, HShaderCompileThreadRunnable>(this);
+	lsgd::thread::HThreadManager::GetSingleton()->CreateHardwareThread(ShaderCompileThreadRunnable);
+	
+	// assign created runnable
+	Thread = ShaderCompileThreadRunnable;
 }
 
 void HShaderCompilingManager::Destroy()
@@ -53,6 +64,17 @@ void HShaderCompilingManager::AddJobs(HArray<HShaderCommonCompileJob*> NewJobs)
 	}
 
 	// @todo processing pipeline job...
+}
+
+void HShaderCompileThreadRunnableBase::Run()
+{
+	while (!bForceFinish)
+	{
+		if (CompilingLoop() == 0)
+		{
+			HGenericPlatformMisc::Sleep(0.02f);
+		}
+	}
 }
 
 void HShaderCompilingManager::FinishCompilation(const HString& MaterialName, const HArray<uint32>& ShaderMapIdsToFinishCompiling)
@@ -253,14 +275,38 @@ void HShaderCompileThreadRunnable::CompileDirectlyThroughDll()
 	}
 }
 
+HShaderCompileThreadRunnable::HShaderCompileThreadRunnable(HShaderCompilingManager* Owner)
+	: HShaderCompileThreadRunnableBase(Owner)
+{
+	// @todo - temporary create one worker info
+	HShaderCompileWorkerInfo* NewWorkerInfo = new HShaderCompileWorkerInfo();
+	WorkerInfos.push_back(NewWorkerInfo);
+}
+
+HShaderCompileThreadRunnable::~HShaderCompileThreadRunnable()
+{
+	ClearWorkers();
+}
+
+void HShaderCompileThreadRunnable::ClearWorkers()
+{
+	// @todo - change unique_ptr
+	for (auto& WorkerInfo : WorkerInfos)
+	{
+		delete WorkerInfo;
+	}
+	WorkerInfos.clear();
+}
+
 int32 HShaderCompileThreadRunnable::CompilingLoop()
 {
 	// grab more shader compile jobs from the input queue, and move completed jobs to Manager->ShaderMapJobs
 	const int32 NumActiveThreads = PullTasksFromQueue();
 
-	if (NumActiveThreads == 0 && Manager->bAllowAsynchronousShaderCompiles)
+	if (NumActiveThreads == 0)
 	{
 		HGenericPlatformMisc::Sleep(0.01f);
+		return NumActiveThreads;
 	}
 
 	if (Manager->bAllowAsynchronousShaderCompiles)

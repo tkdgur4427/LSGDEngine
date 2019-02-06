@@ -159,14 +159,17 @@ namespace lsgd
 	class HShaderCompileThreadRunnableBase : public HThreadRunnable
 	{
 	public:
-		HShaderCompileThreadRunnableBase()
+		HShaderCompileThreadRunnableBase(class HShaderCompilingManager* Owner)
 			: HThreadRunnable("ShaderCompileThreadRunnable")
+			, Manager(Owner)
 			, bForceFinish(false)
 		{}
 		virtual ~HShaderCompileThreadRunnableBase() {}
 
-		virtual void Run() override {}
-		virtual void Terminate() override {}
+		virtual void Run() override;
+		virtual void Terminate() override { bForceFinish = true; }
+
+		virtual int32 CompilingLoop() = 0;
 
 		// the manager for this thread
 		class HShaderCompilingManager* Manager;
@@ -206,9 +209,14 @@ namespace lsgd
 	class HShaderCompileThreadRunnable : public HShaderCompileThreadRunnableBase
 	{
 	public:
+		HShaderCompileThreadRunnable(class HShaderCompilingManager* Owner);
+		virtual ~HShaderCompileThreadRunnable();
+
+		virtual int32 CompilingLoop() override;
 		int32 PullTasksFromQueue();
-		int32 CompilingLoop();
 		void CompileDirectlyThroughDll();
+
+		void ClearWorkers();
 
 		// information about the active workers that this thread is tracking
 		HArray<struct HShaderCompileWorkerInfo*> WorkerInfos;
@@ -254,7 +262,7 @@ namespace lsgd
 		HHashMap<int32, HShaderMapFinalizeResults> PendingFinalizeShaderMaps;
 
 		// the threads spawned for shader compiling
-		shared_ptr<HShaderCompileThreadRunnableBase> Thread;
+		shared_ptr<HThreadRunnable> Thread;
 		// ***
 
 		// *** configuration properties; these are set only on initialization and can be read from either thread
