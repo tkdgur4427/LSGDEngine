@@ -79,10 +79,10 @@ namespace lsgd
 			}
 		}
 
-		HRefCountPtr& operator=(ReferenceType* InReference)
+		HRefCountPtr& operator=(ReferencedType* InReference)
 		{
 			// add ref before release, in case the new reference is the same as the old reference
-			ReferenceType* OldReference = Reference;
+			ReferencedType* OldReference = Reference;
 			Reference = InReference;
 			if (Reference)
 			{
@@ -125,7 +125,7 @@ namespace lsgd
 			return 0;
 		}
 
-		ReferenceType** GetInitReference()
+		ReferenceType* GetInitReference()
 		{
 			*this = nullptr;
 			return &Reference;

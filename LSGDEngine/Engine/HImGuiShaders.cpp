@@ -3,7 +3,7 @@
 
 using namespace lsgd;
 
-IMPLEMENT_SHADER_TYPE(, HImGuiVertexShader, HImGuiVS, main, HShaderFrequency::SF_Vertex)
+IMPLEMENT_SHADER_TYPE(, HImGuiVertexShader, "HImGuiVS.hlsl", "main", HShaderFrequency::SF_Vertex)
 
 bool HImGuiVertexShader::ShouldCache(HShaderPlatform InShaderPlatform)
 {

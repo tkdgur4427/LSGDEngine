@@ -242,8 +242,8 @@ USE_HASH_OVERRIDE(lsgd::HShaderTypePermutation<const lsgd::HShaderType>)
 #define IMPLEMENT_SHADER_TYPE(TemplatePrefix, ShaderClass, SourceFilename, FunctionName, Frequency) \
 	TemplatePrefix \
 	lsgd::ShaderClass::ShaderMetaType lsgd::ShaderClass::StaticType( \
-		#SourceFilename, \
-		#FunctionName, \
+		SourceFilename, \
+		FunctionName, \
 		Frequency, \
 		&lsgd::ShaderClass::ConstructSerializedInstance, \
 		&lsgd::ShaderClass::ConstructCompiledInstance, \

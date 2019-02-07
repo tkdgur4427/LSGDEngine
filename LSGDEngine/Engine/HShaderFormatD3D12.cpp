@@ -1,13 +1,15 @@
 #include "HEnginePCH.h"
 #include "HShaderFormatD3D12.h"
 
+#include "HShaderCompilingManager.h"
+
 using namespace lsgd;
 
 // function ptr declarations
-typedef HRESULT (*pD3DCompile)(LPCVOID pSrcData, SIZE_T SrcDataSize, LPCSTR pSourceName, const D3D_SHADER_MACRO* pDefines, ID3DInclude* pInclude, LPCSTR pEntryPoint, LPCSTR pTarget
+typedef HRESULT (__stdcall *pD3DCompile)(LPCVOID pSrcData, SIZE_T SrcDataSize, LPCSTR pSourceName, const D3D_SHADER_MACRO* pDefines, ID3DInclude* pInclude, LPCSTR pEntryPoint, LPCSTR pTarget
 	, UINT Flags1, UINT Flags2, ID3DBlob** ppCode, ID3DBlob** ppErrorMsgs);
 
-typedef HRESULT (*pD3DReflect)(LPCVOID pSrcData, SIZE_T SrcDataSize, REFIID pInterface, void** ppReflector);
+typedef HRESULT (__stdcall *pD3DReflect)(LPCVOID pSrcData, SIZE_T SrcDataSize, REFIID pInterface, void** ppReflector);
 
 // gets function pointers from the dll at NewCompilerPath
 bool GetD3DCompilerFuncs(const HString& NewCompilerPath, pD3DCompile* OutD3DCompile, pD3DReflect* OutD3DReflect)
@@ -27,6 +29,13 @@ bool GetD3DCompilerFuncs(const HString& NewCompilerPath, pD3DCompile* OutD3DComp
 		if (CurrentCompiler.length())
 		{
 			CompilerDLL = LoadLibrary(CurrentCompiler.data());
+
+			// @todo - temporary
+			if (CompilerDLL == 0)
+			{
+				DWORD ErrorCode = 0;
+				ErrorCode = GetLastError();
+			}
 		}
 
 		if (!CompilerDLL && NewCompilerPath.length())
@@ -51,8 +60,51 @@ bool GetD3DCompilerFuncs(const HString& NewCompilerPath, pD3DCompile* OutD3DComp
 	return false;
 }
 
+HString HShaderFormatD3D12::GetShaderProfile(HShaderFrequency Frequency)
+{
+	HString Result;
+	switch (Frequency)
+	{
+	case HShaderFrequency::SF_Vertex:
+		Result = "vs_5_0";
+		break;
+	case HShaderFrequency::SF_Pixel:
+		Result = "ps_5_0";
+		break;
+	}
+	return Result;
+}
+
 void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShaderCompilerOutput& Output, const HString& WorkingDirectory)
 {
+	HString PreprocessedShaderSource;
+
+	// @todo - temporary read the shader file~
+	HString ShaderSourceFilePath = WorkingDirectory + Input.SourceFilename;
+	unique_ptr<HPlatformFileIO> PlatformFileIO = (HGenericPlatformMisc::CreatePlatformFileIO());
+	PlatformFileIO->OpenFile(ShaderSourceFilePath, EFileUsageFlag::Read);
+	
+	const int32 StrBufferMax = 1024;
+	char StringBuffer[StrBufferMax];
+
+	bool bEOF = false;
+	while (!bEOF)
+	{
+		int64 StrSizeRead = 0;
+		PlatformFileIO->ReadFile(&StringBuffer[0], StrBufferMax, StrSizeRead);
+
+		// append to the PreprocessedShaderSource
+		PreprocessedShaderSource.append(StringBuffer, StrSizeRead);
+
+		// it means that reaching to the end of EOF
+		if (StrBufferMax != (int32)StrSizeRead)
+		{
+			break;
+		}
+	}
+
+	PlatformFileIO->CloseFile();
+
 	HRefCountPtr<ID3DBlob> Shader;
 	HRefCountPtr<ID3DBlob> Errors;
 
@@ -60,15 +112,82 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 	pD3DCompile D3DCompileFunc;
 	pD3DReflect D3DReflectFunc;
 
-	HString CompilerPath; //... need to specifies
+	HString AdditionalD3DCompilerPath = "x86//d3dcompiler_47.dll";
+	HString CompilerPath = HGenericPlatformMisc::GetD3DDir() + AdditionalD3DCompilerPath;
 
 	bool bCompilerPathFunctionUsed = GetD3DCompilerFuncs(CompilerPath, &D3DCompileFunc, &D3DReflectFunc);
 
+	// get the shader profile
+	HString ShaderProfile = GetShaderProfile((HShaderFrequency)Input.Target.Frequency);
+
 	if (D3DCompileFunc)
 	{
-		//Result = D3DCompileFunc()
+		Result = D3DCompileFunc(
+			PreprocessedShaderSource.data(),
+			PreprocessedShaderSource.length(),
+			Input.SourceFilename.data(),
+			nullptr,
+			nullptr,
+			Input.EntryPointName.data(),
+			ShaderProfile.data(),
+			0,
+			0,
+			Shader.GetInitReference(),
+			Errors.GetInitReference()
+		);
 	}
+	
+	// gather reflection information
+	int32 NumInterpolants = 0;
+	HArray<HString> InterpolantNames;
+	HArray<HString> ShaderInputs;
 
-	HShaderCompilerDefinitions AdditionalDefines;
-	// AdditionalDefines.SetDefine("SM5_PROFILE", 1);
+	if (SUCCEEDED(Result))
+	{
+		if (D3DReflectFunc)
+		{
+			Output.bSuccessed = true;
+			ID3D11ShaderReflection* Reflector = nullptr;
+
+			// IID_ID3D11ShaderReflectionCurrentCompiler is defined in this file and needs to match the IID from the dll in CompilerPath
+			// if the function pointers from that dll are being used
+			const IID ShaderReflectionID = IID_ID3D11ShaderReflection;
+			Result = D3DReflectFunc(Shader->GetBufferPointer(), Shader->GetBufferSize(), ShaderReflectionID, (void**)&Reflector);
+
+			if (FAILED(Result))
+			{
+				check(false);
+			}
+
+			// read the constant table description
+			D3D11_SHADER_DESC ShaderDesc;
+			Reflector->GetDesc(&ShaderDesc);
+
+			bool bGlobalUniformBufferUsed = false;
+			uint32 NumSamplers = 0;
+			uint32 NumSRVs = 0;
+			uint32 NumCBs = 0;
+			uint32 NumUAVs = 0;
+			HArray<HString> UniformBufferNames;
+			HArray<HString> ShaderOutputs;
+
+			if (Input.Target.Frequency == SF_Vertex)
+			{
+				for (uint32 Index = 0; Index < ShaderDesc.OutputParameters; ++Index)
+				{
+					// VC++ horrible hack; runtime esp checks get confused and fail for some reason calling Reflector->GetOutputParameterDesc() (because it comes from another DLL?)
+					// so 'guard it' using the middle of an array; it's been confirmed No corruption is really happening
+					D3D11_SIGNATURE_PARAMETER_DESC ParamDescs[3];
+					D3D11_SIGNATURE_PARAMETER_DESC& ParamDesc = ParamDescs[1];
+					Reflector->GetOutputParameterDesc(Index, &ParamDesc);
+
+					if (ParamDesc.SystemValueType == D3D_NAME_UNDEFINED && ParamDesc.Mask != 0)
+					{
+						++NumInterpolants;
+						//InterpolantNames.push_back()
+					}
+				}
+			}
+		}
+	}
 }

@@ -8,6 +8,8 @@ namespace lsgd {
 	{
 	public:
 		virtual void CompileShader(const class HShaderCompilerInput& Input, class HShaderCompilerOutput& Output, const HString& WorkingDirectory) override;
+
+		HString GetShaderProfile(HShaderFrequency Frequency);
 	};
 
 }

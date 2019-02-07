@@ -86,6 +86,11 @@ HString HGenericPlatformMisc::GetShaderSourceDir()
 	return HString("..//Shaders//");
 }
 
+HString HGenericPlatformMisc::GetD3DDir()
+{
+	return HString("..//..//ThirdParty//d3d//");
+}
+
 uint32 HGenericPlatformMisc::GetCurrentThreadId()
 {
 	HANDLE CurrThreadHandle = nullptr;
