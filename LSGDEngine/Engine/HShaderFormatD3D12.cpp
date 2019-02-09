@@ -184,8 +184,63 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 					if (ParamDesc.SystemValueType == D3D_NAME_UNDEFINED && ParamDesc.Mask != 0)
 					{
 						++NumInterpolants;
-						//InterpolantNames.push_back()
+						HString NewInterpolantName = HStringPrintf("%s%d", ParamDesc.SemanticName, ParamDesc.SemanticIndex);
+						InterpolantNames.push_back(NewInterpolantName);
 					}
+				}
+			}
+
+			else if (Input.Target.Frequency == SF_Pixel)
+			{
+				bool bFoundUnused = false;
+				for (uint32 Index = 0; Index < ShaderDesc.InputParameters; ++Index)
+				{
+					D3D11_SIGNATURE_PARAMETER_DESC ParamDescs[3];
+					D3D11_SIGNATURE_PARAMETER_DESC& ParamDesc = ParamDescs[1];
+					Reflector->GetInputParameterDesc(Index, &ParamDesc);
+
+					if (ParamDesc.SystemValueType == D3D_NAME_UNDEFINED)
+					{
+						if (ParamDesc.ReadWriteMask != 0)
+						{
+							HString SemanticName = ParamDesc.SemanticName;
+							HAddUnique(ShaderInputs, SemanticName);
+
+							// add the number (for the case of TEXCOORD)
+							HString SemanticIndexName = ParamDesc.SemanticName;
+							HAddUnique(ShaderInputs, SemanticIndexName);
+
+							// add _centroid
+							//...
+						}
+						else
+						{
+							bFoundUnused = true;
+						}
+					}
+					else
+					{
+						HString SemanticName = ParamDesc.SemanticName;
+						ShaderInputs.push_back(SemanticName);
+					}
+				}
+
+				//...
+			}
+
+			// add parameters for shader resources (CB, Tex, Samplers, etc)
+			for (uint32 ResourceIndex = 0; ResourceIndex < ShaderDesc.BoundResources; ResourceIndex++)
+			{
+				D3D11_SHADER_INPUT_BIND_DESC BindDesc;
+				Reflector->GetResourceBindingDesc(ResourceIndex, &BindDesc);
+
+				if (BindDesc.Type == D3D10_SIT_CBUFFER || BindDesc.Type == D3D10_SIT_TBUFFER)
+				{
+					const uint32 CBIndex = BindDesc.BindPoint;
+					ID3D11ShaderReflectionConstantBuffer* ConstantBuffer = Reflector->GetConstantBufferByIndex(CBIndex);
+					D3D11_SHADER_BUFFER_DESC CBDesc;
+					ConstantBuffer->GetDesc(&CBDesc);
+
 				}
 			}
 		}

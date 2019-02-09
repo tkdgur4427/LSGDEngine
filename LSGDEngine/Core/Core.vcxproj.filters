@@ -188,6 +188,7 @@
     </ClInclude>
     <ClInclude Include="HCoreBuild.h" />
     <ClInclude Include="HGlobalLinkedList.h" />
+    <ClInclude Include="HStringUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -277,5 +278,6 @@
     <ClCompile Include="HScopedEvent.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
+    <ClCompile Include="HStringUtil.cpp" />
   </ItemGroup>
 </Project>

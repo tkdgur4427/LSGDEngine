@@ -35,3 +35,19 @@ HReflectionContext& operator<<(HReflectionContext& InContext, HString& Value)
 
 	return InContext;
 }
+
+HString HStringPrintf(const char* Format, ...)
+{
+	const uint32 BufSize = 1024; // @todo - temporary
+	char Buffer[BufSize];
+
+	va_list ArgList;
+	va_start(ArgList, Format);
+	std::vsnprintf(Buffer, BufSize, Format, ArgList);
+	va_end(ArgList);
+
+	HString Result;
+	Result.append(Buffer);
+
+	return Result;
+}

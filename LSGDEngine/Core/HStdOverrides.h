@@ -16,6 +16,9 @@
 #include <atomic>
 #include <functional>
 
+#include <cstdio>
+#include <cstdarg>
+
 // override std libraries with lsgd:: by type aliasing
 namespace lsgd
 {
@@ -52,6 +55,22 @@ namespace lsgd
 	// pair
 	template <class KeyType, class ValueType>
 	using pair = std::pair<KeyType, ValueType>;
+
+	// HArray utility functions
+	template <typename Type>
+	void HAddUnique(HArray<Type>& OutArray, const Type& InValue)
+	{
+		// early out for unique element exists
+		for (auto& Element : OutArray)
+		{
+			if (Element == InValue)
+			{
+				return;
+			}
+		}
+
+		OutArray.push_back(InValue);
+	}
 
 	// unique_ptr
 	template <class Type>
@@ -325,3 +344,7 @@ lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext&
 
 	return InContext;
 }
+
+// string printf utility functions
+extern lsgd::HString HStringPrintf(const char* Format, ...);
+//extern bool HStringCo
