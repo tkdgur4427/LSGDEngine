@@ -347,4 +347,7 @@ lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext&
 
 // string printf utility functions
 extern lsgd::HString HStringPrintf(const char* Format, ...);
-//extern bool HStringCo
+extern bool HStringCompare(const char* Src0, const char* Src1);
+extern void HStringCopy(char* Dest, const char* Src);
+extern const char* HStrchr(const char* Str, int32 Char);
+extern bool HStringNCompare(const char* Str1, const char* Str2, int32 NumCharacterToCompare);

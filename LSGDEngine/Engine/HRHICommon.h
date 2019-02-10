@@ -95,6 +95,9 @@ namespace lsgd
 			mutable bool bBound;
 		};
 
+		void AddParameterAllocation(const HString& InParameterName,
+			uint16 InBufferIndex, uint16 InBaseIndex, uint16 InSize);
+
 		HHashMap<HString, HParameterAllocation> ParameterMap;
 	};
 }

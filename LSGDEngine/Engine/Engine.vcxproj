@@ -212,6 +212,7 @@
     <ClCompile Include="HPrimitiveComponent.cpp" />
     <ClCompile Include="HRenderingThread.cpp" />
     <ClCompile Include="HRenderResource.cpp" />
+    <ClCompile Include="HRHICommon.cpp" />
     <ClCompile Include="HRHIResource.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
     <ClCompile Include="HShader.cpp" />

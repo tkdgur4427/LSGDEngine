@@ -314,6 +314,9 @@
     <ClCompile Include="HImGuiShaders.cpp">
       <Filter>Slate</Filter>
     </ClCompile>
+    <ClCompile Include="HRHICommon.cpp">
+      <Filter>RHI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">

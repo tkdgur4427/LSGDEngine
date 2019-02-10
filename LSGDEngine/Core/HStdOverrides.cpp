@@ -51,3 +51,23 @@ HString HStringPrintf(const char* Format, ...)
 
 	return Result;
 }
+
+bool HStringCompare(const char* Src0, const char* Src1)
+{
+	return strcmp(Src0, Src1) == 0;
+}
+
+void HStringCopy(char* Dest, const char* Src)
+{
+	strcpy(Dest, Src);
+}
+
+const char* HStrchr(const char* Str, int32 Char)
+{
+	return strchr(Str, Char);
+}
+
+bool HStringNCompare(const char* Str1, const char* Str2, int32 NumCharacterToCompare)
+{
+	return strncmp(Str1, Str2, NumCharacterToCompare) == 0;
+}

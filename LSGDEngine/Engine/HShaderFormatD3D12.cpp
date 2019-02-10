@@ -240,9 +240,145 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 					ID3D11ShaderReflectionConstantBuffer* ConstantBuffer = Reflector->GetConstantBufferByIndex(CBIndex);
 					D3D11_SHADER_BUFFER_DESC CBDesc;
 					ConstantBuffer->GetDesc(&CBDesc);
+					bool bGlobalCB = HStringUtil::Strcmp(CBDesc.Name, "$Globals");
 
+					if (bGlobalCB)
+					{
+						// track all of the variables in this constant buffer
+						for (uint32 ConstantIndex = 0; ConstantIndex < CBDesc.Variables; ConstantIndex++)
+						{
+							ID3D11ShaderReflectionVariable* Variable = ConstantBuffer->GetVariableByIndex(ConstantIndex);
+							D3D11_SHADER_VARIABLE_DESC VariableDesc;
+							Variable->GetDesc(&VariableDesc);
+
+							if (VariableDesc.uFlags & D3D10_SVF_USED)
+							{
+								bGlobalUniformBufferUsed = true;
+
+								Output.ParameterMap.AddParameterAllocation(VariableDesc.Name, CBIndex, VariableDesc.StartOffset, VariableDesc.Size);
+								//UnusedUniformBufferSlots[CBIndex] = true;
+							}
+						}
+					}
+					else
+					{
+						// track just the constant buffer itself
+						Output.ParameterMap.AddParameterAllocation(
+							CBDesc.Name,
+							CBIndex,
+							0,
+							0
+						);
+						//UnusedUniformBufferSlots[CBIndex] = true;
+
+						if (UniformBufferNames.size() <= (int32)CBIndex)
+						{
+							for (int32 Index = UniformBufferNames.size() - 1; Index < CBIndex; ++Index)
+							{
+								UniformBufferNames.push_back("");
+							}
+						}
+						UniformBufferNames[CBIndex] = CBDesc.Name;
+					}
+
+					NumCBs = Max<uint32>(NumCBs, BindDesc.BindPoint + BindDesc.BindCount);
+				}
+				else if (BindDesc.Type == D3D10_SIT_TEXTURE || BindDesc.Type == D3D10_SIT_SAMPLER)
+				{
+					char OfficialName[1024];
+					uint32 BindCount = BindDesc.BindCount;
+					HStringUtil::Strcpy(OfficialName, BindDesc.Name);
+
+					// assign the name and optionally strip any [#] suffixes
+					const char* BracketLocation = HStringUtil::Strchr(OfficialName, '[');
+					if (BracketLocation)
+					{
+						BindCount = 1;
+
+						// this needs to include the first [ character otherwise it will include now array textures with matching starting characters
+						// e.g. 'LightMapTexturesTest' which is not part of 'LightMapTextures[#] would be included as the last index of 'LightMapTextures'
+						const int32 NumCharacterToCompare = BracketLocation - OfficialName + 1;
+
+						/*
+							in SM5, for some reason, array suffixes are included in Name, i.e. 'LightMapTextures'
+							additionally elements in an array are listed as SEPARATE bound resources
+							however, they are always contiguous in resource index, so iterate over the samplers and textures of the initial association
+							and count them, identifying the bind point and bind points
+						*/
+						while (ResourceIndex + 1 < ShaderDesc.BoundResources)
+						{
+							D3D11_SHADER_INPUT_BIND_DESC BindDesc2;
+							Reflector->GetResourceBindingDesc(ResourceIndex + 1, &BindDesc2);
+
+							if (BindDesc2.Type == BindDesc.Type && HStringUtil::Strncmp(BindDesc2.Name, BindDesc.Name, NumCharacterToCompare) == 0)
+							{
+								BindCount++;
+								// skip over this resource since it is part of an array
+								ResourceIndex++;
+							}
+							else
+							{
+								break;
+							}
+						}
+					}
+
+					if (BindDesc.Type == D3D10_SIT_SAMPLER)
+					{
+						NumSamplers = Max<uint32>(NumSamplers, BindDesc.BindPoint + BindCount);
+					}
+					else
+					{
+						NumSRVs = Max<uint32>(NumSRVs, BindDesc.BindPoint + BindCount);
+					}
+
+					// add a parameter for the texture only, the sampler index will be invalid
+					Output.ParameterMap.AddParameterAllocation(
+						OfficialName,
+						0,
+						BindDesc.BindPoint,
+						BindCount
+					);
+				}
+				else if (BindDesc.Type == D3D11_SIT_UAV_RWTYPED
+					|| BindDesc.Type == D3D11_SIT_UAV_RWSTRUCTURED
+					|| BindDesc.Type == D3D11_SIT_UAV_RWBYTEADDRESS
+					|| BindDesc.Type == D3D11_SIT_UAV_RWSTRUCTURED_WITH_COUNTER
+					|| BindDesc.Type == D3D11_SIT_UAV_APPEND_STRUCTURED)
+				{
+					Output.ParameterMap.AddParameterAllocation(
+						BindDesc.Name,
+						0,
+						BindDesc.BindPoint,
+						1
+					);
+
+					NumUAVs = Max<uint32>(NumUAVs, BindDesc.BindPoint + BindDesc.BindCount);
+				}
+				else if (BindDesc.Type == D3D11_SIT_STRUCTURED || D3D11_SIT_BYTEADDRESS)
+				{
+					Output.ParameterMap.AddParameterAllocation(
+						BindDesc.Name,
+						0,
+						BindDesc.BindPoint,
+						1
+					);
+
+					NumUAVs = Max<uint32>(NumSRVs, BindDesc.BindPoint + BindDesc.BindCount);
 				}
 			}
+
+			HRefCountPtr<ID3DBlob> CompressedData;
+			//if () {}
+			///else
+			{
+				 // D3DStripShader is not guaranteed to exist
+				// e.g. the open-source DXIL shader compiler does not currently implement it
+				CompressedData = Shader;
+			}
+
+			// build the SRT for this shader
+			
 		}
 	}
 }
