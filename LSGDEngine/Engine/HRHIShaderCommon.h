@@ -45,5 +45,7 @@ namespace lsgd
 		HArray<uint32> SamplerMap;
 		HArray<uint32> UnorderedAccessViewMap;
 		HArray<uint32> ResourceTableLayoutHashes;
-	};
+	};	
 }
+
+extern bool HBuildResourceTableMapping(const HHashMap<HString, HResourceTableEntry>& ResourceTableMap, HShaderParameterMap& ParameterMap, HShaderCompilerResourceTable& OutSRT);

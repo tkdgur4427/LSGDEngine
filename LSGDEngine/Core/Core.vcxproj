@@ -42,6 +42,7 @@
     <ClInclude Include="HLinkerSave.h" />
     <ClInclude Include="HLogger.h" />
     <ClInclude Include="HCString.h" />
+    <ClInclude Include="HMemoryArchive.h" />
     <ClInclude Include="HName.h" />
     <ClInclude Include="HNewDeleteOverride.h" />
     <ClInclude Include="HObject.h" />
@@ -96,6 +97,7 @@
     <ClCompile Include="HLinker.cpp" />
     <ClCompile Include="HLinkerLoad.cpp" />
     <ClCompile Include="HLinkerSave.cpp" />
+    <ClCompile Include="HMemoryArchive.cpp" />
     <ClCompile Include="HName.cpp" />
     <ClCompile Include="HNewDeleteOverride.cpp" />
     <ClCompile Include="HObject.cpp" />

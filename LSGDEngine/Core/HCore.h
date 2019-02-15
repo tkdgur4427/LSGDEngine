@@ -35,6 +35,9 @@
 // HPackage
 #include "HPackage.h"
 
+// HMemoryArchive
+#include "HMemoryArchive.h"
+
 // HLinkerSave/Load
 #include "HLinkerSave.h"
 #include "HLinkerLoad.h"

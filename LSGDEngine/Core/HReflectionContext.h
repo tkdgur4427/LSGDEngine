@@ -11,6 +11,9 @@ namespace lsgd { namespace reflect {
 	class HReflectionContext
 	{
 	public:
+		HReflectionContext() {}
+		virtual ~HReflectionContext() {}
+
 		virtual HReflectionContext& operator<<(HName& Value)
 		{
 			return *this;
@@ -39,20 +42,25 @@ namespace lsgd { namespace reflect {
 	class HSerializeContext : public HReflectionContext
 	{
 	public:
-		virtual HSerializeContext& operator<<(class HName& Value) override;
+		HSerializeContext() {}
+		virtual ~HSerializeContext() {}
+
+		virtual HReflectionContext& operator<<(class HName& Value) override;
 		virtual HReflectionContext& operator<<(class HObject*& Value) override;
 	};
 
 	// behavior context
 	class HBehaviorContext : public HSerializeContext
 	{
-
+		HBehaviorContext() {}
+		virtual ~HBehaviorContext() {}
 	};
 
 	// network reflection context
 	class HNetworkContext : public HSerializeContext
 	{
-
+		HNetworkContext() {}
+		virtual ~HNetworkContext() {}
 	};
 }
 }

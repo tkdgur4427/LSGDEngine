@@ -3,7 +3,7 @@
 
 using namespace lsgd;
 
-bool BuildResourceTableMapping(const HHashMap<HString, HResourceTableEntry>& ResourceTableMap,
+bool HBuildResourceTableMapping(const HHashMap<HString, HResourceTableEntry>& ResourceTableMap,
 	HShaderParameterMap& ParameterMap, HShaderCompilerResourceTable& OutSRT)
 {
 	// build resource table mapping
@@ -12,6 +12,14 @@ bool BuildResourceTableMapping(const HHashMap<HString, HResourceTableEntry>& Res
 	HArray<uint32> ResourceTableSamplerStates;
 	HArray<uint32> ResourceTableUAVs;
 
-	// go through all the member of ALL the UB resources
-	for ()
+	// go through all the member of ALL the UB(Uniform Buffer) resources
+	for (auto& ResourceTable : ResourceTableMap)
+	{
+		const HString& Name = ResourceTable.first;
+		const HResourceTableEntry& ResourceTableEntry = ResourceTable.second;
+
+		
+	}
+
+	return true;
 }

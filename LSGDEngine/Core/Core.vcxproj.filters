@@ -189,6 +189,7 @@
     <ClInclude Include="HCoreBuild.h" />
     <ClInclude Include="HGlobalLinkedList.h" />
     <ClInclude Include="HStringUtil.h" />
+    <ClInclude Include="HMemoryArchive.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />
@@ -279,5 +280,6 @@
       <Filter>Thread</Filter>
     </ClCompile>
     <ClCompile Include="HStringUtil.cpp" />
+    <ClCompile Include="HMemoryArchive.cpp" />
   </ItemGroup>
 </Project>

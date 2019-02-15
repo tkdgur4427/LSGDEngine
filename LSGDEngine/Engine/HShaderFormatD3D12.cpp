@@ -1,6 +1,8 @@
 #include "HEnginePCH.h"
 #include "HShaderFormatD3D12.h"
 
+#include "HRHIShaderCommon.h"
+
 #include "HShaderCompilingManager.h"
 
 #include "HD3D12ShaderCommon.h"
@@ -275,7 +277,7 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 
 						if (UniformBufferNames.size() <= (int32)CBIndex)
 						{
-							for (int32 Index = UniformBufferNames.size() - 1; Index < CBIndex; ++Index)
+							for (int32 Index = UniformBufferNames.size(); Index <= CBIndex; ++Index)
 							{
 								UniformBufferNames.push_back("");
 							}
@@ -386,8 +388,37 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 			{
 				// build the generic SRT for this shader
 				HShaderCompilerResourceTable GenericSRT;
-				
+
+				// @todo - UB implementation
+				HBuildResourceTableMapping(Input.Environment.ResourceTableMap, Output.ParameterMap, GenericSRT);
+
+				//...
 			}
+
+			// generate the final output
+			{
+				HMemoryArchive Archive(Output.ShaderCode.ShaderCodeWithOptionalData);
+				Archive.Serialize(CompressedData->GetBufferPointer(), CompressedData->GetBufferSize());
+			}			
+
+			// append data that is generate from the shader code and assist the usage, mostly needed for dx12
+			{
+				HShaderCodePackedResourceCounts PackedResourceCounts = {
+					false, // @todo - currently make it false default after implementing UB, need to fix this
+					NumSamplers,
+					NumSRVs,
+					NumCBs,
+					NumUAVs
+				};				
+			}
+
+			// set the number of instruction
+			Output.NumInstructions = ShaderDesc.InstructionCount;
+			Output.NumTextureSamplers = NumSamplers;
+
+			Reflector->Release();
+
+			Output.Target = Input.Target;
 		}
 	}
 }

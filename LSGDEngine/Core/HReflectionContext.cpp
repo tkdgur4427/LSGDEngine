@@ -7,7 +7,7 @@
 using namespace lsgd;
 using namespace lsgd::reflect;
 
-HSerializeContext& HSerializeContext::operator<<(HName& Value)
+HReflectionContext& HSerializeContext::operator<<(HName& Value)
 {
 	// serialize the name 
 	Value.Serialize(*this);
