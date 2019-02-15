@@ -58,8 +58,12 @@ void HEngineLoop::Init()
 	ShaderCompilingManager = make_unique<HShaderCompilingManager>();
 	ShaderCompilingManager->Initialize();
 
+	GShaderCompilerManager = ShaderCompilingManager.get();
+
 	// shader type initializations
 	HShaderCompilerUtil::InitializeShaderTypes();
+
+	HShaderCompilerUtil::CompileGlobalShaderMap(HShaderPlatform::SP_SM5, false);
 }
 
 class HEngineLoopInitializeTask

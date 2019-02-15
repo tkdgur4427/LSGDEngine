@@ -79,7 +79,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../ThirdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HSimpleGamePCH.h</PrecompiledHeaderFile>
     </ClCompile>

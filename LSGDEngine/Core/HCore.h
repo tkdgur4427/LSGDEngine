@@ -2,6 +2,8 @@
 
 #include "HCorePCH.h"
 
+#include "HStringUtil.h"
+
 // custom container
 #include "HVariadicStack.h"
 

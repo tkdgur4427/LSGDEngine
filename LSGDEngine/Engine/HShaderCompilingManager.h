@@ -11,12 +11,25 @@ namespace lsgd
 	class HShaderCommonCompileJob : public HRefCountedObject
 	{
 	public:
+		enum DynamicCastShaderCompileJob
+		{
+			ShaderCompileJob,
+			ShaderPipelineCompileJob,
+		};
+
+		HShaderCommonCompileJob() {}
+		virtual ~HShaderCommonCompileJob() {}
+
+		class HShaderCompileJob* GetSingleShaderJob() const;
+
 		// id of the shader map this shader belongs to
 		uint32 Id;
 		// true if the results of the shader compile have been processed
 		bool bFinalized;
 		// output of the shader compile
 		bool bSuccessed;
+
+		DynamicCastShaderCompileJob DynamicCastFlag;
 	};
 
 	// struct that gathers all readonly inputs needed for the compilation of a single header
@@ -60,6 +73,7 @@ namespace lsgd
 
 	class HShaderCode
 	{
+	public:
 		// -1 if ShaderData was finalized
 		mutable int32 OptionalDataSize;
 		// access through class methods
@@ -67,8 +81,9 @@ namespace lsgd
 	};
 
 	// the output of the shader compiler
-	struct HShaderCompilerOutput
+	class HShaderCompilerOutput
 	{
+	public:
 		HShaderParameterMap ParameterMap;
 		HArray<HShaderCompilerError> Errors;
 		HShaderTarget Target;
@@ -86,6 +101,14 @@ namespace lsgd
 	class HShaderCompileJob : public HShaderCommonCompileJob
 	{
 	public:
+		HShaderCompileJob(class HShaderType* InShaderType)
+			: ShaderType(InShaderType)
+		{
+			DynamicCastFlag = DynamicCastShaderCompileJob::ShaderCompileJob;
+		}
+
+		virtual ~HShaderCompileJob() {}
+
 		class HVertexFactoryType* VFType;	// VF type that this shader belongs to, may be NULL
 		class HShaderType* ShaderType;		// shader type that this shader belongs to, must be VALID
 
@@ -100,6 +123,12 @@ namespace lsgd
 	class HShaderPipelineCompileJob : public HShaderCommonCompileJob
 	{
 	public:
+		HShaderPipelineCompileJob()
+		{
+			DynamicCastFlag = DynamicCastShaderCompileJob::ShaderPipelineCompileJob;
+		}
+		virtual ~HShaderPipelineCompileJob() {}
+
 		HArray<HShaderCommonCompileJob*> StageJobs;
 		bool bFailedRemovingUnused;
 
@@ -130,14 +159,17 @@ namespace lsgd
 	class HShaderCompileThreadRunnableBase : public HThreadRunnable
 	{
 	public:
-		HShaderCompileThreadRunnableBase()
+		HShaderCompileThreadRunnableBase(class HShaderCompilingManager* Owner)
 			: HThreadRunnable("ShaderCompileThreadRunnable")
+			, Manager(Owner)
 			, bForceFinish(false)
 		{}
 		virtual ~HShaderCompileThreadRunnableBase() {}
 
-		virtual void Run() override {}
-		virtual void Terminate() override {}
+		virtual void Run() override;
+		virtual void Terminate() override { bForceFinish = true; }
+
+		virtual int32 CompilingLoop() = 0;
 
 		// the manager for this thread
 		class HShaderCompilingManager* Manager;
@@ -146,6 +178,48 @@ namespace lsgd
 		bool bTerminateByError;
 
 		volatile bool bForceFinish;
+	};
+
+	// information tracked for each shader compile worker process instance
+	struct HShaderCompileWorkerInfo
+	{
+		// process handle of the worker app once launch; invalid handle means no process
+		// FProcHandle WorkerProcess
+
+		// tracks whether tasks have been issued to the worker
+		bool bIssuedTasksToWorker;
+
+		// whether the worker has been launched for this set of tasks
+		bool bLaunchWorker;
+
+		// tracks whether all tasks issued to the worker have been issued
+		bool bComplete;
+
+		// time at which the worker started the most recent batch of tasks
+		double StartTime;
+
+		// jobs that this worker is responsible for compiling
+		HArray<HShaderCommonCompileJob*> QueuedJobs;
+	};
+
+	/*
+		shader compiling thread
+			- this runs in the background while engine is running, launches shader compile worker processes while necessary, and feeds them inputs and read back the outputs
+	*/
+	class HShaderCompileThreadRunnable : public HShaderCompileThreadRunnableBase
+	{
+	public:
+		HShaderCompileThreadRunnable(class HShaderCompilingManager* Owner);
+		virtual ~HShaderCompileThreadRunnable();
+
+		virtual int32 CompilingLoop() override;
+		int32 PullTasksFromQueue();
+		void CompileDirectlyThroughDll();
+
+		void ClearWorkers();
+
+		// information about the active workers that this thread is tracking
+		HArray<struct HShaderCompileWorkerInfo*> WorkerInfos;
 	};
 
 	/*
@@ -160,6 +234,15 @@ namespace lsgd
 
 		void Initialize();
 		void Destroy();
+
+		void AddJobs(HArray<HShaderCommonCompileJob*> NewJobs);
+
+		void FinishCompilation(const HString& MaterialName, const HArray<uint32>& ShaderMapIdsToFinishCompiling);
+
+		void ProcessCompiledShaderMaps(HHashMap<int32, HShaderMapFinalizeResults>& CompiledShaderMaps, float TimeBudget);
+
+		// flushes all pending jobs for the given shader maps
+		void BlockOnShaderCompletion(const HArray<uint32>& ShaderIdsToFinishCompiling, HHashMap<int32, HShaderMapFinalizeResults>& CompiledShaderMaps);
 
 		// *** thread shared properties; these variables can only be read from or written to when a lock on CompileQueueSection is obtained
 		// tracks whether we are compiling while the game is running; if true, we need to throttle down shader compiling CPU usage to avoid starving the runtime threads
@@ -179,7 +262,7 @@ namespace lsgd
 		HHashMap<int32, HShaderMapFinalizeResults> PendingFinalizeShaderMaps;
 
 		// the threads spawned for shader compiling
-		shared_ptr<HShaderCompileThreadRunnableBase> Thread;
+		shared_ptr<HThreadRunnable> Thread;
 		// ***
 
 		// *** configuration properties; these are set only on initialization and can be read from either thread
@@ -200,7 +283,7 @@ namespace lsgd
 		// target execution time for ProcessAsyncResult; larger values speed up async shader map processing but cause more hitchiness while async compiling is happening
 		bool ProcessGameThreadTargetTime;
 
-		// base directory where temporary files are wirtten out during multi-core shader compiling
+		// base directory where temporary files are wrirtten out during multi-core shader compiling
 		HString ShaderBaseWorkingDirectory;
 		// absolute version of ShaderBaseWorkingDirectory
 		HString AbsoluteShaderBaseWorkingDirectory;
@@ -212,4 +295,7 @@ namespace lsgd
 
 		double WorkersBusyTime; // tracks the total time that shader workers have been busy since startup useful for profiling the shader compile worker thread time
 	};
+
+	extern HShaderCompilingManager* GShaderCompilerManager;
+	extern uint32 GlobalShaderMapId;
 }

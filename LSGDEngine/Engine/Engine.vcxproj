@@ -128,6 +128,9 @@
     <ClInclude Include="HDeferredCleanupInterface.h" />
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
+    <ClInclude Include="HGlobalShaderTypeCompiler.h" />
+    <ClInclude Include="HImGuiShaders.h" />
+    <ClInclude Include="HMaterialCommon.h" />
     <ClInclude Include="HRefCountPtr.h" />
     <ClInclude Include="HRHICommon.h" />
     <ClInclude Include="HRHIResource.h" />
@@ -135,6 +138,9 @@
     <ClInclude Include="HShaderCompilerEnvironment.h" />
     <ClInclude Include="HShaderCompilerUtil.h" />
     <ClInclude Include="HShaderCompilingManager.h" />
+    <ClInclude Include="HShaderFormat.h" />
+    <ClInclude Include="HShaderFormatD3D12.h" />
+    <ClInclude Include="HShaderId.h" />
     <ClInclude Include="HShaderPipeline.h" />
     <ClInclude Include="HShaderResource.h" />
     <ClInclude Include="HEBContextPolicy.h" />
@@ -192,7 +198,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="HGameInstance.cpp" />
+    <ClCompile Include="HGlobalShader.cpp" />
+    <ClCompile Include="HGlobalShaderTypeCompiler.cpp" />
     <ClCompile Include="HHUD.cpp" />
+    <ClCompile Include="HImGuiShaders.cpp" />
     <ClCompile Include="HLevel.cpp" />
     <ClCompile Include="HLocalPlayer.cpp" />
     <ClCompile Include="HPawn.cpp" />
@@ -203,11 +212,17 @@
     <ClCompile Include="HPrimitiveComponent.cpp" />
     <ClCompile Include="HRenderingThread.cpp" />
     <ClCompile Include="HRenderResource.cpp" />
+    <ClCompile Include="HRHICommon.cpp" />
     <ClCompile Include="HRHIResource.cpp" />
+    <ClCompile Include="HRHIShaderCommon.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
     <ClCompile Include="HShader.cpp" />
+    <ClCompile Include="HShaderCompilerEnvironment.cpp" />
     <ClCompile Include="HShaderCompilerUtil.cpp" />
     <ClCompile Include="HShaderCompilingManager.cpp" />
+    <ClCompile Include="HShaderFormat.cpp" />
+    <ClCompile Include="HShaderFormatD3D12.cpp" />
+    <ClCompile Include="HShaderId.cpp" />
     <ClCompile Include="HShaderResource.cpp" />
     <ClCompile Include="HTickFunction.cpp" />
     <ClCompile Include="HTickTaskLevel.cpp" />

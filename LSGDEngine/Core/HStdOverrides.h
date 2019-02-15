@@ -16,6 +16,9 @@
 #include <atomic>
 #include <functional>
 
+#include <cstdio>
+#include <cstdarg>
+
 // override std libraries with lsgd:: by type aliasing
 namespace lsgd
 {
@@ -52,6 +55,22 @@ namespace lsgd
 	// pair
 	template <class KeyType, class ValueType>
 	using pair = std::pair<KeyType, ValueType>;
+
+	// HArray utility functions
+	template <typename Type>
+	void HAddUnique(HArray<Type>& OutArray, const Type& InValue)
+	{
+		// early out for unique element exists
+		for (auto& Element : OutArray)
+		{
+			if (Element == InValue)
+			{
+				return;
+			}
+		}
+
+		OutArray.push_back(InValue);
+	}
 
 	// unique_ptr
 	template <class Type>
@@ -206,7 +225,7 @@ namespace lsgd
 		{ \
 			typedef Type argument_type; \
 			typedef std::size_t result_type; \
-			result_type operator()(argument_type const& InValue) \
+			result_type operator()(argument_type const& InValue) const \
 			{ \
 				return (std::size_t)GetTypeHash(InValue); \
 			} \
@@ -325,3 +344,10 @@ lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext&
 
 	return InContext;
 }
+
+// string printf utility functions
+extern lsgd::HString HStringPrintf(const char* Format, ...);
+extern bool HStringCompare(const char* Src0, const char* Src1);
+extern void HStringCopy(char* Dest, const char* Src);
+extern const char* HStrchr(const char* Str, int32 Char);
+extern bool HStringNCompare(const char* Str1, const char* Str2, int32 NumCharacterToCompare);

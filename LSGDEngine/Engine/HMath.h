@@ -23,4 +23,13 @@ namespace lsgd {
 	using HBoundingOrientedBox = BoundingOrientedBox;
 	using HBoundingFrustum = BoundingFrustum;
 
+	template <typename Type>
+	Type Max(Type Src0, Type Src1)
+	{
+		if (Src0 < Src1)
+		{
+			return Src1;
+		}
+		return Src0;
+	}
 }

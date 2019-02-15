@@ -10,23 +10,27 @@ namespace lsgd
 	public:
 		static HList<Type*>* GetList()
 		{
-			HScopedLock Lock(SyncObject);
+			HScopedLock Lock(GetSyncObject());
+			static HList<Type*> LinkedList;
 			return &LinkedList;
+		}
+
+		static HCriticalSection& GetSyncObject()
+		{
+			static HCriticalSection SyncObject;
+			return SyncObject;
 		}
 
 		static void AddToGlobalList(Type* InData)
 		{
-			HScopedLock Lock(SyncObject);
-			LinkedList.push_back(InData);
+			HScopedLock Lock(GetSyncObject());
+			GetList()->push_back(InData);
 		}
 
 		static void RemvoeFromGlobalList(Type* InData)
 		{
-			HScopedLock Lock(SyncObject);
-			LinkedList.remove(InData);
+			HScopedLock Lock(GetSyncObject());
+			GetList()->remove(InData);
 		}
-
-		static HList<Type*> LinkedList;
-		static HCriticalSection SyncObject;
 	};
 }

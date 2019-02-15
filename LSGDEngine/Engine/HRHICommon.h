@@ -17,6 +17,20 @@ namespace lsgd
 
 	struct HShaderTarget
 	{
+		HShaderTarget()
+			: Frequency(0)
+			, Platform(0)
+		{}
+
+		HShaderTarget(uint32 InFrequency, uint32 InPlatform)
+			: Frequency(InFrequency), Platform(InPlatform)
+		{}
+
+		HShaderTarget(const HShaderTarget& InTarget)
+			: Frequency(InTarget.Frequency)
+			, Platform(InTarget.Platform)
+		{}
+
 		friend bool operator==(const HShaderTarget& A, const HShaderTarget& B)
 		{
 			return (A.Frequency == B.Frequency)
@@ -80,6 +94,9 @@ namespace lsgd
 			uint16 Size;
 			mutable bool bBound;
 		};
+
+		void AddParameterAllocation(const HString& InParameterName,
+			uint16 InBufferIndex, uint16 InBaseIndex, uint16 InSize);
 
 		HHashMap<HString, HParameterAllocation> ParameterMap;
 	};

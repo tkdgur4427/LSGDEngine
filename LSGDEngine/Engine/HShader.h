@@ -2,62 +2,7 @@
 
 #include "HDeferredCleanupInterface.h"
 #include "HShaderResource.h"
-
-namespace lsgd {
-	// uniquely identifies an HShader; used to link HMaterialShaderMaps and HShader on load
-	class HShaderId
-	{
-	public:
-		HShaderId() {}
-		~HShaderId() {}
-
-		friend inline uint32 GetTypeHash(const HShaderId& Id)
-		{
-			// @todo override...
-			return 0;
-		}
-
-		friend bool operator==(const HShaderId& A, const HShaderId& B)
-		{
-			return (A.ShaderPipeline == B.ShaderPipeline)
-				&& (A.VertexFactoryType == B.VertexFactoryType)
-				&& (A.ShaderType == B.ShaderType)
-				&& (A.Target == B.Target);
-		}
-
-		friend bool operator!=(const HShaderId& A, const HShaderId& B)
-		{
-			return !(A == B);
-		}
-
-		/*
-			hash of the material shader map id, since this shader depends on the generated material code from that shader map
-			a hash is used instead of the full shader map id to shorten the key length, even though this will result in a hash being hashed
-		*/
-		// FSHAHash MaterialShaderMapHash;
-
-		// shader pipeline linked to this shader, needed since a single might be used on different pipelines
-		const class HShaderPipelineType* ShaderPipeline;
-
-		// vertex factory type that the shader was created for, this is needed in the id since a single shader type will be compiled for multiple vertex factories within a material shader map will be NULL for global shaders
-		class HVertexFactoryType* VertexFactoryType;
-
-		// used to detect changes to the VF source files
-		// FSHAHash VFSourceHash;
-
-		// shader type
-		class HShaderType* ShaderType;
-
-		// used to detect changes to the shader source files
-		// FSHAHash SourceHash;
-
-		// shader platform and freqeuncy
-		HShaderTarget Target;
-	};
-}
-
-// override std::hash
-USE_HASH_OVERRIDE(lsgd::HShaderId)
+#include "HShaderId.h"
 
 namespace lsgd {
 
@@ -72,12 +17,17 @@ namespace lsgd {
 			MeshMaterial,
 		};
 
-		HShaderType();
-		~HShaderType();
+		typedef class HShader* (*ConstructSerializedType)();
+
+		HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast, const HString& InSourceFilename, 
+			const HString& InFunctionName, int32 InFrequency, ConstructSerializedType ConstructSerialized);
+		virtual ~HShaderType();
+
+		class HGlobalShaderType* GetGlobalShaderType();
+
+		class HShader* FindShaderById(const HShaderId& Id);
 
 		static void Initialize();
-
-		typedef class HShader* (*ConstructSerializedType)();
 		
 		HShaderTypeForDynamicCast ShaderTypeForDynamicCast;
 		uint32 HashIndex;
@@ -106,6 +56,19 @@ namespace lsgd {
 	public:
 		struct CompiledShaderInitializerType
 		{
+			// temporary
+			CompiledShaderInitializerType()
+				: Code(HArray<uint8>())
+				, ParameterMap(HShaderParameterMap())
+			{}
+
+			CompiledShaderInitializerType(
+				class HShaderType* InShaderType,
+				const class HShaderCompilerOutput& InOutput,
+				class HShaderResource* InResource,
+				class HShaderPipelineType* InShaderPipelineType,
+				class HVertexFactoryType* InVertexFactoryType);
+
 			HShaderType* Type;
 			HShaderTarget Target;
 			const HArray<uint8>& Code;
@@ -117,10 +80,12 @@ namespace lsgd {
 			class HVertexFactoryType* VertexFactoryType;
 		};
 
-		HShader();
+		HShader(const CompiledShaderInitializerType&);
 		virtual ~HShader();		
 
-		virtual void FinishCleanup();		
+		virtual void FinishCleanup();
+
+		virtual uint32 GetTypeSize() const { return sizeof(this); }
 
 		// to be used in HRefCountPtr
 		uint32 AddRef() const
@@ -194,12 +159,20 @@ namespace lsgd {
 	class HShaderMap
 	{
 	public:
+		HShaderMap(HShaderPlatform InPlatform)
+			: Platform(InPlatform)
+		{}
+
+		virtual ~HShaderMap() {}
+
 		// container for serialized shader pipeline stages to be registered on the game thread
 		struct HSerializedShaderPipeline
 		{
 			const class HShaderPipelineType* ShaderPipelineType;
 			HArray<HRefCountPtr<HShader>> ShaderStages;
 		};
+
+		void AddShader(class HShaderType* ShaderType, class HShader* InShader);
 
 		// list of serialized shaders to be processed and registered on the game thread
 		HArray<HShader*> SerializedShaders;
@@ -214,12 +187,49 @@ namespace lsgd {
 		HHashMap<HShaderType*, HRefCountPtr<HShader>> Shaders;
 		HHashMap<const class HShaderPipelineType*, class HShaderPipeline*> ShaderPipelines;
 	};
+
+	// encapsulate a dependency on shader type and saved state from that shader type
+	class HShaderTypeDependency
+	{
+	public:
+		// shader type
+		HShaderType* ShaderType;
+
+		// unique permutation identifier of the global shader type
+		int32 PermutationId;
+
+		// used to detect changes to the shader source files
+		// FSHAHash StageSourceHash;
+	};
+
+	class HShaderPipelineTypeDependency
+	{
+	public:
+		const class HShaderPipelineType* ShaderPipelineType;
+
+		// FSHAHash StageSourceHash;
+	};
+
+	// template class implementations
+
+	template <typename ShaderMetaType>
+	void HShaderMap<ShaderMetaType>::AddShader(HShaderType* ShaderType, HShader* InShader)
+	{
+		auto ResultIter = Shaders.find(ShaderType);
+		if (ResultIter == Shaders.end())
+		{
+			Shaders.insert({ ShaderType, InShader });
+		}
+	}
 }
+
+// hacky hacky... need to fix later @todo
+USE_HASH_OVERRIDE(lsgd::HShaderTypePermutation<const lsgd::HShaderType>)
 
 // a macro to declare a new shader type; this should be called in the class body of the new shader type
 #define DECLARE_EXPORTED_SHADER_TYPE(ShaderClass, ShaderMetaTypeShortcut) \
 	public: \
-		typedef lsgd::H##ShaderMetaTypeShortcut##ShaderClass ShaderMetaType; \
+		typedef lsgd::H##ShaderMetaTypeShortcut##ShaderType ShaderMetaType; \
 		static ShaderMetaType StaticType; \
 		static lsgd::HShader* ConstructSerializedInstance() { return new ShaderClass; } \
 		static lsgd::HShader* ConstructCompiledInstance(const ShaderMetaType::CompiledShaderInitializerType& Initializer) \
@@ -232,12 +242,12 @@ namespace lsgd {
 #define IMPLEMENT_SHADER_TYPE(TemplatePrefix, ShaderClass, SourceFilename, FunctionName, Frequency) \
 	TemplatePrefix \
 	lsgd::ShaderClass::ShaderMetaType lsgd::ShaderClass::StaticType( \
-		#SourceFilename, \
+		SourceFilename, \
 		FunctionName, \
 		Frequency, \
-		lsgd::ShaderClass::ConstructSerializedInstance, \
-		lsgd::ShaderClass::ConstructCompiledInstance, \
-		lsgd::ShaderClass::ModifyCompilationEnvironment, \
-		lsgd::ShaderClass::ShouldCache, \
+		&lsgd::ShaderClass::ConstructSerializedInstance, \
+		&lsgd::ShaderClass::ConstructCompiledInstance, \
+		&lsgd::ShaderClass::ShouldCache, \
+		&lsgd::ShaderClass::ModifyCompilationEnvironment \
 		);
 		
