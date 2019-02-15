@@ -187,6 +187,9 @@
     <ClInclude Include="HImGuiShaders.h">
       <Filter>Slate</Filter>
     </ClInclude>
+    <ClInclude Include="HUniformBufferStruct.h">
+      <Filter>RHI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -317,6 +320,7 @@
     <ClCompile Include="HRHICommon.cpp">
       <Filter>RHI</Filter>
     </ClCompile>
+    <ClCompile Include="HRHIShaderCommon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">

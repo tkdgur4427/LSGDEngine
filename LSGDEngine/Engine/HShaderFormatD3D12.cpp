@@ -244,7 +244,10 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 					ID3D11ShaderReflectionConstantBuffer* ConstantBuffer = Reflector->GetConstantBufferByIndex(CBIndex);
 					D3D11_SHADER_BUFFER_DESC CBDesc;
 					ConstantBuffer->GetDesc(&CBDesc);
-					bool bGlobalCB = HStringUtil::Strcmp(CBDesc.Name, "$Globals");
+					
+					// after implementing UB, uncomment it
+					bool bGlobalCB = true;
+					//bool bGlobalCB = HStringUtil::Strcmp(CBDesc.Name, "$Globals");
 
 					if (bGlobalCB)
 					{

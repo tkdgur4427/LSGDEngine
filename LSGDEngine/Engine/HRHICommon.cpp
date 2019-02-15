@@ -13,3 +13,8 @@ void HShaderParameterMap::AddParameterAllocation(const HString& InParameterName,
 
 	ParameterMap.insert({ InParameterName, NewParameter });
 }
+
+bool HRHICommonLibrary::IsUniformBufferResourceType(HUniformBufferBaseType BaseType)
+{
+	return BaseType == HUniformBufferBaseType::UBT_SRV || BaseType == HUniformBufferBaseType::UBT_UAV || BaseType == HUniformBufferBaseType::UBT_SAMPLER || BaseType == HUniformBufferBaseType::UBT_TEXTURE;
+}

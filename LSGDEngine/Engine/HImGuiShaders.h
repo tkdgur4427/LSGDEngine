@@ -19,6 +19,8 @@ namespace lsgd
 
 		static bool ShouldCache(HShaderPlatform InShaderPlatform);
 		static void ModifyCompilationEnvironment(HShaderPlatform InShaderPlatform, HShaderCompilerEnvironment& ShaderCompilerEnvironment);
+
+		
 	};
 
 	class HImGuiPixelShader : public HGlobalShader

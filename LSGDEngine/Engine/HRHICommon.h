@@ -56,6 +56,7 @@ namespace lsgd
 		UBT_FLOAT32,
 		UBT_STRUCT,
 		UBT_SRV,
+		UBT_UAV,
 		UBT_SAMPLER,
 		UBT_TEXTURE,
 		UBT_Num,
@@ -99,5 +100,11 @@ namespace lsgd
 			uint16 InBufferIndex, uint16 InBaseIndex, uint16 InSize);
 
 		HHashMap<HString, HParameterAllocation> ParameterMap;
+	};
+
+	class HRHICommonLibrary
+	{
+	public:
+		static bool IsUniformBufferResourceType(HUniformBufferBaseType BaseType);
 	};
 }
