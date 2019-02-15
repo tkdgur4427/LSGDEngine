@@ -214,6 +214,7 @@
     <ClCompile Include="HRenderResource.cpp" />
     <ClCompile Include="HRHICommon.cpp" />
     <ClCompile Include="HRHIResource.cpp" />
+    <ClCompile Include="HRHIShaderCommon.cpp" />
     <ClCompile Include="HSceneComponent.cpp" />
     <ClCompile Include="HShader.cpp" />
     <ClCompile Include="HShaderCompilerEnvironment.cpp" />

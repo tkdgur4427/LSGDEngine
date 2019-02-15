@@ -3,6 +3,8 @@
 
 #include "HShaderCompilingManager.h"
 
+#include "HD3D12ShaderCommon.h"
+
 using namespace lsgd;
 
 // function ptr declarations
@@ -378,7 +380,14 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 			}
 
 			// build the SRT for this shader
-			
+			HD3D12ShaderResourceTable SRT;
+			HArray<uint8> UniformBufferNameBytes;
+
+			{
+				// build the generic SRT for this shader
+				HShaderCompilerResourceTable GenericSRT;
+				
+			}
 		}
 	}
 }

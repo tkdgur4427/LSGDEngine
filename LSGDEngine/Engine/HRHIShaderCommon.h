@@ -29,4 +29,21 @@ namespace lsgd
 		uint8 NumCBs;
 		uint8 NumUAVs;
 	};
+
+	struct HShaderCompilerResourceTable
+	{
+		// bits indicating which resource tables contain resources bound to this shader
+		uint32 ResourceTableBits;
+
+		// the max index of a uniform buffer from which resource are bound
+		uint32 MaxBoundResourceTable;
+
+		// mapping of bound textures to their location in resource tables
+		HArray<uint32> TextureMap;
+
+		HArray<uint32> ShaderResourceViewMap;
+		HArray<uint32> SamplerMap;
+		HArray<uint32> UnorderedAccessViewMap;
+		HArray<uint32> ResourceTableLayoutHashes;
+	};
 }
