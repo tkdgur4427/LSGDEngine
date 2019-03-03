@@ -208,7 +208,10 @@ void HShaderCompilerUtil::VerifyGlobalShaders(HShaderPlatform Platform, bool bLo
 
 		if (!GShaderCompilerManager->bAllowAsynchronousShaderCompiles)
 		{
-			
+			HArray<uint32> ShaderMapIds;
+			ShaderMapIds.push_back(GlobalShaderMapId);
+
+			GShaderCompilerManager->FinishCompilation("Global", ShaderMapIds);
 		}
 	}
 }
