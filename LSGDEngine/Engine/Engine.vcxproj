@@ -78,7 +78,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HEnginePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath;../../ThirdParty/imgui</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,7 +129,8 @@
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
     <ClInclude Include="HGlobalShaderTypeCompiler.h" />
-    <ClInclude Include="HImGuiMisc.h" />
+    <ClInclude Include="HImGui.h" />
+    <ClInclude Include="HImGuiUtil.h" />
     <ClInclude Include="HImGuiShaders.h" />
     <ClInclude Include="HMaterialCommon.h" />
     <ClInclude Include="HPlatformDeviceMisc.h" />
@@ -211,7 +212,9 @@
     <ClCompile Include="HGlobalShader.cpp" />
     <ClCompile Include="HGlobalShaderTypeCompiler.cpp" />
     <ClCompile Include="HHUD.cpp" />
+    <ClCompile Include="HImGui.cpp" />
     <ClCompile Include="HImGuiShaders.cpp" />
+    <ClCompile Include="HImGuiUtil.cpp" />
     <ClCompile Include="HLevel.cpp" />
     <ClCompile Include="HLocalPlayer.cpp" />
     <ClCompile Include="HPawn.cpp" />

@@ -199,7 +199,10 @@
     <ClInclude Include="HImGuiShaders.h">
       <Filter>Slate\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="HImGuiMisc.h">
+    <ClInclude Include="HImGui.h">
+      <Filter>Slate\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="HImGuiUtil.h">
       <Filter>Slate\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
@@ -346,6 +349,12 @@
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="HImGuiShaders.cpp">
+      <Filter>Slate\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="HImGui.cpp">
+      <Filter>Slate\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="HImGuiUtil.cpp">
       <Filter>Slate\ImGui</Filter>
     </ClCompile>
   </ItemGroup>

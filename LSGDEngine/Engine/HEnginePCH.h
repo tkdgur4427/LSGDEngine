@@ -22,6 +22,8 @@
 
 #include "HMath.h"
 
+#include "HImGui.h"
+
 #include "HRenderingThread.h"
 
 #include "HRHICommon.h"
