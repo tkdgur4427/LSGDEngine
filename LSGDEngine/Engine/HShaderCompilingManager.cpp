@@ -63,6 +63,20 @@ void HShaderCompilingManager::AddJobs(HArray<HShaderCommonCompileJob*> NewJobs)
 		CompileQueue.push_back(Job);
 	}
 
+	HGenericPlatformAtomics::HInterlockedAdd(&NumOutstandingJobs, NewJobs.size());
+
+	for (int32 JobIndex = 0; JobIndex < NewJobs.size(); ++JobIndex)
+	{
+		auto FoundShaderMap = ShaderMapJobs.find(NewJobs[JobIndex]->Id);
+		if (FoundShaderMap == ShaderMapJobs.end())
+		{
+			ShaderMapJobs.insert({ NewJobs[JobIndex]->Id, HShaderMapCompileResults() });
+			FoundShaderMap = ShaderMapJobs.find(NewJobs[JobIndex]->Id);
+		}
+
+		FoundShaderMap->second.NumJobsQueued++;
+	}
+
 	// @todo processing pipeline job...
 }
 
@@ -123,11 +137,11 @@ void HShaderCompilingManager::ProcessCompiledShaderMaps(HHashMap<int32, HShaderM
 				{
 					delete CompilationResults[ResultIndex];
 				}
-
-				CompiledShaderMaps.erase(GlobalShaderMapId);
 			}
 		}
 	}
+
+	CompiledShaderMaps.clear();
 
 	//...
 }
@@ -139,6 +153,8 @@ void HShaderCompilingManager::BlockOnShaderCompletion(const HArray<uint32>& Shad
 		int32 NumPendingJobs = 0;
 		do
 		{
+			NumPendingJobs = 0;
+
 			// lock compile queue section so we can access the input and output queues
 			HScopedLock Lock(CompileQueueSyncObject);
 
@@ -152,8 +168,8 @@ void HShaderCompilingManager::BlockOnShaderCompletion(const HArray<uint32>& Shad
 
 					if (FinishedJobs == Result.NumJobsQueued)
 					{
-						CompiledShaderMaps.insert({ShaderIdsToFinishCompiling[ShaderMapId], HShaderMapFinalizeResults()});
-						ShaderMapJobs.erase(ShaderIdsToFinishCompiling[ShaderMapId]);
+						CompiledShaderMaps.insert({ ShaderMapId, HShaderMapFinalizeResults(Result) });
+						ShaderMapJobs.erase(ShaderMapId);
 					}
 					else
 					{
@@ -267,10 +283,30 @@ void HShaderCompileThreadRunnable::CompileDirectlyThroughDll()
 
 				HString WorkingDirectory("..//Shaders//");
 				HShaderCompilerUtil::ProcessCompilationJob(CompileJob->Input, CompileJob->Output, WorkingDirectory);
+				
+				CompileJob->bSuccessed = true;
 			}
 
 			CurrentWorkerInfo.bComplete = true;
 			CurrentWorkerInfo.bLaunchWorker = false;
+
+			if (CurrentWorkerInfo.bComplete)
+			{
+				for (auto& Job : CurrentWorkerInfo.QueuedJobs)
+				{
+					auto FoundShaderMapJob = Manager->ShaderMapJobs.find(Job->Id);
+					check(FoundShaderMapJob != Manager->ShaderMapJobs.end());
+
+					HShaderMapCompileResults& ShaderMapResults = FoundShaderMapJob->second;
+					ShaderMapResults.FinishedJobs.push_back(Job);
+					ShaderMapResults.bAllJobsSucceeded = ShaderMapResults.bAllJobsSucceeded && Job->bSuccessed;
+				}
+
+				HGenericPlatformAtomics::HInterlockedAdd(&Manager->NumOutstandingJobs, -(int32)CurrentWorkerInfo.QueuedJobs.size());
+
+				CurrentWorkerInfo.bComplete = false;
+				CurrentWorkerInfo.QueuedJobs.clear();
+			}			
 		}
 	}
 }

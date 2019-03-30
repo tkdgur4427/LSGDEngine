@@ -28,6 +28,6 @@ namespace lsgd
 	};
 }
 
-extern void BeginInitResource(shared_ptr<HRenderResource>& Resource);
-extern void BeginUpdateResourceRHI(shared_ptr<HRenderResource>& Resource);
-extern void BeginReleaseResource(shared_ptr<HRenderResource>& Resource);
+extern void BeginInitResource(shared_ptr<HRenderResource> Resource);
+extern void BeginUpdateResourceRHI(shared_ptr<HRenderResource> Resource);
+extern void BeginReleaseResource(shared_ptr<HRenderResource> Resource);

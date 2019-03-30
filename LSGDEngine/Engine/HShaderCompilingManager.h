@@ -149,6 +149,11 @@ namespace lsgd
 	// results for a single compiled and finalized shader map
 	struct HShaderMapFinalizeResults : public HShaderMapCompileResults
 	{
+		HShaderMapFinalizeResults(const HShaderMapCompileResults& InCompileResults)
+			: HShaderMapCompileResults(InCompileResults)
+			, FinalizeJobIndex(0)
+		{}
+
 		// tracks finalization progress on this shader map
 		int32 FinalizeJobIndex;
 

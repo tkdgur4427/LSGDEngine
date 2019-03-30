@@ -53,6 +53,11 @@ void HShaderResource::CompressCode(const HArray<uint8>& UncompressedCode)
 	Code = UncompressedCode;
 }
 
+void HShaderResource::UncompressCode(HArray<uint8>& UncompressCode)
+{
+	UncompressCode = Code;
+}
+
 HShaderResource* HShaderResource::FindShaderResourceById(const HShaderResourceId& Id)
 {
 	auto ResultIter = ShaderResourceIdMap.find(Id);
@@ -77,4 +82,21 @@ HShaderResource* HShaderResource::FindOrCreateShaderResource(const HShaderCompil
 		//check(Resource->Canary == HShader::ShaderMagic_Initialized);
 	}
 	return Resource;
+}
+
+void HShaderResource::InitRHI()
+{
+	//...
+
+	HArray<uint8> UncompressedCode;
+	UncompressCode(UncompressedCode);
+
+	if (ShaderTarget.Frequency == SF_Vertex)
+	{
+		//
+	}
+	else if (ShaderTarget.Frequency == SF_Pixel)
+	{
+		//...
+	}
 }

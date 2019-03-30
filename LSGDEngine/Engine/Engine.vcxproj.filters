@@ -190,13 +190,19 @@
     <ClInclude Include="HUniformBufferStruct.h">
       <Filter>RHI</Filter>
     </ClInclude>
+    <ClInclude Include="HWindowFrame.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="HWindowFrameWindows.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="HPlatformDeviceMisc.h">
+      <Filter>Platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
     <ClCompile Include="HEngineLoop.cpp" />
-    <ClCompile Include="HWindowsLaunch.cpp">
-      <Filter>Platform</Filter>
-    </ClCompile>
     <ClCompile Include="HWorld.cpp">
       <Filter>World</Filter>
     </ClCompile>
@@ -321,6 +327,24 @@
       <Filter>RHI</Filter>
     </ClCompile>
     <ClCompile Include="HRHIShaderCommon.cpp" />
+    <ClCompile Include="HDynamicRHI.cpp">
+      <Filter>RHI</Filter>
+    </ClCompile>
+    <ClCompile Include="HDynamicRHIDirectX12.cpp">
+      <Filter>RHI\Platform\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="HWindowsLaunch.cpp">
+      <Filter>Platform\Launch</Filter>
+    </ClCompile>
+    <ClCompile Include="HEditorEngine.cpp">
+      <Filter>EngineInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="HWindowFrameWindows.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="HPlatformDeviceMisc.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
@@ -373,6 +397,12 @@
     </Filter>
     <Filter Include="Slate">
       <UniqueIdentifier>{9a988924-a2d9-422e-b9cc-95215df8cc01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Windows">
+      <UniqueIdentifier>{68157715-0313-4ddf-acfb-cb78e8e26174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Launch">
+      <UniqueIdentifier>{4b67c52d-9477-41e0-bb4c-51730061617d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

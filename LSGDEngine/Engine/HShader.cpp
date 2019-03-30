@@ -20,6 +20,9 @@ HShaderType::HShaderType(HShaderTypeForDynamicCast InShaderTypeForDynamicCast, c
 	, FunctionName(InFunctionName)
 	, Frequency(InFrequency)
 {
+	//@todo - temporary setting name as combination with source file and function name
+	Name = (SourceFilename + FunctionName);
+
 	AddToGlobalList(this);
 }
 
@@ -74,8 +77,13 @@ lsgd::HShader::CompiledShaderInitializerType::CompiledShaderInitializerType(
 
 }
 
-HShader::HShader(const CompiledShaderInitializerType&)
+HShader::HShader(const CompiledShaderInitializerType& InInitializer)
 	: NumRefs(0)
+	, SerializedResource(InInitializer.Resource)
+	, Resource(InInitializer.Resource)
+	, Type(InInitializer.Type)
+	, Target(InInitializer.Target)
+	, Canary(ShaderMagic_Uninitialized)
 {
 
 }
@@ -88,4 +96,9 @@ HShader::~HShader()
 void HShader::FinishCleanup()
 {
 
+}
+
+void HShader::BeginInitializeResource()
+{
+	BeginInitResource(Resource);
 }

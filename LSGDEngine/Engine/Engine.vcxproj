@@ -131,6 +131,7 @@
     <ClInclude Include="HGlobalShaderTypeCompiler.h" />
     <ClInclude Include="HImGuiShaders.h" />
     <ClInclude Include="HMaterialCommon.h" />
+    <ClInclude Include="HPlatformDeviceMisc.h" />
     <ClInclude Include="HRefCountPtr.h" />
     <ClInclude Include="HRHICommon.h" />
     <ClInclude Include="HRHIResource.h" />
@@ -182,6 +183,8 @@
     <ClInclude Include="HMath.h" />
     <ClInclude Include="HUniformBufferStruct.h" />
     <ClInclude Include="HVertexFactory.h" />
+    <ClInclude Include="HWindowFrame.h" />
+    <ClInclude Include="HWindowFrameWindows.h" />
     <ClInclude Include="HWorld.h" />
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +197,11 @@
     <ClCompile Include="HController.cpp" />
     <ClCompile Include="HDeferredCleanupInterface.cpp" />
     <ClCompile Include="HDXMath.cpp" />
+    <ClCompile Include="HDynamicRHI.cpp" />
+    <ClCompile Include="HDynamicRHIDirectX12.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="HEditorEngine.cpp" />
     <ClCompile Include="HEngineLoop.cpp" />
     <ClCompile Include="HEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -206,6 +214,7 @@
     <ClCompile Include="HLevel.cpp" />
     <ClCompile Include="HLocalPlayer.cpp" />
     <ClCompile Include="HPawn.cpp" />
+    <ClCompile Include="HPlatformDeviceMisc.cpp" />
     <ClCompile Include="HPlayer.cpp" />
     <ClCompile Include="HPlayerCameraManager.cpp" />
     <ClCompile Include="HPlayerController.cpp" />
@@ -230,6 +239,7 @@
     <ClCompile Include="HTickTaskManager.cpp" />
     <ClCompile Include="HTickTaskSequencer.cpp" />
     <ClCompile Include="HVertexFactory.cpp" />
+    <ClCompile Include="HWindowFrameWindows.cpp" />
     <ClCompile Include="HWindowsLaunch.cpp" />
     <ClCompile Include="HWorld.cpp" />
   </ItemGroup>

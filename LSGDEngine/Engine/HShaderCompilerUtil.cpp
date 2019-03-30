@@ -236,6 +236,15 @@ void HShaderCompilerUtil::CompileGlobalShaderMap(HShaderPlatform Platform, bool 
 
 		// if any shaders weren't loaded, compile them now
 		VerifyGlobalShaders(Platform, bLoadedFromCacheFile);
+
+		for (auto& Pair : GGlobalShaderMap[Platform]->GetShaders())
+		{
+			HShader* Shader = Pair.second;
+			if (Shader != nullptr)
+			{
+				Shader->BeginInitializeResource();
+			}
+		}
 	}
 }
 

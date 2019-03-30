@@ -60,6 +60,7 @@ namespace lsgd {
 		HShaderResourceId GetId() const;
 
 		void CompressCode(const HArray<uint8>& UncompressedCode);
+		void UncompressCode(HArray<uint8>& UncompressCode);
 
 		// to be used in HRefCountPtr
 		uint32 AddRef() const
@@ -82,6 +83,7 @@ namespace lsgd {
 			return uint32(NumRefs);
 		}
 
+		virtual void InitRHI() override;
 		virtual void FinishCleanup() override {}
 
 		static HShaderResource* FindShaderResourceById(const HShaderResourceId& Id);

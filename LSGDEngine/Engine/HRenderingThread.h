@@ -66,10 +66,13 @@ void EnqueueUniqueRenderCommand(LambdaType&& InLambda)
 		lsgd::async::HGraphTask<EURC_##TypeName>::CreateTask(Tasks, true, "RenderingThread").ConstructAndDispatchWhenReady(); \
 	}
 
-#define ENQUEUE_UNIQUE_RENDER_COMMAND_ONE_PARAMETER(TypeName, ParamType1, ParamName1, Code) \
+#define ENQUEUE_UNIQUE_RENDER_COMMAND_ONE_PARAMETER(TypeName, ParamType1, ParamName1, ValueName1, Code) \
 	class EURC_##TypeName : public lsgd::HRenderCommand \
 	{ \
 	public:	\
+		EURC_##TypeName(ParamType1 _ParamName1) \
+			: ParamName1(_ParamName1) \
+		{} \
 		TASKNAME_FUNCTION(TypeName) \
 		TASK_FUNCTION(Code) \
 		ParamType1 ParamName1; \
@@ -77,5 +80,5 @@ void EnqueueUniqueRenderCommand(LambdaType&& InLambda)
 	{ \
 		/*log the command @todo*/ \
 		HArray<shared_ptr<lsgd::async::HGraphEvent>> Tasks; \
-		lsgd::async::HGraphTask<EURC_##TypeName>::CreateTask(Tasks, true, "RenderingThread").ConstructAndDispatchWhenReady(); \
+		lsgd::async::HGraphTask<EURC_##TypeName>::CreateTask(Tasks, true, "RenderingThread").ConstructAndDispatchWhenReady(ValueName1); \
 	}

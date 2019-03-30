@@ -108,6 +108,8 @@ namespace lsgd {
 			return uint32(NumRefs);
 		}
 
+		void BeginInitializeResource();
+
 		// indexed the same as UniformBufferParameter; packed densely for coherent traversal
 		// TArray<FUniformBufferStruct*> UniformBufferParameterStructs;
 		// TArray<FShaderUniformBufferParameter*> UniformBufferParameters;
@@ -119,7 +121,7 @@ namespace lsgd {
 		HShaderResource* SerializedResource;
 
 		// reference to the shader resource, which stores the compiled bytecode and the RHI shader resource
-		HRefCountPtr<HShaderResource> Resource;
+		shared_ptr<HRenderResource> Resource;
 
 		// hash of the material shader map this shader belongs to, stored so that an FShaderId can be constructed from this shader
 		// FSHAHash MaterialShaderMapHash;
@@ -173,6 +175,7 @@ namespace lsgd {
 		};
 
 		void AddShader(class HShaderType* ShaderType, class HShader* InShader);
+		HHashMap<HShaderType*, HRefCountPtr<HShader>>& GetShaders();
 
 		// list of serialized shaders to be processed and registered on the game thread
 		HArray<HShader*> SerializedShaders;
@@ -220,6 +223,12 @@ namespace lsgd {
 		{
 			Shaders.insert({ ShaderType, InShader });
 		}
+	}
+
+	template <typename ShaderMetaType>
+	HHashMap<HShaderType*, HRefCountPtr<HShader>>& HShaderMap<ShaderMetaType>::GetShaders()
+	{
+		return Shaders;
 	}
 }
 

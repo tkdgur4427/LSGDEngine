@@ -2,6 +2,7 @@
 #include "HBaseEngine.h"
 
 #include "HGameInstance.h"
+#include "HDynamicRHI.h"
 
 using namespace lsgd;
 
@@ -11,6 +12,14 @@ void HBaseEngine::Initialize()
 	GameInstance = HObjectHandleUnique<HGameInstance>(AllocateHObject(HGameInstance::GetClassName()));
 	// add it to the root set
 	GameInstance.SetRoot();
+
+	// create window frame
+	WindowFrame = HPlatformDeviceMisc::CreateWindowFrame();
+	WindowFrame->CreateWindowFrame();
+
+	// create RenderDevice
+	GDynamicRHI = make_unique<lsgd::HDynamicRHI>();
+	GDynamicRHI->CreateDevice(*WindowFrame);
 }
 
 void HBaseEngine::Destroy()

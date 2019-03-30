@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HPlatformDeviceMisc.h"
+
 namespace lsgd {
 
 	class HBaseEngine
@@ -14,6 +16,9 @@ namespace lsgd {
 
 		// game instance
 		HObjectHandleUnique<class HGameInstance> GameInstance;
+
+		// window frame
+		unique_ptr<HWindowFrame> WindowFrame;
 	};
 
 }

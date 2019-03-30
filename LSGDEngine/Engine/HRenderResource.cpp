@@ -62,26 +62,26 @@ void HRenderResource::UpdateRHI()
 	}
 }
 
-void BeginInitResource(shared_ptr<HRenderResource>& Resource)
+void BeginInitResource(shared_ptr<HRenderResource> Resource)
 {
-	ENQUEUE_UNIQUE_RENDER_COMMAND_ONE_PARAMETER(InitCommand, HRenderResource*, Resource, 
+	ENQUEUE_UNIQUE_RENDER_COMMAND_ONE_PARAMETER(InitCommand, shared_ptr<HRenderResource>, ResourceParameter, Resource,
 		{
-			Resource->InitResource();
+			ResourceParameter->InitResource();
 		});
 }
 
-void BeginUpdateResourceRHI(shared_ptr<HRenderResource>& Resource)
+void BeginUpdateResourceRHI(shared_ptr<HRenderResource> Resource)
 {
-	ENQUEUE_UNIQUE_RENDER_COMMAND_ONE_PARAMETER(UpdateCommand, HRenderResource*, Resource,
+	ENQUEUE_UNIQUE_RENDER_COMMAND_ONE_PARAMETER(UpdateCommand, shared_ptr<HRenderResource>, ResourceParameter, Resource,
 		{
-			Resource->UpdateRHI();
+			ResourceParameter->UpdateRHI();
 		});
 }
 
-void BeginReleaseResource(shared_ptr<HRenderResource>& Resource)
+void BeginReleaseResource(shared_ptr<HRenderResource> Resource)
 {
-	ENQUEUE_UNIQUE_RENDER_COMMAND_ONE_PARAMETER(ReleaseCommand, HRenderResource*, Resource,
+	ENQUEUE_UNIQUE_RENDER_COMMAND_ONE_PARAMETER(ReleaseCommand, shared_ptr<HRenderResource>, ResourceParameter, Resource,
 		{
-			Resource->ReleaseResource();
+			ResourceParameter->ReleaseResource();
 		});
 }
