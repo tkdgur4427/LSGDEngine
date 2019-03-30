@@ -129,6 +129,7 @@
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
     <ClInclude Include="HGlobalShaderTypeCompiler.h" />
+    <ClInclude Include="HImGuiMisc.h" />
     <ClInclude Include="HImGuiShaders.h" />
     <ClInclude Include="HMaterialCommon.h" />
     <ClInclude Include="HPlatformDeviceMisc.h" />

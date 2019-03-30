@@ -184,9 +184,6 @@
     <ClInclude Include="HShaderFormatD3D12.h">
       <Filter>RHI\ShaderCompiler\Platform\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="HImGuiShaders.h">
-      <Filter>Slate</Filter>
-    </ClInclude>
     <ClInclude Include="HUniformBufferStruct.h">
       <Filter>RHI</Filter>
     </ClInclude>
@@ -198,6 +195,12 @@
     </ClInclude>
     <ClInclude Include="HPlatformDeviceMisc.h">
       <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="HImGuiShaders.h">
+      <Filter>Slate\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="HImGuiMisc.h">
+      <Filter>Slate\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -320,9 +323,6 @@
     <ClCompile Include="HShaderFormat.cpp">
       <Filter>RHI\ShaderCompiler\Platform</Filter>
     </ClCompile>
-    <ClCompile Include="HImGuiShaders.cpp">
-      <Filter>Slate</Filter>
-    </ClCompile>
     <ClCompile Include="HRHICommon.cpp">
       <Filter>RHI</Filter>
     </ClCompile>
@@ -344,6 +344,9 @@
     </ClCompile>
     <ClCompile Include="HPlatformDeviceMisc.cpp">
       <Filter>Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="HImGuiShaders.cpp">
+      <Filter>Slate\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +406,9 @@
     </Filter>
     <Filter Include="Platform\Launch">
       <UniqueIdentifier>{4b67c52d-9477-41e0-bb4c-51730061617d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Slate\ImGui">
+      <UniqueIdentifier>{036a9aae-bdc6-4964-888a-e6bb6538f839}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
