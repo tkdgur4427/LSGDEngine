@@ -115,6 +115,9 @@ void HEngineLoop::Loop()
 		HArray<shared_ptr<HGraphEvent>> Prerequisites;
 		Prerequisites.push_back(InitializeEvent);
 		shared_ptr<HGraphEvent> GraphEvent = HGraphTask<HEngineLoopTickTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndDispatchWhenReady(*this);
+		
+		Prerequisites.clear();
+		Prerequisites.push_back(GraphEvent);
 
 		// wait until complete the task 'HEngineLoopTickTask'		
 		TaskGraph->WaitUntilTasksComplete(Prerequisites, true, "MainThread");
