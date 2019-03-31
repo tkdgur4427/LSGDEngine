@@ -19,6 +19,7 @@ namespace lsgd {
 
 		// window frame
 		unique_ptr<HWindowFrame> WindowFrame;
+		bool bWindowFrameMessageUpdated;
 	};
 
 }

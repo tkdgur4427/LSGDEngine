@@ -18,6 +18,8 @@ namespace lsgd
 			return Handle;
 		}
 
+		virtual bool UpdateMessage() override;
+
 	protected:
 		HWND Handle;
 		WNDCLASSEX WindowClass;

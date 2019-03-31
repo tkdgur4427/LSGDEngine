@@ -16,6 +16,7 @@ void HBaseEngine::Initialize()
 	// create window frame
 	WindowFrame = HPlatformDeviceMisc::CreateWindowFrame();
 	WindowFrame->CreateWindowFrame();
+	bWindowFrameMessageUpdated = false;
 
 	// create RenderDevice
 	GDynamicRHI = make_unique<lsgd::HDynamicRHI>();
@@ -32,4 +33,7 @@ void HBaseEngine::Tick(float DeltaTime)
 {
 	// ticking game instance
 	GameInstance->Tick(DeltaTime);
+
+	// update message
+	bWindowFrameMessageUpdated = WindowFrame->UpdateMessage();
 }

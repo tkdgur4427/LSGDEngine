@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HBaseEngine.h"
+#include "HImGuiPlatform.h"
 
 namespace lsgd {
 
@@ -14,6 +15,8 @@ namespace lsgd {
 		virtual void Initialize() override;
 		virtual void Destroy() override;
 		virtual void Tick(float DeltaTime) override;
+
+		unique_ptr<HImGuiPlatform> ImGuiPlatform;
 	};
 
 }

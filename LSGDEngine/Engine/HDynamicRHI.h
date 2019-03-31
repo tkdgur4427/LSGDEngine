@@ -10,6 +10,14 @@ namespace lsgd
 		HDynamicRHI() {}
 		~HDynamicRHI() {}
 
+		void RenderBegin();
+		void RenderEnd();
+		void* GetCommandList();
+		uint32 GetFrameIndex() const;
+
+		void* GetDevice();
+		void* GetSrvDescriptionHeap();
+
 		bool CreateDevice(const HWindowFrame& InWindowFrame);
 		void CleanupDevice();
 
@@ -23,3 +31,6 @@ namespace lsgd
 }
 
 extern unique_ptr<lsgd::HDynamicRHI> GDynamicRHI;
+
+#define SAFE_RELEASE(Resource) \
+	if (Resource) { Resource->Release(); Resource = nullptr; }

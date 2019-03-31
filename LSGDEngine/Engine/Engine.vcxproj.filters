@@ -202,8 +202,20 @@
     <ClInclude Include="HImGui.h">
       <Filter>Slate\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="HImGuiUtil.h">
-      <Filter>Slate\ImGui</Filter>
+    <ClInclude Include="HImGuiPlatform.h">
+      <Filter>Slate\ImGui\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="HImGuiDevice.h">
+      <Filter>Slate\ImGui\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="HImGuiDeviceWindows.h">
+      <Filter>Slate\ImGui\Device\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="HImGuiRenderDevice.h">
+      <Filter>Slate\ImGui\RenderDevice</Filter>
+    </ClInclude>
+    <ClInclude Include="HImGuiRenderDeviceDirectX12.h">
+      <Filter>Slate\ImGui\RenderDevice\DirectX12</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -354,8 +366,20 @@
     <ClCompile Include="HImGui.cpp">
       <Filter>Slate\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="HImGuiUtil.cpp">
-      <Filter>Slate\ImGui</Filter>
+    <ClCompile Include="HImGuiPlatform.cpp">
+      <Filter>Slate\ImGui\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="HImGuiDevice.cpp">
+      <Filter>Slate\ImGui\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="HImGuiDeviceWindows.cpp">
+      <Filter>Slate\ImGui\Device\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="HImGuiRenderDevice.cpp">
+      <Filter>Slate\ImGui\RenderDevice</Filter>
+    </ClCompile>
+    <ClCompile Include="HImGuiRenderDeviceDirectX12.cpp">
+      <Filter>Slate\ImGui\RenderDevice\DirectX12</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -418,6 +442,21 @@
     </Filter>
     <Filter Include="Slate\ImGui">
       <UniqueIdentifier>{036a9aae-bdc6-4964-888a-e6bb6538f839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Slate\ImGui\Device">
+      <UniqueIdentifier>{341e2322-b403-485f-b2ad-5d136db970bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Slate\ImGui\Device\Windows">
+      <UniqueIdentifier>{2d64b0f7-1e7a-42e6-9b06-3af002376b9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Slate\ImGui\Platform">
+      <UniqueIdentifier>{09d447a9-15d4-4013-8c59-0a0e67c9aa46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Slate\ImGui\RenderDevice">
+      <UniqueIdentifier>{d060d78c-e0a3-4a68-b380-155e3077f452}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Slate\ImGui\RenderDevice\DirectX12">
+      <UniqueIdentifier>{2e92dafb-4b7b-465e-a1ac-e0a908364231}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

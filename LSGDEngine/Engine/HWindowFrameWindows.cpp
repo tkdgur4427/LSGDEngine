@@ -35,3 +35,18 @@ void HWindowFrameWindows::ShowWindowFrame()
 	ShowWindow(Handle, SW_SHOWDEFAULT);
 	UpdateWindow(Handle);
 }
+
+bool HWindowFrameWindows::UpdateMessage()
+{
+	MSG Message;
+	ZeroMemory(&Message, sizeof(MSG));
+
+	if (PeekMessage(&Message, nullptr, 0U, 0U, PM_REMOVE))
+	{
+		TranslateMessage(&Message);
+		DispatchMessage(&Message);
+		return true;
+	}
+
+	return false;
+}

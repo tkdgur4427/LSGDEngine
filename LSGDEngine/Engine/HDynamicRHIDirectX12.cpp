@@ -5,8 +5,6 @@ using namespace lsgd;
 
 // @todo - just temporary! need to refactoring when I try to follow UE4 design
 //{
-#define SAFE_RELEASE(Resource) \
-	if (Resource) { Resource->Release(); Resource = nullptr; }
 
 #define NUM_FRAMES_IN_FLIGHT 3
 struct HFrameContext
@@ -15,6 +13,7 @@ struct HFrameContext
 	uint64 FenceValue;
 };
 HFrameContext D3D12FrameContexts[NUM_FRAMES_IN_FLIGHT] = {};
+HFrameContext* CurrentFrameContext = nullptr;
 uint32 FrameIndex = 0;
 
 #define NUM_BACK_BUFFERS 3
@@ -35,9 +34,46 @@ static HANDLE D3D12FenceEvent = nullptr;
 static IDXGISwapChain3* D3D12SwapChain = nullptr;
 static HANDLE D3D12SwapChainWaitableObject = nullptr;
 
+static uint64 D3D12FenceLastSignaledValue = 0;
+
 unique_ptr<lsgd::HDynamicRHI> GDynamicRHI;
 
+HFrameContext* WaitForNextFrameResources()
+{
+	uint32 NextFrameIndex = FrameIndex + 1;
+	FrameIndex = NextFrameIndex;
+
+	HANDLE WaitableObjects[] = { D3D12SwapChainWaitableObject, nullptr };
+	int32 NumWaitableObjects = 1;
+
+	HFrameContext& FrameContext = D3D12FrameContexts[NextFrameIndex % NUM_FRAMES_IN_FLIGHT];
+	uint64 FenceValue = FrameContext.FenceValue;
+	if (FenceValue != 0) // means no fence was signaled
+	{
+		FrameContext.FenceValue = 0;
+		D3D12Fence->SetEventOnCompletion(FenceValue, D3D12FenceEvent);
+		WaitableObjects[1] = D3D12FenceEvent;
+		NumWaitableObjects = 2;
+	}
+
+	WaitForMultipleObjects(NumWaitableObjects, WaitableObjects, true, INFINITE);
+
+	return &FrameContext;
+}
+
 //}
+
+void* HDynamicRHI::GetDevice()
+{
+	check(D3D12Device);
+	return (void*)D3D12Device;
+}
+
+void* HDynamicRHI::GetSrvDescriptionHeap()
+{
+	check(D3D12SrvDescriptorHeap);
+	return (void*)D3D12SrvDescriptorHeap;
+}
 
 bool HDynamicRHI::CreateDevice(const HWindowFrame& InWindowFrame)
 {
@@ -215,6 +251,70 @@ void HDynamicRHI::CleanupDevice()
 		CloseHandle(D3D12FenceEvent);
 		D3D12FenceEvent = nullptr;
 	}
+}
+
+void HDynamicRHI::RenderBegin()
+{
+	ImVec4 ClearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	HFrameContext* FrameContext = WaitForNextFrameResources();
+	
+	check(CurrentFrameContext == nullptr);
+	CurrentFrameContext = FrameContext;
+
+	uint32 BackBufferIndex = D3D12SwapChain->GetCurrentBackBufferIndex();
+	FrameContext->CommandAllocator->Reset();
+
+	D3D12_RESOURCE_BARRIER Barrier = {};
+	Barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	Barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	Barrier.Transition.pResource = D3D12MainRenderTargetResource[BackBufferIndex];
+	Barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	Barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	Barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+	D3D12CommandList->Reset(FrameContext->CommandAllocator, nullptr);
+	D3D12CommandList->ResourceBarrier(1, &Barrier);
+	D3D12CommandList->ClearRenderTargetView(D3D12MainRenderTargetDescriptors[BackBufferIndex], (float*)&ClearColor, 0, nullptr);
+	D3D12CommandList->OMSetRenderTargets(1, &D3D12MainRenderTargetDescriptors[BackBufferIndex], false, nullptr);
+	D3D12CommandList->SetDescriptorHeaps(1, &D3D12SrvDescriptorHeap);
+}
+
+void HDynamicRHI::RenderEnd()
+{
+	uint32 BackBufferIndex = D3D12SwapChain->GetCurrentBackBufferIndex();
+
+	D3D12_RESOURCE_BARRIER Barrier = {};
+	Barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	Barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	Barrier.Transition.pResource = D3D12MainRenderTargetResource[BackBufferIndex];
+	Barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	Barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	Barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+
+	D3D12CommandList->ResourceBarrier(1, &Barrier);
+
+	D3D12CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&D3D12CommandList);
+
+	D3D12SwapChain->Present(1, 0);
+
+	UINT64 FenceValue = D3D12FenceLastSignaledValue + 1;
+	D3D12CommandQueue->Signal(D3D12Fence, FenceValue);
+	D3D12FenceLastSignaledValue = FenceValue;
+
+	check(CurrentFrameContext);
+	CurrentFrameContext->FenceValue = FenceValue;
+	CurrentFrameContext = nullptr;
+}
+
+void* HDynamicRHI::GetCommandList()
+{
+	return D3D12CommandList;
+}
+
+uint32 HDynamicRHI::GetFrameIndex() const
+{
+	return FrameIndex;
 }
 
 void HDynamicRHI::CreateVertexShader(const HArray<uint8>& InCode)
