@@ -45,6 +45,16 @@ public:
 	shared_ptr<HEvent> Event;
 };
 
+void HTaskGraph1::DispatchAndWaitUntilTaskComplete(shared_ptr<HBaseGraphTask>& Task, bool InbNamedThread, const HString& NamedThreadName)
+{
+	HScopedEvent Event;
+	HArray<shared_ptr<HGraphEvent>> Tasks;
+	Tasks.push_back(Task->GetCompletionEvent());
+	
+	HGraphTask<FTriggerEventGraphTasks>::CreateTask(Tasks, InbNamedThread, NamedThreadName).ConstructAndHold(Event.Get());
+	Task->Unlock();
+}
+
 void HTaskGraph1::WaitUntilTasksComplete(HArray<shared_ptr<HGraphEvent>>& Tasks, bool InbNamedThread, const HString& NamedThreadName)
 {
 	HScopedEvent Event;		

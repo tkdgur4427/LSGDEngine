@@ -212,6 +212,9 @@ HNamedTaskThread::~HNamedTaskThread()
 
 void HNamedTaskThread::EnqueueGraphTaskToOwnQueue(shared_ptr<HBaseGraphTask> InTask)
 {
+#if SGD_BASEGRAPHTASK_DEBUG
+	check(InTask->bExecuted == false);
+#endif
 	Tasks.Push(InTask);
 }
 
@@ -221,19 +224,27 @@ void HNamedTaskThread::Run()
 	{
 		// get the graph task (its own task from its own tasks)
 		shared_ptr<HBaseGraphTask> NewTask;
-		Tasks.TryPop(&NewTask);
 
-		// @todo ; if new task is nullptr, get job stealing from common tasks queue for task threads
-
-		if (NewTask == nullptr)
+		if (!Tasks.TryPop(&NewTask))
 		{
+			// @todo ; if new task is nullptr, get job stealing from common tasks queue for task threads
+
 			// if there is no available task, make it stalled (2ms)
 			HGenericPlatformMisc::Sleep(0.002);
+
+			continue;
 		}
-		else
+
 		{
 			// execute the task
+#if SGD_BASEGRAPHTASK_DEBUG
+			check(NewTask->bExecuted == false);
+#endif
 			NewTask->Execute();
+
+#if SGD_BASEGRAPHTASK_DEBUG
+			check(NewTask->bExecuted == true);
+#endif
 		}
 	}
 }

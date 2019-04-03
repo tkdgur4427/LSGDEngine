@@ -26,7 +26,7 @@ namespace lsgd { namespace container {
 		{
 			HScopedLock Lock(SyncObject);
 
-			Type Result = Queue.back();
+			Type Result = Queue.front();
 			Queue.pop();
 
 			return Result;

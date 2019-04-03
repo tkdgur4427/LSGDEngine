@@ -3,12 +3,14 @@
 namespace lsgd { namespace async {
 
 	class HGraphEvent;
+	class HBaseGraphTask;
 
 	class HTaskGraphInterface
 	{
 	public:
 		virtual void Initialize() = 0;
 		virtual void Destroy() = 0;
+		virtual void DispatchAndWaitUntilTaskComplete(shared_ptr<HBaseGraphTask>& Task, bool InbNamedThread = false, const HString& NamedThreadName = "") = 0;
 		virtual void WaitUntilTaskComplete(shared_ptr<HGraphEvent>& Task, bool InbNamedThread = false, const HString& NamedThreadName = "") = 0;
 		virtual void WaitUntilTasksComplete(HArray<shared_ptr<HGraphEvent>>& Tasks, bool InbNamedThread = false, const HString& NamedThreadName = "") = 0;		
 	};
@@ -21,6 +23,8 @@ namespace lsgd { namespace async {
 	public:
 		void Initialize();
 		void Destroy();
+
+		void DispatchAndWaitUntilTaskComplete(shared_ptr<HBaseGraphTask>& Task, bool InbNamedThread = false, const HString& NamedThreadName = "");
 
 		void WaitUntilTaskComplete(shared_ptr<HGraphEvent>& Task, bool InbNamedThread = false, const HString& NamedThreadName = "");
 		void WaitUntilTasksComplete(HArray<shared_ptr<HGraphEvent>>& Tasks, bool InbNamedThread = false, const HString& NamedThreadName = "");

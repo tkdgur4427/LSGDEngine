@@ -3,6 +3,8 @@
 using namespace lsgd::thread;
 using namespace lsgd::container;
 
+#define SGD_BASEGRAPHTASK_DEBUG 1
+
 namespace lsgd { namespace async {
 
 	class HGraphEvent;
@@ -16,6 +18,9 @@ namespace lsgd { namespace async {
 	public:
 		HBaseGraphTask(uint32 InNumberOfPrerequisities)
 			: NumberOfPrerequisitiesOutstanding(InNumberOfPrerequisities)
+#if SGD_BASEGRAPHTASK_DEBUG
+			, bExecuted(false)
+#endif
 		{}
 
 		virtual ~HBaseGraphTask() {}
@@ -36,6 +41,10 @@ namespace lsgd { namespace async {
 		// queuing task to different queue
 		bool bNamedThread;
 		HString NamedThreadName;
+
+#if SGD_BASEGRAPHTASK_DEBUG
+		volatile bool bExecuted;
+#endif
 	};
 
 	class HGraphEvent
@@ -48,6 +57,7 @@ namespace lsgd { namespace async {
 
 		// methods
 		bool AddSubsequent(shared_ptr<HBaseGraphTask> InSubsequent);
+		void DispatchSubsequent();
 
 		HClosableConcurrentQueue<shared_ptr<HBaseGraphTask>> SubsequentList;
 		HArray<shared_ptr<HGraphEvent>> EventsToWaitFor;
@@ -137,7 +147,7 @@ namespace lsgd { namespace async {
 
 		shared_ptr<HGraphEvent> Subsequents;
 		uint8 TaskStorage[TaskSize];
-		bool bTaskCounstructed;
+		volatile bool bTaskCounstructed;
 
 		// make it only allow to create by CreateTask static method
 		HGraphTask(shared_ptr<HGraphEvent>& InSubsequents, uint32 InNumberOfPrerequisities);
@@ -163,11 +173,18 @@ namespace lsgd { namespace async {
 	{
 		check(bTaskCounstructed == true);
 		((TaskType*)(&TaskStorage))->Execute();
+		bTaskCounstructed = false;
+		Subsequents->DispatchSubsequent();
+
+#if SGD_BASEGRAPHTASK_DEBUG
+		bExecuted = true;
+#endif
 	}
 
 	template <typename TaskType>
 	void HGraphTask<TaskType>::Unlock()
 	{
+		check(bTaskCounstructed);
 		ConditionalQueueTask();
 	}
 

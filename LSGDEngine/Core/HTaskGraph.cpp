@@ -28,6 +28,22 @@ bool HGraphEvent::AddSubsequent(shared_ptr<HBaseGraphTask> InSubsequent)
 	return SubsequentList.Push(InSubsequent);
 }
 
+void HGraphEvent::DispatchSubsequent()
+{
+	// pop all the subsequent list
+	HArray<shared_ptr<HBaseGraphTask>> Subsequents;
+	SubsequentList.PopAll(Subsequents);
+
+	// reverse order dispatching (conditional queuing)
+	for (int32 Index = Subsequents.size() - 1; Index >= 0; --Index)
+	{
+		auto& Subsequent = Subsequents[Index];
+		check(Subsequent->NumberOfPrerequisitiesOutstanding.GetValue() >= 1);
+		Subsequent->NumberOfPrerequisitiesOutstanding.Decrement();
+		Subsequent->ConditionalQueueTask();
+	}
+}
+
 void HBaseGraphTask::SetupCompletePrerequisities(bool bUnlock)
 {
 	if (bUnlock)

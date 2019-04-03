@@ -107,20 +107,18 @@ void HEngineLoop::Loop()
 
 	// initialize in named thread
 	HArray<shared_ptr<HGraphEvent>> Prerequisites;
-	shared_ptr<HGraphEvent> InitializeEvent = HGraphTask<HEngineLoopInitializeTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndDispatchWhenReady(*this);
+	shared_ptr<HBaseGraphTask> InitializeTask = HGraphTask<HEngineLoopInitializeTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndHold(*this);
+	TaskGraph->DispatchAndWaitUntilTaskComplete(InitializeTask, true, "MainThread");
 
 	while (!RawMainThreadRunnabe->IsTerminated())
 	{
 		// create task
-		HArray<shared_ptr<HGraphEvent>> Prerequisites;
-		Prerequisites.push_back(InitializeEvent);
 		shared_ptr<HGraphEvent> GraphEvent = HGraphTask<HEngineLoopTickTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndDispatchWhenReady(*this);
-		
-		Prerequisites.clear();
 		Prerequisites.push_back(GraphEvent);
 
 		// wait until complete the task 'HEngineLoopTickTask'		
 		TaskGraph->WaitUntilTasksComplete(Prerequisites, true, "MainThread");
+		Prerequisites.clear();
 	}
 }
 
