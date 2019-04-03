@@ -17,7 +17,7 @@ HFrameContext* CurrentFrameContext = nullptr;
 uint32 FrameIndex = 0;
 
 #define NUM_BACK_BUFFERS 3
-#define DX12_ENABLE_DEBUG_LAYER 0
+#define DX12_ENABLE_DEBUG_LAYER 1
 
 static ID3D12Device* D3D12Device = nullptr;
 static ID3D12DescriptorHeap* D3D12RtvDescriptorHeap = nullptr;

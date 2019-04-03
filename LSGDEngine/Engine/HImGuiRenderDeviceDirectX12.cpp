@@ -44,7 +44,7 @@ bool HImGuiRenderDeviceDirectX12::Initialize()
 	ID3D12Device* DeviceObject = (ID3D12Device*)GDynamicRHI->GetDevice();
 	ID3D12DescriptorHeap* SrvDescriptorHeap = (ID3D12DescriptorHeap*)GDynamicRHI->GetSrvDescriptionHeap();
 
-	DXGI_FORMAT RtvFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	D3D12_CPU_DESCRIPTOR_HANDLE FontSrvCpuDescHandle = SrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	D3D12_GPU_DESCRIPTOR_HANDLE FontSrvGpuDescHandle = SrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
 
@@ -79,7 +79,7 @@ void HImGuiRenderDeviceDirectX12::CreateFontsTexture()
 		Props.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
 
 		D3D12_RESOURCE_DESC Desc;
-		HGenericMemory::MemZero(&Props, 0, sizeof(Desc));
+		HGenericMemory::MemZero(&Desc, 0, sizeof(Desc));
 		Desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 		Desc.Alignment = 0;
 		Desc.Width = Width;
@@ -237,7 +237,7 @@ void HImGuiRenderDeviceDirectX12::DestroyDeviceObjects()
 bool HImGuiRenderDeviceDirectX12::CreateDeviceObjects()
 {
 	ID3D12Device* DeviceObject = (ID3D12Device*)GDynamicRHI->GetDevice();
-	if (DeviceObject)
+	if (DeviceObject == nullptr)
 	{
 		return false;
 	}
