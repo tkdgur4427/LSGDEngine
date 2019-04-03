@@ -39,7 +39,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -87,6 +87,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath;../../ThirdParty/imgui</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>HEnginePCH.h</PrecompiledHeaderFile>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -206,11 +209,13 @@
     <ClCompile Include="HDynamicRHI.cpp" />
     <ClCompile Include="HDynamicRHIDirectX12.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="HEditorEngine.cpp" />
     <ClCompile Include="HEngineLoop.cpp" />
     <ClCompile Include="HEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="HGameInstance.cpp" />
     <ClCompile Include="HGlobalShader.cpp" />
@@ -254,6 +259,14 @@
     <ClCompile Include="HWindowsLaunch.cpp" />
     <ClCompile Include="HWorld.cpp" />
     <ClCompile Include="HImGuiRenderDeviceDirectX12.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{5c43060a-b2e6-4a5d-abe2-20439f3d900f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Memory\Memory.vcxproj">
+      <Project>{a159f7e8-c56b-441d-b361-e04e00ec2012}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

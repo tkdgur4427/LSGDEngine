@@ -17,3 +17,7 @@
 /LSGDEngine/.vs/LSGDEngine/v15/Solution.VC.db-wal
 /LSGDEngine/Engine/Debug
 /LSGDEngine/SimpleGame/Debug
+/LSGDEngine/Core/x64/Debug
+/LSGDEngine/Engine/x64/Debug
+/LSGDEngine/SimpleGame/x64/Debug
+/LSGDEngine/SimpleGame/SimpleGame.exe

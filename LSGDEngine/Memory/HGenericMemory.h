@@ -11,11 +11,11 @@ public:
 	}
 
 	// default alloc/dealloc
-	static void* Allocate(int InSize, int InAlignment = 4);
+	static void* Allocate(size_t InSize, size_t InAlignment = 4);
 	static void Deallocate(void* InPointer);
 	
 	// large alloc/dealloc (based on buddy allocator)
-	static void* AllocateLarge(int InSize, int InAlignment = 4);
+	static void* AllocateLarge(size_t InSize, size_t InAlignment = 4);
 	static void DeallocateLarge(void* InPointer);
 	
 	// stack mem alloc (based on stack allocator)

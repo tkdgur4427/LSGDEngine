@@ -116,7 +116,7 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 	pD3DCompile D3DCompileFunc;
 	pD3DReflect D3DReflectFunc;
 
-	HString AdditionalD3DCompilerPath = "x86//d3dcompiler_47.dll";
+	HString AdditionalD3DCompilerPath = "x64//d3dcompiler_47.dll";
 	HString CompilerPath = HGenericPlatformMisc::GetD3DDir() + AdditionalD3DCompilerPath;
 
 	bool bCompilerPathFunctionUsed = GetD3DCompilerFuncs(CompilerPath, &D3DCompileFunc, &D3DReflectFunc);

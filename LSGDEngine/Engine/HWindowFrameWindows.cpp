@@ -14,7 +14,7 @@ HWindowFrameWindows::~HWindowFrameWindows()
 // @todo - temporary setting msg process here (need to move)
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return true;
+	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
 void HWindowFrameWindows::CreateWindowFrame()

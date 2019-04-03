@@ -6,7 +6,7 @@
 #if USE_TEMP_ALLOC_DEALLOC
 
 // for temporary wrapper implementation
-void* TempAllocate(int InSize)
+void* TempAllocate(size_t InSize)
 {
 	void* NewPointer = malloc(InSize);
 
@@ -22,7 +22,7 @@ void TempDeallocate(void* InPointer)
 }
 #endif
 
-void* HGenericMemory::Allocate(int InSize, int InAlignment)
+void* HGenericMemory::Allocate(size_t InSize, size_t InAlignment)
 {
 #if USE_TEMP_ALLOC_DEALLOC
 	return TempAllocate(InSize);
@@ -36,7 +36,7 @@ void HGenericMemory::Deallocate(void* InPointer)
 #endif
 }
 
-void* HGenericMemory::AllocateLarge(int InSize, int InAlignment)
+void* HGenericMemory::AllocateLarge(size_t InSize, size_t InAlignment)
 {
 #if USE_TEMP_ALLOC_DEALLOC
 	return TempAllocate(InSize);

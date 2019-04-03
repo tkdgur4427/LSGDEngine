@@ -12,7 +12,7 @@ namespace lsgd
 
 		static uint32 Strlen(const char* InStr)
 		{
-			return strlen(InStr);
+			return (uint32)strlen(InStr);
 		}
 
 		static void Itoa(int32 InNumber, char* OutCString, int32 Size, int32 InBase = 10)

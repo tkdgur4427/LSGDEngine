@@ -45,8 +45,8 @@ bool HImGuiRenderDeviceDirectX12::Initialize()
 	ID3D12DescriptorHeap* SrvDescriptorHeap = (ID3D12DescriptorHeap*)GDynamicRHI->GetSrvDescriptionHeap();
 
 	RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-	D3D12_CPU_DESCRIPTOR_HANDLE FontSrvCpuDescHandle = SrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	D3D12_GPU_DESCRIPTOR_HANDLE FontSrvGpuDescHandle = SrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+	FontSrvCpuDescHandle = SrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	FontSrvGpuDescHandle = SrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
 
 	// create buffers
 	for (int32 Index = 0; Index < NUM_FRAMES_INFLIGHT; ++Index)
@@ -125,7 +125,7 @@ void HImGuiRenderDeviceDirectX12::CreateFontsTexture()
 		check(SUCCEEDED(Hr));
 
 		for (int32 Y = 0; Y < Height; ++Y)
-			HGenericMemory::MemCopy((void*)((uint32*)Mapped + Y * UploadPitch), Pixels + Y * Width * 4, Width * 4);
+			HGenericMemory::MemCopy((void*)((uint8*)Mapped + Y * UploadPitch), Pixels + Y * Width * 4, Width * 4);
 		UploadBuffer->Unmap(0, &Range);
 
 		D3D12_TEXTURE_COPY_LOCATION SrvLocation = {};
@@ -209,7 +209,7 @@ void HImGuiRenderDeviceDirectX12::CreateFontsTexture()
 	}
 
 	// store our identifier
-	//static_assert(sizeof(ImTextureID) >= sizeof(FontSrvGpuDescHandle.ptr), "Can't pack descriptor handle into TexID, 32-bit not supported yet.");
+	static_assert(sizeof(ImTextureID) >= sizeof(FontSrvGpuDescHandle.ptr), "Can't pack descriptor handle into TexID, 32-bit not supported yet.");
 	IO.Fonts->TexID = (ImTextureID)FontSrvGpuDescHandle.ptr;
 }
 
@@ -408,7 +408,7 @@ void HImGuiRenderDeviceDirectX12::RenderDrawData(uint32 InFrameIndex, ImDrawData
 	int32 IndexBufferSize = FrameResource.IndexBufferSize;
 
 	// create and grow vertex/index buffers if needed
-	if (FrameVB || VertexBufferSize < InDrawData->TotalVtxCount)
+	if (!FrameVB || VertexBufferSize < InDrawData->TotalVtxCount)
 	{
 		SAFE_RELEASE(FrameVB);
 

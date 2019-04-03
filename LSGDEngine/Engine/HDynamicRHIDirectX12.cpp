@@ -293,6 +293,7 @@ void HDynamicRHI::RenderEnd()
 	Barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 
 	D3D12CommandList->ResourceBarrier(1, &Barrier);
+	D3D12CommandList->Close();
 
 	D3D12CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&D3D12CommandList);
 

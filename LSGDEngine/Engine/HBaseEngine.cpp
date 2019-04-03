@@ -16,6 +16,7 @@ void HBaseEngine::Initialize()
 	// create window frame
 	WindowFrame = HPlatformDeviceMisc::CreateWindowFrame();
 	WindowFrame->CreateWindowFrame();
+	WindowFrame->ShowWindowFrame();
 	bWindowFrameMessageUpdated = false;
 
 	// create RenderDevice
