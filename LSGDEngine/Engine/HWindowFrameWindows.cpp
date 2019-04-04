@@ -1,6 +1,8 @@
 #include "HEnginePCH.h"
 #include "HWindowFrameWindows.h"
 
+#include "HImGuiDeviceWindows.h"
+
 HWindowFrameWindows::HWindowFrameWindows()
 {
 
@@ -14,6 +16,14 @@ HWindowFrameWindows::~HWindowFrameWindows()
 // @todo - temporary setting msg process here (need to move)
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	if (GImGuiDeviceWindows)
+	{
+		if (GImGuiDeviceWindows->UpdateMessage((void*)hWnd, msg, wParam, lParam))
+		{
+			return true;
+		}
+	}
+
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
