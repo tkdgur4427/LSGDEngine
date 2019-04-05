@@ -217,6 +217,9 @@
     <ClInclude Include="HImGuiRenderDeviceDirectX12.h">
       <Filter>Slate\ImGui\RenderDevice\DirectX12</Filter>
     </ClInclude>
+    <ClInclude Include="HSlateUtil.h">
+      <Filter>Slate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />

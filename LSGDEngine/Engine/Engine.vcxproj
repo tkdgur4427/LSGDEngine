@@ -185,6 +185,7 @@
     <ClInclude Include="HScene.h" />
     <ClInclude Include="HSceneComponent.h" />
     <ClInclude Include="HShader.h" />
+    <ClInclude Include="HSlateUtil.h" />
     <ClInclude Include="HTickFunction.h" />
     <ClInclude Include="HTickTaskLevel.h" />
     <ClInclude Include="HTickTaskManager.h" />
