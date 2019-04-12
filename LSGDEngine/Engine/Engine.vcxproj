@@ -121,6 +121,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="HAttribute.h" />
     <ClInclude Include="HBaseEngine.h" />
     <ClInclude Include="HCameraActor.h" />
     <ClInclude Include="HCameraComponent.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="HSceneComponent.h" />
     <ClInclude Include="HShader.h" />
     <ClInclude Include="HSlateUtil.h" />
+    <ClInclude Include="HSWidget.h" />
     <ClInclude Include="HTickFunction.h" />
     <ClInclude Include="HTickTaskLevel.h" />
     <ClInclude Include="HTickTaskManager.h" />

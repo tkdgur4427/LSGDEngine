@@ -36,6 +36,18 @@ namespace lsgd {
 	{
 		using Type = InType;
 	};
+
+	template <class T, class U>
+	struct HIsSameType
+	{
+		static const bool Value = false;
+	};
+
+	template <class T>
+	struct HIsSameType<T, T>
+	{
+		static const bool Value = true;
+	};
 }
 
 namespace lsgd { namespace TMP {

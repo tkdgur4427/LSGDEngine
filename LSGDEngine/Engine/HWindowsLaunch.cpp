@@ -7,7 +7,8 @@
 
 using namespace lsgd;
 
-INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance
+	, PSTR lpCmdLine, INT nCmdShow)
 {
 	HEngineLoop EngineLoop;
 	EngineLoop.Init();

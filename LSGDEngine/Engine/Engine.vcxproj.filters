@@ -220,6 +220,12 @@
     <ClInclude Include="HSlateUtil.h">
       <Filter>Slate</Filter>
     </ClInclude>
+    <ClInclude Include="HSWidget.h">
+      <Filter>Slate</Filter>
+    </ClInclude>
+    <ClInclude Include="HAttribute.h">
+      <Filter>Slate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -344,7 +350,6 @@
     <ClCompile Include="HRHICommon.cpp">
       <Filter>RHI</Filter>
     </ClCompile>
-    <ClCompile Include="HRHIShaderCommon.cpp" />
     <ClCompile Include="HDynamicRHI.cpp">
       <Filter>RHI</Filter>
     </ClCompile>
@@ -383,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="HImGuiRenderDeviceDirectX12.cpp">
       <Filter>Slate\ImGui\RenderDevice\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="HRHIShaderCommon.cpp">
+      <Filter>RHI\Platform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

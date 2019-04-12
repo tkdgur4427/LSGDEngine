@@ -144,6 +144,11 @@ void HEngineLoop::InitializeInNamedThread()
 	EngineInstance->Initialize();
 }
 
+void HEngineLoop::DestroyInNamedThread()
+{
+
+}
+
 void HEngineLoop::Tick()
 {
 	EngineInstance->Tick(0.f);

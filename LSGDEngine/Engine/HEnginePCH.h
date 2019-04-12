@@ -33,3 +33,5 @@
 // to use guid in dx11; e.g. IID_ID3D11ShaderReflection
 #pragma comment(lib, "dxguid.lib")
 
+#include "HAttribute.h"
+
