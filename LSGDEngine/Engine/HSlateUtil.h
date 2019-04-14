@@ -87,6 +87,37 @@ struct HSlateBaseNamedArgs
 	//...
 };
 
+// a widget reference that is always a valid pointer
+struct HAlwaysValidWidget
+{
+	shared_ptr<class HSWidget> Widget;
+};
+
+/*
+	we want to be able to do:
+		SNew(ContainerWidget).SomeContentArea()
+		[
+			// child widgets go here
+		]
+	NamedSlotProperty is a helper that will be returned by SomeContentArea()
+*/
+template <class DeclarationType>
+struct NamedSlotProperty
+{
+	NamedSlotProperty(DeclarationType& InOwnerDeclaration, HAlwaysValidWidget& ContentToSet)
+		: OwnerDeclaration(InOwnerDeclaration)
+		, SlotContent(ContentToSet)
+	{}
+
+	DeclarationType& operator[](const shared_ptr<HSWidget>& InChild)
+	{
+		SlotContent.Widget = InChild;
+		return OwnerDeclaration;
+
+	DeclarationType& OwnerDeclaration;
+	HAlwaysValidWidget& SlotContent;
+};
+
 /*
 	widget authors can use SLATE_BEGIN_ARGS and SLATE_END_ARGS to add support 
 	for widget construction via SNew and SAssignNew
@@ -166,3 +197,52 @@ struct HSlateBaseNamedArgs
 
 #define HSLATE_END_ARGS() \
 	};
+
+/*
+	use this macro to add an attribute to the declaration of your widget
+	and attribute can be a value or a function
+*/
+#define HSLATE_ATTRIBUTE(AttrType, AttrName) \
+	HAttribute<AttrType> _##AttrName; \
+	WidgetArgsType& AttrName(const HAttribute<AttrType>& InAttribute) \
+	{ \
+		_##AttrName = InAttribute; \
+		return this->Me(); \
+	}
+
+/*
+	use this macro to declare a slate argument
+	arguments differ from attributes in that they can only be values
+*/
+#define HSLATE_ARGUMENT(ArgType, ArgName) \
+	ArgType _##ArgName; \
+	WidgetArgsType& ArgName(ArgType InArg) \
+	{ \
+		_##ArgName = InArg; \
+		return this->Me(); \
+	}
+
+/*
+	use this macro to add support for named slot properties such as Content and Header
+	see NameSlotProperty for more details
+
+	NOTE: if you're using within a widget class that is templated, then you might
+	have to specify a full name for the declaration
+	e.g. SLATE_NAMED_SLOT(typename SSuperWidget<T>::Declaration, Content)
+*/
+
+#define HSLATE_NAMED_SLOT(DeclarationType, SlotName) \
+	NamedSlotProperty<Declaration> SlotName() \
+	{ \
+		return NamedSlotProperty<DeclarationType>(*this, __SlotName); \
+	} \
+	HAlwaysValidWidget __##SlotName;
+
+#define HSLATE_DEFAULT_SLOT(DeclarationType, SlotName) \
+	HSLATE_NAMED_SLOT(DeclarationType, SlotName) \
+	DeclarationType& operator[](const shared_ptr<HSWidget> InChild) \
+	{ \
+		_##SlotName.Widget = InChild; \
+		return *this; \
+	}
+	
