@@ -5,9 +5,17 @@
     <ClInclude Include="HGenericMemory.h" />
     <ClInclude Include="HMemoryPCH.h" />
     <ClInclude Include="HMakeMethods.h" />
+    <ClInclude Include="HBlockAllocator.h">
+      <Filter>Allocators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HMemoryPCH.cpp" />
     <ClCompile Include="HGenericMemory.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Allocators">
+      <UniqueIdentifier>{a30fe95f-7765-42ef-8786-5785b8aa7721}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

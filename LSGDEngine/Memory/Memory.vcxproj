@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="HAllocator.h" />
+    <ClInclude Include="HBlockAllocator.h" />
     <ClInclude Include="HGenericMemory.h" />
     <ClInclude Include="HMakeMethods.h" />
     <ClInclude Include="HMemoryPCH.h" />
