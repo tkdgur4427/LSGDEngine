@@ -42,6 +42,12 @@ HEngineLoop::~HEngineLoop()
 
 void HEngineLoop::Init()
 {
+	// initialize platform misc
+	HGenericPlatformMisc::Initialize();
+
+	// note that simple profiler should be executed after HGenericPlatformMisc::Initialize
+	SGD_SCOPED_SIMPLE_PROFILER(HEngineLoop::Init);
+
 	// reflection post update
 	reflect::HTypeDatabase::GetSingleton()->ProcessPostProcessClassData();
 

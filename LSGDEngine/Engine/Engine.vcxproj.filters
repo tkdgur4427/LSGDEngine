@@ -469,5 +469,11 @@
     <Filter Include="Slate\ImGui\RenderDevice\DirectX12">
       <UniqueIdentifier>{2e92dafb-4b7b-465e-a1ac-e0a908364231}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{01608923-6238-4be9-bd8f-d181589d9c21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\V1">
+      <UniqueIdentifier>{99386de0-738a-4c93-b1c4-ea6a0156d271}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

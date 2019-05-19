@@ -83,6 +83,13 @@ namespace lsgd {
 	class HGenericPlatformMisc
 	{
 	public:
+		// initialize platform misc
+		static void Initialize();
+
+		// @todo - temporary...
+		static void GetCPUFrequency();
+		static int64 CPUFrequency;
+
 		// get game directory
 		static HString GetGameDir();
 		// get the shader directory
@@ -104,6 +111,8 @@ namespace lsgd {
 		static void Sleep(double InSecs);
 		// get the hardware thread
 		static uint32 GetHardwareThreadNum();
+		// get time
+		static double GetSeconds();
 	};
 
 	class HGenericPlatformAtomics

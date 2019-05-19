@@ -51,6 +51,7 @@
     <ClInclude Include="HPackage.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HNumericTypeHelper.h" />
+    <ClInclude Include="HProfiler.h" />
     <ClInclude Include="HReferenceCollector.h" />
     <ClInclude Include="HReflect.h" />
     <ClInclude Include="HReflectDeclare.h" />
@@ -104,6 +105,7 @@
     <ClCompile Include="HObjectArray.cpp" />
     <ClCompile Include="HObjectHandle.cpp" />
     <ClCompile Include="HPackage.cpp" />
+    <ClCompile Include="HProfiler.cpp" />
     <ClCompile Include="HReferenceCollector.cpp" />
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HReflectionContext.cpp" />

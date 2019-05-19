@@ -5,6 +5,8 @@
 
 using namespace lsgd;
 
+int64 HGenericPlatformMisc::CPUFrequency = -1;
+
 HWindowsPlatformFileIO::HWindowsPlatformFileIO()
 	: HPlatformFileIO()
 	, FileHandle(nullptr)
@@ -118,6 +120,30 @@ uint32 HGenericPlatformMisc::GetHardwareThreadNum()
 	SYSTEM_INFO sysInfo;
 	GetSystemInfo(&sysInfo);
 	return sysInfo.dwNumberOfProcessors;
+}
+
+void HGenericPlatformMisc::Initialize()
+{
+	// get the cpu frequency
+	GetCPUFrequency();
+}
+
+void HGenericPlatformMisc::GetCPUFrequency()
+{
+	LARGE_INTEGER CPUFrequencyWin;
+	check(QueryPerformanceFrequency(&CPUFrequencyWin));
+
+	CPUFrequency = CPUFrequencyWin.QuadPart;
+}
+
+double HGenericPlatformMisc::GetSeconds()
+{
+	LARGE_INTEGER HighResTime;
+	check(QueryPerformanceCounter(&HighResTime));
+
+	// calculate time
+	double TimeInSeconds = (double)HighResTime.QuadPart / (CPUFrequency * 1000.0f) /* converting to seconds */;
+	return TimeInSeconds;
 }
 
 HWindowsPlatformThread::HWindowsPlatformThread(shared_ptr<lsgd::thread::HThreadRunnable>& InRunnable)

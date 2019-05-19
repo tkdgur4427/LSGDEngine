@@ -7,6 +7,9 @@
 // custom container
 #include "HVariadicStack.h"
 
+// profiler
+#include "HProfiler.h"
+
 // C++ reflections
 #include "HReflect.h"
 
