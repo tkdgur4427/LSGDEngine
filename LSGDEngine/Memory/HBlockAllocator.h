@@ -12,7 +12,7 @@ namespace allocators
 	class HBlockAllocatorPolicy
 	{
 	public:
-		enum 
+		enum
 		{
 			BlockSize = InBlockSize,
 			PageSize = InPageSize,
@@ -23,10 +23,11 @@ namespace allocators
 	class HBlockAllocator
 	{
 	public:
-		using PageAllocatorPolicy = Policy;
-
-		static int32 BlockSize = Policy::BlockSize;
-		static int32 PageSize = PageAllocatorPolicy::PageSize;
+		enum 
+		{
+			BlockSize = Policy::BlockSize,
+			PageSize = Policy::PageSize,
+		};
 
 		struct HFreeMemoryBlockHeader
 		{
@@ -123,6 +124,11 @@ namespace allocators
 				return (HMemoryPageInfo*)&MemoryBlocks[MemoryBlockCount - 1];
 			}
 
+			const HMemoryPageInfo* GetMemoryPageInfo() const
+			{
+				return (const HMemoryPageInfo*)&MemoryBlocks[MemoryBlockCount - 1];
+			}
+
 			bool HasFreeBlock() const
 			{
 				return GetMemoryPageInfo()->FreeMemoryBlockHead != nullptr;
@@ -172,10 +178,10 @@ namespace allocators
 
 		HBlockAllocator()
 		{
-			static_assert(sizeof(HMemoryPageInfo) <= BlockSize);
-			static_assert(sizeof(HFreeMemoryBlockHeader) <= BlockSize);
-			static_assert(sizeof(HMemoryBlock) == BlockSize);
-			static_assert(sizeof(HMemoryPage) == PageSize);
+			//static_assert(sizeof(HMemoryPageInfo) <= BlockSize);
+			//static_assert(sizeof(HFreeMemoryBlockHeader) <= BlockSize);
+			//static_assert(sizeof(HMemoryBlock) == BlockSize);
+			//static_assert(sizeof(HMemoryPage) == PageSize);
 		}
 
 		~HBlockAllocator()
@@ -183,6 +189,7 @@ namespace allocators
 			ReleaseAllMemoryPages();
 		}
 
+	protected:
 		HMemoryPage* AllocateMemoryPage()
 		{
 			// allocate memory page
@@ -198,17 +205,17 @@ namespace allocators
 			// call destructor
 			InMemoryPage->~HMemoryPage();
 			// release the memory
-			HGenericMemory::Deallocate(PageSize);
+			HGenericMemory::Deallocate(InMemoryPage);
 		}
 
 		void ReleaseAllMemoryPages()
 		{
 			// release the all memory page
-			HMemoryPage* CurrPage = MemoryPage.GetMemoryPageInfo()->NextPage;
+			HMemoryPage* CurrPage = (HMemoryPage*)MemoryPage.GetMemoryPageInfo()->NextPage;
 			while (CurrPage != nullptr)
 			{
 				HMemoryPage* PageToDelete = CurrPage;
-				CurrPage = PageToDelete->GetMemoryPageInfo()->NextPage;
+				CurrPage = (HMemoryPage*)PageToDelete->GetMemoryPageInfo()->NextPage;
 
 				// delete the page
 				DeallocateMemoryPage(PageToDelete);
@@ -224,7 +231,7 @@ namespace allocators
 				return &MemoryPage;
 			}
 
-			HMemoryPage* CurrPage = MemoryPage.GetMemoryPageInfo()->NextPage;
+			HMemoryPage* CurrPage = (HMemoryPage*)MemoryPage.GetMemoryPageInfo()->NextPage;
 			while (CurrPage != nullptr)
 			{
 				if (CurrPage->HasFreeBlock())
@@ -232,31 +239,25 @@ namespace allocators
 					return CurrPage;
 				}
 
-				CurrPage = CurrPage->GetMemoryPageInfo()->NextPage;
+				CurrPage = (HMemoryPage*)CurrPage->GetMemoryPageInfo()->NextPage;
 			}
 
 			// need to allocate new page
 			// so, get the last page
-			CurrPage = MemoryPage.GetMemoryPageInfo()->NextPage;
+			CurrPage = (HMemoryPage*)MemoryPage.GetMemoryPageInfo()->NextPage;
 			while (CurrPage != nullptr)
 			{
-				if (CurrPage->Next == nullptr)
+				if (CurrPage->GetMemoryPageInfo()->NextPage == nullptr)
 				{
 					break;
 				}
-				CurrPage = CurrPage->GetMemoryPageInfo()->NextPage;
+				CurrPage = (HMemoryPage*)CurrPage->GetMemoryPageInfo()->NextPage;
 			}
 
 			HMemoryPage* NewPage = AllocateMemoryPage();
 			CurrPage->GetMemoryPageInfo()->NextPage = NewPage;
 
 			return NewPage;
-		}
-
-		void* AllocateMemoryBlock()
-		{
-			HMemoryPage* AllocatablePage = FindMemoryPageToAllocate();
-			return (void*)AllocatablePage->AllocateBlock();
 		}
 
 		HMemoryPage* FindMemoryPageToDeallocate(void* InPointer)
@@ -268,7 +269,7 @@ namespace allocators
 				return &MemoryPage;
 			}
 
-			HMemoryPage* CurrPage = MemoryPage.GetMemoryPageInfo()->NextPage;
+			HMemoryPage* CurrPage = (HMemoryPage*)MemoryPage.GetMemoryPageInfo()->NextPage;
 			while (CurrPage != nullptr)
 			{
 				if (MemoryPage.IsInRange(MemoryAddress))
@@ -276,10 +277,17 @@ namespace allocators
 					return CurrPage;
 				}
 
-				CurrPage = CurrPage->GetMemoryPageInfo()->NextPage;
+				CurrPage = (HMemoryPage*)CurrPage->GetMemoryPageInfo()->NextPage;
 			}
 
 			return nullptr;
+		}
+
+	public:
+		void* AllocateMemoryBlock()
+		{
+			HMemoryPage* AllocatablePage = FindMemoryPageToAllocate();
+			return (void*)AllocatablePage->AllocateBlock();
 		}
 
 		void DeallocateMemoryBlock(void* InPointer)
