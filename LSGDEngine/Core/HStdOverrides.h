@@ -19,6 +19,8 @@
 #include <cstdio>
 #include <cstdarg>
 
+#include "HReflectionContext.h"
+
 // override std libraries with lsgd:: by type aliasing
 namespace lsgd
 {
@@ -240,12 +242,6 @@ namespace lsgd {
 	class HObjectExport;
 	class HObjectImport;
 }
-
-namespace lsgd { namespace reflect {
-
-	class HReflectionContext;
-
-} }
 
 // helper methods
 extern bool IsLoading(lsgd::reflect::HReflectionContext& InContext);
