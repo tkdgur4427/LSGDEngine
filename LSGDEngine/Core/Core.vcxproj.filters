@@ -196,6 +196,9 @@
     <ClInclude Include="HProfiler.h">
       <Filter>Profiler</Filter>
     </ClInclude>
+    <ClInclude Include="HFrameProduceConsumeBuffer.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />

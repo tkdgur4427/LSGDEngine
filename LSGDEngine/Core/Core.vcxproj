@@ -31,6 +31,7 @@
     <ClInclude Include="HCriticalSection.h" />
     <ClInclude Include="HEvent.h" />
     <ClInclude Include="HFileArchive.h" />
+    <ClInclude Include="HFrameProduceConsumeBuffer.h" />
     <ClInclude Include="HGarbageCollect.h" />
     <ClInclude Include="HGCSweepExecutor.h" />
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
