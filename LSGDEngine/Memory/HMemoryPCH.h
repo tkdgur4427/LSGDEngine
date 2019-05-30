@@ -2,4 +2,5 @@
 
 #include <memory>
 
+#include "HGenericMemory.h"
 #include "HMemoryUtil.h"

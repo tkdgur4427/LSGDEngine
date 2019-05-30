@@ -69,6 +69,7 @@ void* HBinnedMalloc::Malloc(size_t Count, unsigned int Alignment)
 	HBinnedMallocHeader* Header = (HBinnedMallocHeader*)(AlignedAddress - sizeof(HBinnedMallocHeader));
 	Header->Padding = AlignedAddress - AllocAddress;
 	Header->BinIndex = BinIndex;
+	Header->Size = Count;
 
 	// return aligned address
 	return AlignedAddress;
@@ -76,7 +77,13 @@ void* HBinnedMalloc::Malloc(size_t Count, unsigned int Alignment)
 
 void* HBinnedMalloc::Realloc(void* Original, size_t Count, unsigned int Alignment)
 {
-	return nullptr;
+	HBinnedMallocHeader* Header = (HBinnedMallocHeader*)((unsigned char*)Original - sizeof(HBinnedMallocHeader));
+
+	void* NewAddress = Malloc(Count, Alignment);
+	HGenericMemory::MemCopy(NewAddress, Original, Header->Size);
+	Free(Original);
+
+	return NewAddress;
 }
 
 void HBinnedMalloc::Free(void* Original)

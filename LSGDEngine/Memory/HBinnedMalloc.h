@@ -29,6 +29,7 @@ public:
 	struct HBinnedMallocHeader
 	{
 		uint32 Padding;	// note that this padding is value subtracting alloc address and aligned address
+		uint32 Size;
 		uint8 BinIndex;
 	};
 
