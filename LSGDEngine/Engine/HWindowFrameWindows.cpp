@@ -29,9 +29,9 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void HWindowFrameWindows::CreateWindowFrame()
 {
-	WindowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, "SGDEngine", NULL };
+	WindowClass = { sizeof(WNDCLASSEXW), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, TEXT("SGDEngine"), NULL };
 	RegisterClassEx(&WindowClass);
-	Handle = CreateWindow(WindowClass.lpszClassName, "SGDEngine", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, WindowClass.hInstance, NULL);
+	Handle = CreateWindowExW(0, WindowClass.lpszClassName, TEXT("SGDEngine"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, WindowClass.hInstance, NULL);
 }
 
 void HWindowFrameWindows::DestroyWindowFrame()

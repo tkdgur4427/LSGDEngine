@@ -12,6 +12,9 @@
     <ClInclude Include="HBinnedMalloc.h" />
     <ClInclude Include="HMemory.h" />
     <ClInclude Include="HMemoryUtil.h" />
+    <ClInclude Include="HBaseAllocator.h">
+      <Filter>Allocators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HMemoryPCH.cpp" />

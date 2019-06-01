@@ -1,14 +1,44 @@
 #include "HMemoryPCH.h"
 #include "HGenericMemory.h"
 
+#include "HBinnedMalloc.h"
+
 #define USE_TEMP_ALLOC_DEALLOC 1
+
+#define USE_BINNED_MALLOC 1
+
+#if USE_BINNED_MALLOC
+HBinnedMalloc& GetBinnedMalloc()
+{
+	static HBinnedMalloc GBinnedMalloc;
+	return GBinnedMalloc;
+}
+
+HMalloc* GetMalloc()
+{
+	static HMalloc* GMalloc = &GetBinnedMalloc();
+	return GMalloc;
+}
+#endif
 
 #if USE_TEMP_ALLOC_DEALLOC
 
 // for temporary wrapper implementation
 void* TempAllocate(size_t InSize)
 {
+#if USE_BINNED_MALLOC
+	void* NewPointer = nullptr;
+	if (InSize <= GetBinnedMalloc().GetMaximumBlockSize())
+	{
+		NewPointer = GetMalloc()->Malloc(InSize);
+	}
+	else
+	{
+		NewPointer = malloc(InSize);
+	}
+#else
 	void* NewPointer = malloc(InSize);
+#endif
 
 	// clear the memory
 	std::memset(NewPointer, 0, InSize);
@@ -18,7 +48,14 @@ void* TempAllocate(size_t InSize)
 
 void TempDeallocate(void* InPointer)
 {
+#if USE_BINNED_MALLOC
+	if (!GetMalloc()->Free(InPointer))
+	{
+		free(InPointer);
+	}
+#else
 	free(InPointer);
+#endif
 }
 #endif
 

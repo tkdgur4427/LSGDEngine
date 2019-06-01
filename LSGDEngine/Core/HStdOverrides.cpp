@@ -7,6 +7,14 @@
 using namespace lsgd;
 using namespace lsgd::reflect;
 
+int32 HStringToStringW(lsgd::HStringW& OutStringW, const lsgd::HString& InString)
+{
+	HStringW Temp(InString.begin(), InString.end());
+	OutStringW = Temp;
+
+	return 0;
+}
+
 bool IsLoading(lsgd::reflect::HReflectionContext& InContext)
 {
 	return InContext.IsLoading();

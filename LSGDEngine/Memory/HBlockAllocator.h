@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HBaseAllocator.h"
+
 /*
 	Implementation NOTE...
 		- we can change bitmap version
@@ -20,7 +22,7 @@ namespace allocators
 	};
 
 	template <typename Policy = HBlockAllocatorPolicy<>>
-	class HBlockAllocator
+	class HBlockAllocator : public HBaseAllocator
 	{
 	public:
 		enum 
@@ -60,7 +62,7 @@ namespace allocators
 			union
 			{
 				HFreeMemoryBlockHeader FreeMemoryBlockHeader;
-				unsigned char Data[BlockSize];
+				uint8 Data[BlockSize];
 			};
 		};
 
@@ -131,7 +133,8 @@ namespace allocators
 
 			bool HasFreeBlock() const
 			{
-				return GetMemoryPageInfo()->FreeMemoryBlockHead != nullptr;
+				const HMemoryPageInfo* MemoryPageInfo = GetMemoryPageInfo();
+				return MemoryPageInfo->FreeMemoryBlockHead != nullptr;
 			}
 
 			HMemoryBlock* AllocateBlock()
@@ -149,7 +152,7 @@ namespace allocators
 			void DeallocateBlock(void* InPointer)
 			{
 				// validation checking
-				check(IsInRange((unsigned char*)InPointer));
+				mcheck(IsInRange((uint8*)InPointer));
 				
 				// link to free block
 				HFreeMemoryBlockHeader* NewFreeBlock = (HFreeMemoryBlockHeader*)InPointer;
@@ -159,16 +162,18 @@ namespace allocators
 			}
 
 			// range check for validation
-			bool IsInRange(unsigned char* InAddress) const
+			bool IsInRange(uint8* InAddress) const
 			{
-				return (InAddress >= (unsigned char*)&MemoryBlocks[0])
-					&& (InAddress <= (unsigned char*)&MemoryBlocks[GetTotalAllocBlockNum() - 1]);
+				uint8* StartAddress = (uint8*)& MemoryBlocks[0];
+				uint8* EndAddress = (uint8*)& MemoryBlocks[GetTotalAllocBlockNum() - 1] + BlockSize;
+
+				return (InAddress >= StartAddress) && (InAddress < EndAddress);
 			}
 
 			// aliasing the memory page to proper type for easier interface
 			union 
 			{
-				unsigned char Data[PageSize];
+				uint8 Data[PageSize];
 				HMemoryBlock MemoryBlocks[MemoryBlockCount];
 			};
 		};
@@ -221,7 +226,7 @@ namespace allocators
 				DeallocateMemoryPage(PageToDelete);
 			}
 
-			check(MemoryPage.GetMemoryPageInfo()->NextPage == nullptr);
+			mcheck(MemoryPage.GetMemoryPageInfo()->NextPage == nullptr);
 		}
 
 		HMemoryPage* FindMemoryPageToAllocate()
@@ -244,7 +249,7 @@ namespace allocators
 
 			// need to allocate new page
 			// so, get the last page
-			CurrPage = (HMemoryPage*)MemoryPage.GetMemoryPageInfo()->NextPage;
+			CurrPage = &MemoryPage;
 			while (CurrPage != nullptr)
 			{
 				if (CurrPage->GetMemoryPageInfo()->NextPage == nullptr)
@@ -252,27 +257,32 @@ namespace allocators
 					break;
 				}
 				CurrPage = (HMemoryPage*)CurrPage->GetMemoryPageInfo()->NextPage;
+
+				// note that it has no free blocks!
+				mcheck(CurrPage->HasFreeBlock() == false);
 			}
 
 			HMemoryPage* NewPage = AllocateMemoryPage();
-			CurrPage->GetMemoryPageInfo()->NextPage = NewPage;
+			HMemoryPageInfo* CurrPageInfo = CurrPage->GetMemoryPageInfo();
+			CurrPageInfo->NextPage = NewPage;
 
 			return NewPage;
 		}
 
 		HMemoryPage* FindMemoryPageToDeallocate(void* InPointer)
 		{
-			unsigned char* MemoryAddress = (unsigned char*)InPointer;
+			uint8* MemoryAddress = (unsigned char*)InPointer;
 
 			if (MemoryPage.IsInRange(MemoryAddress))
 			{
 				return &MemoryPage;
 			}
 
-			HMemoryPage* CurrPage = (HMemoryPage*)MemoryPage.GetMemoryPageInfo()->NextPage;
+			HMemoryPageInfo* CurrPageInfo = MemoryPage.GetMemoryPageInfo();
+			HMemoryPage* CurrPage = (HMemoryPage*)CurrPageInfo->NextPage;
 			while (CurrPage != nullptr)
 			{
-				if (MemoryPage.IsInRange(MemoryAddress))
+				if (CurrPage->IsInRange(MemoryAddress))
 				{
 					return CurrPage;
 				}
@@ -283,7 +293,6 @@ namespace allocators
 			return nullptr;
 		}
 
-	public:
 		void* AllocateMemoryBlock()
 		{
 			HMemoryPage* AllocatablePage = FindMemoryPageToAllocate();
@@ -293,9 +302,21 @@ namespace allocators
 		void DeallocateMemoryBlock(void* InPointer)
 		{
 			HMemoryPage* PageToDeallocate = FindMemoryPageToDeallocate(InPointer);
-			check(PageToDeallocate != nullptr);
+			mcheck(PageToDeallocate != nullptr);
 
 			PageToDeallocate->DeallocateBlock(InPointer);
+		}
+
+	public:
+		virtual void* Allocate(size_t InSize) override
+		{
+			(void*)InSize;
+			return AllocateMemoryBlock();
+		}
+
+		virtual void Deallocate(void* InPointer) override
+		{
+			DeallocateMemoryBlock(InPointer);
 		}
 	};
 }

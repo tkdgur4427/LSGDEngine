@@ -30,6 +30,7 @@ namespace lsgd
 	// object helper class 
 	struct HObjectHelper
 	{
+		// wtf... msbuild..
 		static HObject* GetObject(uint32 Index, uint32 SerialNumber);
 		static void SetAsDestroyed(const HObjectArrayData& InData);
 		static void SetAsRootSet(const HObjectArrayData& InData);

@@ -8,10 +8,16 @@ uint32 HMemoryUtil::AlignedSize32(uint32 InSize, uint32 InAlignment)
 
 bool HMemoryUtil::IsAligned32(uint32 InValue, uint32 InAlignment)
 {
-	return InValue & (InAlignment - 1) == 0;
+	return (InValue & (InAlignment - 1)) == 0;
 }
 
 void* HMemoryUtil::AlignedPointer(void* InAddress, size_t InAlignment)
 {
 	return (void*)((size_t)InAddress & ~(InAlignment - 1));
+}
+
+void* HMemoryUtil::AlignedUpPointer(void* InAddress, size_t InAlignment)
+{
+	size_t Mask = InAlignment - 1;
+	return (void*)(((size_t)InAddress + Mask) & ~(InAlignment - 1));
 }

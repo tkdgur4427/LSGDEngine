@@ -32,7 +32,10 @@ bool GetD3DCompilerFuncs(const HString& NewCompilerPath, pD3DCompile* OutD3DComp
 
 		if (CurrentCompiler.length())
 		{
-			CompilerDLL = LoadLibrary(CurrentCompiler.data());
+			HStringW CurrentCompilerW;
+			HStringToStringW(CurrentCompilerW, CurrentCompiler);
+
+			CompilerDLL = LoadLibraryW(CurrentCompilerW.data());
 
 			// @todo - temporary
 			if (CompilerDLL == 0)

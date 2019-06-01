@@ -1,7 +1,10 @@
 #include "HMalloc.h"
 
-// block allocator
-#include "HBlockAllocator.h"
+namespace allocators {
+
+	class HBaseAllocator;
+
+}
 
 using namespace allocators;
 
@@ -28,7 +31,8 @@ public:
 
 	struct HBinnedMallocHeader
 	{
-		uint32 Padding;	// note that this padding is value subtracting alloc address and aligned address
+		uint32 DirtyFlag;	// dirty flags checking
+		uint32 Padding;					// note that this padding is value subtracting alloc address and aligned address
 		uint32 Size;
 		uint8 BinIndex;
 	};
@@ -40,20 +44,20 @@ public:
 
 	// utility methods
 	uint32 GetBinIndexFromMemorySize(size_t InAlignedSize);
+	uint32 GetMaximumBlockSize() const { return BINNED_MAX_SMALL_POOL_SIZE; }
 
 	// memory alloc/dealloc methods
-	virtual void* Malloc(size_t Count, unsigned int Alignment = 16) override;
-	virtual void* Realloc(void* Original, size_t Count, unsigned int Alignment = 16) override;
-	virtual void Free(void* Original) override;
+	virtual void* Malloc(size_t Count, uint32 Alignment = 16) override;
+	virtual void* Realloc(void* Original, size_t Count, uint32 Alignment = 16) override;
+	virtual bool Free(void* Original) override;
 
 	// request memory size to binned memory index
 	static uint8 MemorySizeToIndex[BINNED_MAX_SMALL_POOL_SIZE >> BINNED_MINIMUM_ALIGNMENT_SHIFT];
-	
-	// binned block allocators
-	template <int32 BlockSize>
-	static HBlockAllocator<HBlockAllocatorPolicy<BlockSize, OS_MEMORY_PAGE_SIZE>>* GetBinnedAllocator()
-	{
-		static HBlockAllocator<HBlockAllocatorPolicy<BlockSize, OS_MEMORY_PAGE_SIZE>> BinnedAllocator;
-		return &BinnedAllocator;
-	}
+
+	// base allocator
+	static HBaseAllocator* BlockAllocators[BINNED_SMALL_POOL_COUNT];
+	static void InitializeBlockAllocators();
+
+	// lock
+	memory::synchronize::HCriticalSection CriticalSection;
 };

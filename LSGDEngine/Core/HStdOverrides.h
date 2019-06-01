@@ -21,6 +21,9 @@
 
 #include "HReflectionContext.h"
 
+//@todo - temporary
+#define TEXT(x) L##x
+
 // override std libraries with lsgd:: by type aliasing
 namespace lsgd
 {
@@ -32,7 +35,7 @@ namespace lsgd
 	using HString = std::basic_string<char>;
 
 	// wstring
-	using wstring = std::basic_string<wchar_t>;
+	using HStringW = std::basic_string<wchar_t>;
 
 	// HArray
 	template <class ValueType>
@@ -233,6 +236,9 @@ namespace lsgd
 			} \
 		}; \
 	}
+
+// string utilities
+extern int32 HStringToStringW(lsgd::HStringW& OutStringW, const lsgd::HString& InString);
 
 // reflection context declarations
 
