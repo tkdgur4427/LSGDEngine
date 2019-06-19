@@ -226,6 +226,9 @@
     <ClInclude Include="HAttribute.h">
       <Filter>Slate</Filter>
     </ClInclude>
+    <ClInclude Include="HSocketBSD.h">
+      <Filter>Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -391,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="HRHIShaderCommon.cpp">
       <Filter>RHI\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="HSocketBSD.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

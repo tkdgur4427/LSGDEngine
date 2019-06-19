@@ -1,7 +1,5 @@
 #include "HEnginePCH.h"
 
-#include <windows.h>
-
 // launch engine loop
 #include "HEngineLoop.h"
 

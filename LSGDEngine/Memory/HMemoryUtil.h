@@ -22,6 +22,8 @@ public:
 };
 
 // @todo - um...
+#include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <windows.h>
 #include <process.h>
 #include <stdlib.h>

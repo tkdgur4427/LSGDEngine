@@ -2,8 +2,6 @@
 
 #include "..\Core\HCore.h"
 
-#include "Windows.h"
-
 // @todo - temp setting for directx 12
 #define USE_DX12_AS_DEFAULT 1
 
@@ -35,3 +33,5 @@
 
 #include "HAttribute.h"
 
+// @todo - temporary windows platform
+#define SGD_PLATFORM_WINDOWS 1

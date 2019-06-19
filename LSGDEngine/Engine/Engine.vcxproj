@@ -187,6 +187,7 @@
     <ClInclude Include="HSceneComponent.h" />
     <ClInclude Include="HShader.h" />
     <ClInclude Include="HSlateUtil.h" />
+    <ClInclude Include="HSocketBSD.h" />
     <ClInclude Include="HSWidget.h" />
     <ClInclude Include="HTickFunction.h" />
     <ClInclude Include="HTickTaskLevel.h" />
@@ -253,6 +254,7 @@
     <ClCompile Include="HShaderFormatD3D12.cpp" />
     <ClCompile Include="HShaderId.cpp" />
     <ClCompile Include="HShaderResource.cpp" />
+    <ClCompile Include="HSocketBSD.cpp" />
     <ClCompile Include="HTickFunction.cpp" />
     <ClCompile Include="HTickTaskLevel.cpp" />
     <ClCompile Include="HTickTaskManager.cpp" />
