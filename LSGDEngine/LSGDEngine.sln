@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleGame", "SimpleGame\Si
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetworkGames", "NetworkGames", "{C72B5C1E-F4B0-4873-8565-442DDC3600BB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MMO_TcpFighter", "MMO_TcpFighter\MMO_TcpFighter.vcxproj", "{35BC5746-DEBF-4B74-9121-D95CB118172D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -53,9 +55,20 @@ Global
 		{C533A315-E912-4D67-A1AE-FEDA8EC7407D}.Release|x64.Build.0 = Release|x64
 		{C533A315-E912-4D67-A1AE-FEDA8EC7407D}.Release|x86.ActiveCfg = Release|Win32
 		{C533A315-E912-4D67-A1AE-FEDA8EC7407D}.Release|x86.Build.0 = Release|Win32
+		{35BC5746-DEBF-4B74-9121-D95CB118172D}.Debug|x64.ActiveCfg = Debug|x64
+		{35BC5746-DEBF-4B74-9121-D95CB118172D}.Debug|x64.Build.0 = Debug|x64
+		{35BC5746-DEBF-4B74-9121-D95CB118172D}.Debug|x86.ActiveCfg = Debug|Win32
+		{35BC5746-DEBF-4B74-9121-D95CB118172D}.Debug|x86.Build.0 = Debug|Win32
+		{35BC5746-DEBF-4B74-9121-D95CB118172D}.Release|x64.ActiveCfg = Release|x64
+		{35BC5746-DEBF-4B74-9121-D95CB118172D}.Release|x64.Build.0 = Release|x64
+		{35BC5746-DEBF-4B74-9121-D95CB118172D}.Release|x86.ActiveCfg = Release|Win32
+		{35BC5746-DEBF-4B74-9121-D95CB118172D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{35BC5746-DEBF-4B74-9121-D95CB118172D} = {C72B5C1E-F4B0-4873-8565-442DDC3600BB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C33990D-26D1-4F4E-B0D1-6272D7388104}

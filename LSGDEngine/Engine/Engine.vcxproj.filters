@@ -229,6 +229,12 @@
     <ClInclude Include="HSocketBSD.h">
       <Filter>Network</Filter>
     </ClInclude>
+    <ClInclude Include="HIpDriver.h">
+      <Filter>Network\V1</Filter>
+    </ClInclude>
+    <ClInclude Include="HNetConnection.h">
+      <Filter>Network\V1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -397,6 +403,12 @@
     </ClCompile>
     <ClCompile Include="HSocketBSD.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="HIpDriver.cpp">
+      <Filter>Network\V1</Filter>
+    </ClCompile>
+    <ClCompile Include="HNetConnection.cpp">
+      <Filter>Network\V1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

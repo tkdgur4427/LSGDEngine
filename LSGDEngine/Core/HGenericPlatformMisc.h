@@ -92,6 +92,8 @@ namespace lsgd {
 
 		// get game directory
 		static HString GetGameDir();
+		// get config directory
+		static HString GetConfigDir();
 		// get the shader directory
 		static HString GetShaderSourceDir();
 		// get the d3d directory

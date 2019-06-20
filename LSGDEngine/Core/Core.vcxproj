@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="HAssert.h" />
     <ClInclude Include="HCastType.h" />
+    <ClInclude Include="HClassRedirector.h" />
     <ClInclude Include="HClassType.h" />
     <ClInclude Include="HCommonTypeHelper.h" />
     <ClInclude Include="HConcurrentQueue.h" />
@@ -62,6 +63,7 @@
     <ClInclude Include="HReflectionContextImplementMacro.h" />
     <ClInclude Include="HScopedEvent.h" />
     <ClInclude Include="HScopedLock.h" />
+    <ClInclude Include="HSimpleConfig.h" />
     <ClInclude Include="HSingletonTemplate.h" />
     <ClInclude Include="HStdOverrides.h" />
     <ClInclude Include="HStringTypeHelper.h" />
@@ -111,6 +113,7 @@
     <ClCompile Include="HReflect.cpp" />
     <ClCompile Include="HReflectionContext.cpp" />
     <ClCompile Include="HScopedEvent.cpp" />
+    <ClCompile Include="HSimpleConfig.cpp" />
     <ClCompile Include="HStdOverrides.cpp" />
     <ClCompile Include="HStringUtil.cpp" />
     <ClCompile Include="HTaskGraph.cpp" />

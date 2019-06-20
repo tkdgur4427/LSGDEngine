@@ -83,6 +83,11 @@ HString HGenericPlatformMisc::GetGameDir()
 	return HString();
 }
 
+HString HGenericPlatformMisc::GetConfigDir()
+{
+	return HString("..//Config//");
+}
+
 HString HGenericPlatformMisc::GetShaderSourceDir()
 {
 	return HString("..//Shaders//");

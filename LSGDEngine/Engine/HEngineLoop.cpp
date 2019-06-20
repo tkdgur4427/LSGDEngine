@@ -8,6 +8,12 @@
 // gc
 #include "..\Core\HGarbageCollect.h"
 
+// simple config
+#include "..\Core\HSimpleConfig.h"
+
+// class redirector
+#include "..\Core\HClassRedirector.h"
+
 // ebus
 #include "HEBus.h"
 
@@ -47,6 +53,23 @@ void HEngineLoop::Init()
 
 	// note that simple profiler should be executed after HGenericPlatformMisc::Initialize
 	SGD_SCOPED_SIMPLE_PROFILER(HEngineLoop::Init);
+
+	// load simple
+	HString SimpleConfigPath = HGenericPlatformMisc::GetConfigDir() + "SimpleConfig.txt";
+#if 1 // temporary to redirect the HClass
+	{
+		HHashMap<HString, HString> RedirectorData;
+		RedirectorData.insert({ "HGameInstance", "HGameInstanceOverride" });
+
+		fileIO::HFileArchiveWrite FileWrite(SimpleConfigPath);
+		FileWrite << RedirectorData;
+	}
+#endif
+	HSimpleConfig SimpleConfig(SimpleConfigPath);
+	SimpleConfig.Load();
+
+	// set the class redirector
+	HClassRedirector::GetSingleton()->SetClassRedirectMap(SimpleConfig.ClassRedirectors);
 
 	// reflection post update
 	reflect::HTypeDatabase::GetSingleton()->ProcessPostProcessClassData();

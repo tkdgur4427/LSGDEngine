@@ -140,7 +140,9 @@
     <ClInclude Include="HImGuiRenderDevice.h" />
     <ClInclude Include="HImGuiRenderDeviceDirectX12.h" />
     <ClInclude Include="HImGuiShaders.h" />
+    <ClInclude Include="HIpDriver.h" />
     <ClInclude Include="HMaterialCommon.h" />
+    <ClInclude Include="HNetConnection.h" />
     <ClInclude Include="HPlatformDeviceMisc.h" />
     <ClInclude Include="HRefCountPtr.h" />
     <ClInclude Include="HRHICommon.h" />
@@ -231,8 +233,10 @@
     <ClCompile Include="HImGuiDeviceWindows.cpp" />
     <ClCompile Include="HImGuiRenderDevice.cpp" />
     <ClCompile Include="HImGuiShaders.cpp" />
+    <ClCompile Include="HIpDriver.cpp" />
     <ClCompile Include="HLevel.cpp" />
     <ClCompile Include="HLocalPlayer.cpp" />
+    <ClCompile Include="HNetConnection.cpp" />
     <ClCompile Include="HPawn.cpp" />
     <ClCompile Include="HPlatformDeviceMisc.cpp" />
     <ClCompile Include="HPlayer.cpp" />

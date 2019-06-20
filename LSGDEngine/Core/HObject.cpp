@@ -11,6 +11,8 @@
 #include "HCoreTls.h"
 // reflection
 #include "HReflectImplement.h"
+// redirector
+#include "HClassRedirector.h"
 
 using namespace lsgd;
 using namespace lsgd::reflect;
@@ -82,7 +84,12 @@ namespace lsgd
 {
 	HObjectArrayData AllocateHObject(const HString& ClassName, class HPackage* InPackage)
 	{
-		const HClass* Class = reflect::HTypeDatabaseUtils::GetTypeDescriptor(ClassName).ClassType;
+		HString RedirectedClassName = ClassName;
+		{
+			RedirectedClassName = HClassRedirector::GetSingleton()->GetRedirectedClassName(RedirectedClassName);
+		}
+
+		const HClass* Class = reflect::HTypeDatabaseUtils::GetTypeDescriptor(RedirectedClassName).ClassType;
 		return AllocateHObjectInner(Class, InPackage);
 	}
 

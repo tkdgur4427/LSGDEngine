@@ -29,6 +29,8 @@ public:
 #include <stdlib.h>
 #include <intrin.h>
 
+#pragma comment(lib, "Ws2_32.lib")
+
 namespace memory { namespace synchronize {
 
 	// @todo - platform independent...

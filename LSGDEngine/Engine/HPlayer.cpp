@@ -1,5 +1,5 @@
 #include "HEnginePCH.h"
-#include "HLocalPlayer.h"
+#include "HPlayer.h"
 
 using namespace lsgd;
 
