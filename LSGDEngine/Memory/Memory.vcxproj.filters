@@ -15,12 +15,14 @@
     <ClInclude Include="HBaseAllocator.h">
       <Filter>Allocators</Filter>
     </ClInclude>
+    <ClInclude Include="HStompMalloc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HMemoryPCH.cpp" />
     <ClCompile Include="HGenericMemory.cpp" />
     <ClCompile Include="HBinnedMalloc.cpp" />
     <ClCompile Include="HMemoryUtil.cpp" />
+    <ClCompile Include="HStompMalloc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Allocators">

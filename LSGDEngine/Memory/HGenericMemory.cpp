@@ -2,12 +2,21 @@
 #include "HGenericMemory.h"
 
 #include "HBinnedMalloc.h"
+#include "HStompMalloc.h"
 
 #define USE_TEMP_ALLOC_DEALLOC 1
 
 #define USE_BINNED_MALLOC 1
+#define USE_STOMP_MALLOC 0
 
 #if USE_BINNED_MALLOC
+
+HStompMalloc& GetStompMalloc()
+{
+	static HStompMalloc GStompMalloc;
+	return GStompMalloc;
+}
+
 HBinnedMalloc& GetBinnedMalloc()
 {
 	static HBinnedMalloc GBinnedMalloc;
@@ -17,6 +26,9 @@ HBinnedMalloc& GetBinnedMalloc()
 HMalloc* GetMalloc()
 {
 	static HMalloc* GMalloc = &GetBinnedMalloc();
+#if USE_STOMP_MALLOC
+	GMalloc = &GetStompMalloc();
+#endif
 	return GMalloc;
 }
 #endif

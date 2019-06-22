@@ -7,6 +7,8 @@
 		- we can change bitmap version
 */
 
+#define DEBUG_HBlockAllocator 1
+
 namespace allocators
 {
 	// @todo - if we want to provide flexibility for block allocator, implement this block allocator policy
@@ -85,7 +87,7 @@ namespace allocators
 			int32 GetTotalAllocBlockNum() const
 			{
 				// memory block count requested by HMemoryPageInfo
-				int32 MemoryBlockCountForPageInfo = (MemoryPageInfoSize + BlockSize) / BlockSize;
+				int32 MemoryBlockCountForPageInfo = (MemoryPageInfoSize + BlockSize - 1) / BlockSize;
 
 				// total counts to allocate
 				int32 AvailableCounts = MemoryBlockCount - MemoryBlockCountForPageInfo;
@@ -93,10 +95,34 @@ namespace allocators
 				return AvailableCounts;
 			}
 
+			void Validate()
+			{
+#if DEBUG_HBlockAllocator
+				int32 Count = 0;
+				HFreeMemoryBlockHeader* CurrHeader = GetMemoryPageInfo()->FreeMemoryBlockHead;
+				while (CurrHeader)
+				{
+					mcheck((int64)CurrHeader != 0xFFFFFFFFFFFFFFFF);
+					mcheck(IsInRange((uint8*)CurrHeader));
+
+					// increase the memory count
+					Count++;
+					
+					CurrHeader = CurrHeader->Next;
+				}
+#endif
+			}
+
 			// construct free memory blocks
 			void ConstructFreeLists(HMemoryPageInfo* InPageInfo)
 			{
 				int32 AvailableCounts = GetTotalAllocBlockNum();
+
+				// call constructor for free memory block header
+				for (int32 Index = 0; Index < AvailableCounts; ++Index)
+				{
+					new (&(MemoryBlocks[Index].FreeMemoryBlockHeader)) HFreeMemoryBlockHeader();
+				}
 
 				// set the block0's header as head
 				InPageInfo->FreeMemoryBlockHead = &MemoryBlocks[0].FreeMemoryBlockHeader;
@@ -110,13 +136,17 @@ namespace allocators
 					// update the current header
 					CurrHeader = &MemoryBlocks[Index].FreeMemoryBlockHeader;
 				}
+
+				Validate();
 			}
 
 			// initialize memory page information using one HMemoryBlock
 			void InitializeMemoryPageInfo()
 			{
 				HMemoryPageInfo* PageInfo = GetMemoryPageInfo();
-				PageInfo->NextPage = nullptr;
+				
+				// call constructor
+				new (PageInfo) HMemoryPageInfo();
 
 				ConstructFreeLists(PageInfo);
 			}
@@ -140,11 +170,12 @@ namespace allocators
 			HMemoryBlock* AllocateBlock()
 			{
 				HFreeMemoryBlockHeader*& NewBlockHeader = GetMemoryPageInfo()->FreeMemoryBlockHead;
-				
 				HMemoryBlock* NewBlock = (HMemoryBlock*)NewBlockHeader;
 
 				// unlink the memory block
 				NewBlockHeader = NewBlockHeader->Next;
+
+				Validate();
 
 				return NewBlock;
 			}
@@ -159,13 +190,15 @@ namespace allocators
 				HFreeMemoryBlockHeader*& FreeBlockHead = GetMemoryPageInfo()->FreeMemoryBlockHead;
 				NewFreeBlock->Next = FreeBlockHead;
 				FreeBlockHead = NewFreeBlock;
+
+				Validate();
 			}
 
 			// range check for validation
 			bool IsInRange(uint8* InAddress) const
 			{
-				uint8* StartAddress = (uint8*)& MemoryBlocks[0];
-				uint8* EndAddress = (uint8*)& MemoryBlocks[GetTotalAllocBlockNum() - 1] + BlockSize;
+				uint8* StartAddress = (uint8*)&MemoryBlocks[0];
+				uint8* EndAddress = (uint8*)&MemoryBlocks[GetTotalAllocBlockNum()];
 
 				return (InAddress >= StartAddress) && (InAddress < EndAddress);
 			}
@@ -296,6 +329,7 @@ namespace allocators
 		void* AllocateMemoryBlock()
 		{
 			HMemoryPage* AllocatablePage = FindMemoryPageToAllocate();
+			mcheck(AllocatablePage->HasFreeBlock());
 			return (void*)AllocatablePage->AllocateBlock();
 		}
 
