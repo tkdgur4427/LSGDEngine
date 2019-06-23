@@ -165,7 +165,8 @@ void* HBinnedMalloc::Malloc(size_t Count, uint32 Alignment)
 	mcheck(HMemoryUtil::IsAligned32(Alignment, BINNED_MINIMUM_ALIGNMENT));
 
 	// total size includes HBinnedMallocHeader
-	uint32 TotalSize = Count + sizeof(HBinnedMallocHeader);
+	uint32 AlignedHeaderSize = HMemoryUtil::AlignedSize32(sizeof(HBinnedMallocHeader), Alignment);
+	uint32 TotalSize = Count + AlignedHeaderSize;
 	uint32 AlignedTotalSize = HMemoryUtil::AlignedSize32(TotalSize, Alignment);
 	uint32 BinIndex = GetBinIndexFromMemorySize(AlignedTotalSize);
 

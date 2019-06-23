@@ -33,12 +33,16 @@ namespace allocators
 			PageSize = Policy::PageSize,
 		};
 
+		static const int64 SentinelExpectedValue = 0xdeadbeefdeadbeef;
+
 		struct HFreeMemoryBlockHeader
 		{
 			HFreeMemoryBlockHeader()
 				: Next(nullptr)
+				, Sentinal(SentinelExpectedValue)
 			{}
-
+			
+			int64 Sentinal;
 			HFreeMemoryBlockHeader* Next;
 		};
 
@@ -104,6 +108,9 @@ namespace allocators
 				{
 					mcheck((int64)CurrHeader != 0xFFFFFFFFFFFFFFFF);
 					mcheck(IsInRange((uint8*)CurrHeader));
+
+					// check sentinel value for under/over run
+					mcheck(CurrHeader->Sentinal == SentinelExpectedValue);
 
 					// increase the memory count
 					Count++;
@@ -188,7 +195,11 @@ namespace allocators
 				// link to free block
 				HFreeMemoryBlockHeader* NewFreeBlock = (HFreeMemoryBlockHeader*)InPointer;
 				HFreeMemoryBlockHeader*& FreeBlockHead = GetMemoryPageInfo()->FreeMemoryBlockHead;
+				
+				// initialize new free block
 				NewFreeBlock->Next = FreeBlockHead;
+				NewFreeBlock->Sentinal = SentinelExpectedValue;
+
 				FreeBlockHead = NewFreeBlock;
 
 				Validate();

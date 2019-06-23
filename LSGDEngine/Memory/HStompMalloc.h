@@ -13,7 +13,7 @@ class HStompMalloc : public HMalloc
 {
 public:
 	static const int64 SentinelExpectedValue = 0xdeadbeafdeadbeef;
-	static const bool bUseUnderrunMode = true;
+	static const bool bUseUnderrunMode = false;
 	
 	enum
 	{
