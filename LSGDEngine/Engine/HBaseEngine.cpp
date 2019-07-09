@@ -12,6 +12,8 @@ void HBaseEngine::Initialize()
 	GameInstance = HObjectHandleUnique<HGameInstance>(AllocateHObject(HGameInstance::GetClassName()));
 	// add it to the root set
 	GameInstance.SetRoot();
+	// call initialize
+	GameInstance->Initialize();
 
 	// create window frame
 	WindowFrame = HPlatformDeviceMisc::CreateWindowFrame();

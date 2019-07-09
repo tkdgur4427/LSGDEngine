@@ -15,6 +15,8 @@ namespace lsgd { namespace thread {
 		}
 
 		void CreateHardwareThread(shared_ptr<HThreadRunnable> InThreadRunnable);
+	
+		//@todo - need to tick function to check software thread's ref count == 1, need to pop out and delete hardware thread
 
 	protected:
 		HThreadManager() {}

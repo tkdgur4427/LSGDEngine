@@ -25,6 +25,12 @@ void HInternetAddrBSD::SetPort(int32 InPort)
 
 shared_ptr<HInternetAddrBSD> HInternetAddrBSD::CreateInternetAddr(uint32 Address, uint32 Port)
 {
+	// if address is 0, it means any thread
+	if (Address == 0)
+	{
+		Address = INADDR_ANY;
+	}
+
 	shared_ptr<HInternetAddrBSD> NewAddr = make_shared<HInternetAddrBSD>();
 	NewAddr->SetIp(Address);
 	NewAddr->SetPort(Port);
@@ -358,6 +364,41 @@ int32 HSocketBSD::GetPortNo()
 	return ntohs(((sockaddr_in&)Addr).sin_port);
 }
 
+bool HSocketBSD::SetReuseAddr(bool bAllowReuse)
+{
+	int32 Param = bAllowReuse ? 1 : 0;
+	int32 ReuseAddrResult = setsockopt(Socket, SOL_SOCKET, SO_REUSEADDR, (char*)&Param, sizeof(Param));
+#if SO_REUSEPORT
+	if (ReuseAddrResult)
+	{
+		return setsockopt(Socket, SOL_SOCKET, SO_REUSEPORT, (char*)& Param, sizeof(Param)) == 0;
+	}
+#endif
+	return ReuseAddrResult == 0;
+}
+
+bool HSocketBSD::SetSendBufferSize(int32 Size, int32& NewSize)
+{
+	int32 SizeSize = sizeof(int32);
+	bool bOk = setsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (char*)& Size, SizeSize) == 0;
+
+	// read back the value we set
+	getsockopt(Socket, SOL_SOCKET, SO_SNDBUF, (char*)& NewSize, &SizeSize) == 0;
+
+	return bOk;
+}
+
+bool HSocketBSD::SetRecvBufferSize(int32 Size, int32& NewSize)
+{
+	int32 SizeSize = sizeof(int32);
+	bool bOk = setsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (char*)& Size, SizeSize) == 0;
+
+	// read back the value we set
+	getsockopt(Socket, SOL_SOCKET, SO_RCVBUF, (char*)& NewSize, &SizeSize) == 0;
+
+	return bOk;
+}
+
 int32 HSocketSubsystemBSD::GetProtocolFamilyValue(ESocketProtocolFamily InProtocol) const
 {
 	switch (InProtocol)
@@ -435,6 +476,15 @@ void HSocketSubsystemWindows::Destroy()
 		delete SocketSingleton;
 		SocketSingleton = nullptr;
 	}
+}
+
+HSocketSubsystemWindows* HSocketSubsystemWindows::Get()
+{
+	if (SocketSingleton)
+	{
+		return SocketSingleton;
+	}
+	return nullptr;
 }
 
 bool HSocketSubsystemWindows::Init()

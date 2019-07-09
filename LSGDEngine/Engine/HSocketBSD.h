@@ -137,7 +137,7 @@ namespace lsgd { namespace networking {
 		void SetAnyIPv4Address();
 		HString ToString(bool bAppendPort) const;
 
-		static shared_ptr<HInternetAddrBSD> CreateInternetAddr(uint32 Address, uint32 Port);
+		static shared_ptr<HInternetAddrBSD> CreateInternetAddr(uint32 Address = 0, uint32 Port = 0);
 
 		// the internet ip address structure
 		sockaddr_storage Addr;
@@ -174,6 +174,12 @@ namespace lsgd { namespace networking {
 		bool SetLinger(bool bShouldLinger, int32 Timeout);
 		int32 GetPortNo();
 
+		bool SetReuseAddr(bool bAllowReuse);
+		bool SetSendBufferSize(int32 Size, int32& NewSize);
+		bool SetRecvBufferSize(int32 Size, int32& NewSize);
+
+		HString GetDesc() const { return SocketDescription; }
+
 	protected:
 		// the type of socket
 		const ESocketType SocketType;
@@ -195,6 +201,10 @@ namespace lsgd { namespace networking {
 	public:
 		virtual int32 GetProtocolFamilyValue(ESocketProtocolFamily InProtocol) const = 0;
 		virtual HSocketBSD* CreateSocket(const HString& InSocketType, const HString& InSocketDescription, ESocketProtocolFamily ProtocolType) = 0;
+		virtual void DestroySocket(HSocketBSD* InSocket)
+		{
+			delete InSocket;
+		}
 		virtual HSocketBSD* InternalBSDSocketFactory(SOCKET Socket, ESocketType InSocketType, const HString& InSocketDescription, ESocketProtocolFamily InSocketProtocol) = 0;
 		virtual ESocketErrors TranslateErrorCode(int32 Code) = 0;
 	};
@@ -218,6 +228,7 @@ namespace lsgd { namespace networking {
 		{}
 
 		static HSocketSubsystemWindows* Create();
+		static HSocketSubsystemWindows* Get();
 		static void Destroy();
 
 		bool Init();
@@ -231,5 +242,4 @@ namespace lsgd { namespace networking {
 		// holds the single instantiation of this subsystem
 		static HSocketSubsystemWindows* SocketSingleton;
 	};
-
 } }

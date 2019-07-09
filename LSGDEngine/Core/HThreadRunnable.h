@@ -12,7 +12,7 @@ namespace lsgd { namespace thread {
 		you can think of 'HThreadRunnable' as software thread
 	*/
 
-	class HThreadRunnable
+	class HThreadRunnable : public enable_shared_from_this<HThreadRunnable>
 	{
 	public:
 		HThreadRunnable(const HString& InName)

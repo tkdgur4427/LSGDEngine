@@ -153,6 +153,7 @@ namespace lsgd
 		{
 			HObjectArrayData Result;
 			HSwap(Result, Data);
+			Invalidate();
 			return Result;
 		}
 

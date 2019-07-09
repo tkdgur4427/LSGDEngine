@@ -235,6 +235,12 @@
     <ClInclude Include="HNetConnection.h">
       <Filter>Network\V1</Filter>
     </ClInclude>
+    <ClInclude Include="HTcpSocketBuilder.h">
+      <Filter>Network\V1</Filter>
+    </ClInclude>
+    <ClInclude Include="HIpDriverImpl.h">
+      <Filter>Network\V1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -408,6 +414,12 @@
       <Filter>Network\V1</Filter>
     </ClCompile>
     <ClCompile Include="HNetConnection.cpp">
+      <Filter>Network\V1</Filter>
+    </ClCompile>
+    <ClCompile Include="HTcpSocketBuilder.cpp">
+      <Filter>Network\V1</Filter>
+    </ClCompile>
+    <ClCompile Include="HIpDriverImpl.cpp">
       <Filter>Network\V1</Filter>
     </ClCompile>
   </ItemGroup>

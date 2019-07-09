@@ -2,6 +2,9 @@
 
 #include "..\Engine\HGameInstance.h"
 
+// tcp ip driver
+#include "..\Engine\HIpDriver.h"
+
 namespace lsgd
 {
 	DECLARE_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
@@ -12,6 +15,12 @@ namespace lsgd
 
 		HGameInstanceOverride() {}
 		virtual ~HGameInstanceOverride() {}
+
+		virtual void Initialize() override;
+		virtual void Destroy() override;
+		virtual void Tick(float DeltaTime) override;
+
+		HObjectHandleUnique<HIpDriver> IpDriver;
 	};
 }
 

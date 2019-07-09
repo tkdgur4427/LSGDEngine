@@ -17,6 +17,12 @@ namespace lsgd {
 		virtual void Destroy();
 		virtual void Tick(float DeltaTime);
 
+		void HandleListenerConnectionAccepted(const HString& SocketDesc);
+		void DisconnectClient(const HString& SocketDesc);
+
+		// implementation
+		shared_ptr<class HIpDriverImpl> Implementation;
+
 		HObjectHandleUnique<HNetConnection> ServerConnection;
 		HArray<HObjectHandleUnique<HNetConnection>> ClientConnections;
 	};
