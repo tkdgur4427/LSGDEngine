@@ -16,5 +16,7 @@ namespace lsgd
 		virtual void Initialize() override;
 		virtual void Destroy() override;
 		virtual void Tick(float DeltaTime) override;
+
+		HString SocketDesc;
 	};
 }

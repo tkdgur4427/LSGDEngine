@@ -39,10 +39,6 @@ public:
 
 		shared_ptr<HInternetAddrBSD> LocalAddress = HInternetAddrBSD::CreateInternetAddr(0, PortNumber);
 		Endpoint = LocalAddress;
-
-		// trigger the runnable thread
-		shared_ptr<HThreadRunnable> ThisRunnable = shared_from_this();
-		HThreadManager::GetSingleton()->CreateHardwareThread(ThisRunnable);
 	}
 
 	virtual ~HTcpListener()
@@ -64,6 +60,10 @@ public:
 
 		// it should have listen socket!
 		check(Socket);
+
+		// trigger the runnable thread
+		shared_ptr<HThreadRunnable> ThisRunnable = shared_from_this();
+		HThreadManager::GetSingleton()->CreateHardwareThread(ThisRunnable);
 	}
 
 	virtual void Run() override
@@ -73,9 +73,6 @@ public:
 
 		// create remote address for reusing
 		shared_ptr<HInternetAddrBSD> RemoteAddress = HInternetAddrBSD::CreateInternetAddr();
-
-		// initialize
-		Init();
 
 		while (!Stopping)
 		{
@@ -135,6 +132,7 @@ void HTcpIpDriverImpl::Init()
 {
 	// create tcp listener thread
 	TcpListener = make_shared<HTcpListener>(this);
+	TcpListener->Init();
 }
 
 void HTcpIpDriverImpl::Destroy()

@@ -28,10 +28,11 @@ namespace lsgd
 	};
 
 	// object helper class 
-	struct HObjectHelper
+	class HObjectHelper
 	{
+	public:
 		// wtf... msbuild..
-		static HObject* GetObject(uint32 Index, uint32 SerialNumber);
+		static HObject* GetObjectZ(uint32 Index, uint32 SerialNumber);
 		static void SetAsDestroyed(const HObjectArrayData& InData);
 		static void SetAsRootSet(const HObjectArrayData& InData);
 		static void UnsetAsRootSet(const HObjectArrayData& InData);
@@ -46,7 +47,7 @@ namespace lsgd
 		// whether the handle has ownership of a object
 		bool IsOwned() const { return bIsOwned; }
 		// whether object handle is valid or not
-		bool IsValid() const { return HObjectHelper::GetObject(Data.Index, Data.SerialNumber) != nullptr; }
+		bool IsValid() const { return HObjectHelper::GetObjectZ(Data.Index, Data.SerialNumber) != nullptr; }
 
 		// get the object
 		template <typename ObjectType>
@@ -59,7 +60,7 @@ namespace lsgd
 			}
 
 			// @todo - HCast<>
-			return (ObjectType*)HObjectHelper::GetObject(Data.Index, Data.SerialNumber);
+			return (ObjectType*)HObjectHelper::GetObjectZ(Data.Index, Data.SerialNumber);
 		}
 
 		void SetRoot()

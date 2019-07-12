@@ -16,10 +16,14 @@ void HGameInstanceOverride::Initialize()
 
 	IpDriver = HObjectHandleUnique<HIpDriver>(AllocateHObject(HIpDriver::GetClassName()));
 	IpDriver.SetRoot();
+
+	IpDriver->Initialize();
 }
 
 void HGameInstanceOverride::Destroy()
 {
+	IpDriver->Destroy();
+
 	HGameInstance::Destroy();
 }
 
@@ -27,4 +31,5 @@ void HGameInstanceOverride::Tick(float DeltaTime)
 {
 	HGameInstance::Tick(DeltaTime);
 
+	IpDriver->Tick(DeltaTime);
 }

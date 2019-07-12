@@ -17,16 +17,20 @@ void HIpDriver::Reflect()
 void HIpDriver::Initialize()
 {
 	Implementation = make_shared<HIpDriverImpl, HTcpIpDriverImpl>(*this);
+	Implementation->Init();
 }
 
 void HIpDriver::Destroy()
 {
-
+	if (Implementation)
+	{
+		Implementation->Destroy();
+	}
 }
 
 void HIpDriver::Tick(float DeltaTime)
 {
-	
+	check(Implementation);
 }
 
 void HIpDriver::HandleListenerConnectionAccepted(const HString& SocketDesc)

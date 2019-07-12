@@ -6,7 +6,7 @@
 
 using namespace lsgd;
 
-HObject* HObjectHelper::GetObject(uint32 Index, uint32 SerialNumber)
+HObject* HObjectHelper::GetObjectZ(uint32 Index, uint32 SerialNumber)
 {
 	return HObjectArray::GetSingleton()->GetObject(Index, SerialNumber);
 }

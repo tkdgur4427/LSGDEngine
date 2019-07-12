@@ -3,8 +3,6 @@
 // HTypeDatabaseUtil
 #include "HTypeDatabaseUtils.h"
 
-#include "HObjectHandle.h"
-
 // HObject reflection
 #include "HReflectDeclare.h"
 

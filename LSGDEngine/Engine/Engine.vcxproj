@@ -90,6 +90,8 @@
       <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath;../../ThirdParty/imgui</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HEnginePCH.h</PrecompiledHeaderFile>
+      <CompileAsManaged>
+      </CompileAsManaged>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
