@@ -17,14 +17,27 @@ namespace lsgd {
 		virtual void Destroy();
 		virtual void Tick(float DeltaTime);
 
+		// tick
+		void ProcessPendingConnections();
+
+		// communication line to HIpDriverImpl
 		void HandleListenerConnectionAccepted(const HString& SocketDesc);
 		void DisconnectClient(const HString& SocketDesc);
+		void HandleRecvCommand(const HString& InSocketDesc, uint8* InBuffer, uint32 InSize);
+
+		// deferred connection creation
+		struct HConnectionCreationDescription
+		{
+			HString SocketDesc;
+		};
 
 		// implementation
 		shared_ptr<class HIpDriverImpl> Implementation;
 
 		HObjectHandleUnique<HNetConnection> ServerConnection;
 		HArray<HObjectHandleUnique<HNetConnection>> ClientConnections;
+
+		container::HConcurrentQueue<HConnectionCreationDescription> PendingConnections;
 	};
 
 }

@@ -180,7 +180,7 @@ namespace lsgd { namespace networking {
 
 		HString GetDesc() const { return SocketDescription; }
 
-	protected:
+	public:
 		// the type of socket
 		const ESocketType SocketType;
 		// debug desc of socket usage

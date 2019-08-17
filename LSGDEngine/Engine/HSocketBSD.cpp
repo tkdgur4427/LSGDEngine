@@ -25,14 +25,15 @@ void HInternetAddrBSD::SetPort(int32 InPort)
 
 shared_ptr<HInternetAddrBSD> HInternetAddrBSD::CreateInternetAddr(uint32 Address, uint32 Port)
 {
-	// if address is 0, it means any thread
-	if (Address == 0)
-	{
-		Address = INADDR_ANY;
-	}
-
 	shared_ptr<HInternetAddrBSD> NewAddr = make_shared<HInternetAddrBSD>();
-	NewAddr->SetIp(Address);
+	if (Address == 0) // when address is 0, it means that SetAnyIpv4Address
+	{
+		NewAddr->SetAnyIPv4Address();
+	}
+	else
+	{
+		NewAddr->SetIp(Address);
+	}
 	NewAddr->SetPort(Port);
 	return NewAddr;
 }
@@ -120,7 +121,7 @@ bool HSocketBSD::Close()
 
 bool HSocketBSD::Bind(const HInternetAddrBSD& Addr)
 {
-	return bind(Socket, (const sockaddr*)&(Addr.Addr), Addr.GetStorageSize()) == 0;
+	return bind(Socket, (const sockaddr*)&(Addr.Addr), Addr.GetStorageSize()) >= 0;
 }
 
 bool HSocketBSD::Connect(const HInternetAddrBSD& Addr)
@@ -136,7 +137,14 @@ bool HSocketBSD::Connect(const HInternetAddrBSD& Addr)
 
 bool HSocketBSD::Listen(int32 MaxBacklog)
 {
-	return listen(Socket, MaxBacklog);
+	int32 Result = listen(Socket, MaxBacklog);
+	if (Result < 0)
+	{
+		// something wrong happen!
+		ESocketErrors Error = SocketSubsystem->TranslateErrorCode(Result);
+		check(Error == ESocketErrors::SE_NO_ERROR);
+	}	
+	return Result >= 0;
 }
 
 HSocketBSD* HSocketBSD::Accept(const HString& InSocketDescription)
@@ -181,7 +189,7 @@ void HSocketBSD::GetAddress(HInternetAddrBSD& OutAddr)
 bool HSocketBSD::SetNonBlocking(bool bIsNonBlocking)
 {
 	u_long Value = bIsNonBlocking ? true : false;
-	return ioctlsocket(Socket, FIONBIO, &Value) == 0;
+	return ioctlsocket(Socket, FIONBIO, &Value) >= 0;
 }
 
 bool HSocketBSD::SetNoDelay(bool bIsNoDelay)
@@ -347,7 +355,7 @@ bool HSocketBSD::SetLinger(bool bShouldLinger, int32 Timeout)
 	ling.l_onoff = bShouldLinger;
 	ling.l_linger = Timeout;
 
-	return setsockopt(Socket, SOL_SOCKET, SO_LINGER, (char*)&ling, sizeof(ling)) == 0;
+	return setsockopt(Socket, SOL_SOCKET, SO_LINGER, (char*)&ling, sizeof(ling)) >= 0;
 }
 
 int32 HSocketBSD::GetPortNo()
@@ -374,7 +382,7 @@ bool HSocketBSD::SetReuseAddr(bool bAllowReuse)
 		return setsockopt(Socket, SOL_SOCKET, SO_REUSEPORT, (char*)& Param, sizeof(Param)) == 0;
 	}
 #endif
-	return ReuseAddrResult == 0;
+	return ReuseAddrResult >= 0;
 }
 
 bool HSocketBSD::SetSendBufferSize(int32 Size, int32& NewSize)

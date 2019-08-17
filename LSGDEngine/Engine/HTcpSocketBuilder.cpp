@@ -22,17 +22,17 @@ networking::HSocketBSD* HTcpSocketBuilder::Build() const
 
 			if (!Error)
 			{
+				Error = !Socket->SetNonBlocking(!bBlocking);
+			}
+
+			if (!Error)
+			{
 				Error = Bound && !Socket->Bind(*BoundEndpointAddr);
 			}
 
 			if (!Error)
 			{
 				Error = Listen && !Socket->Listen(ListenBacklog);
-			}
-
-			if (!Error)
-			{
-				Error = !Socket->SetNonBlocking(!bBlocking);
 			}
 
 			if (!Error)
@@ -75,6 +75,7 @@ HTcpSocketBuilder& HTcpSocketBuilder::AsReusable()
 HTcpSocketBuilder& HTcpSocketBuilder::BoundToEndpoint(shared_ptr<networking::HInternetAddrBSD> InBoundEndpoint)
 {
 	BoundEndpoint = InBoundEndpoint;
+	Bound = true;
 	return *this;
 }
 
