@@ -6,6 +6,7 @@ using namespace lsgd::reflect;
 
 HMemoryArchive::HMemoryArchive(HArray<uint8>& InBuffer)
 	: Memory(InBuffer)
+	, Offset(0)
 {
 
 }
@@ -29,12 +30,23 @@ HReflectionContext& HMemoryArchive::operator<<(class HObject*& Value)
 
 void HMemoryArchive::Serialize(void* Value, int64 Length)
 {
-	uint32 CurrSize = Memory.size();
-	uint32 StartOffset = CurrSize;
+	if (bIsSaving)
+	{
+		uint32 CurrSize = Memory.size();
+		uint32 StartOffset = CurrSize;
 
-	CurrSize += Length;
-	Memory.resize(CurrSize);
-	
-	uint8* DataOffset = Memory.data();
-	HGenericMemory::MemCopy(DataOffset + StartOffset, Value, Length);
+		CurrSize += Length;
+		Memory.resize(CurrSize);
+
+		uint8* DataOffset = Memory.data();
+		HGenericMemory::MemCopy(DataOffset + StartOffset, Value, Length);
+	}
+	else
+	{
+		uint8* StartAddress = Memory.data() + Offset;
+		HGenericMemory::MemCopy(Value, StartAddress, Length);
+		
+		// update the offset
+		Offset += Length;
+	}
 }

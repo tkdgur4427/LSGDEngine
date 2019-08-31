@@ -233,7 +233,7 @@ namespace lsgd
 	template <class ObjectType>
 	struct HRemoveObjectHandleUnique
 	{
-		
+		using Type = ObjectType;
 	};
 
 	template <class ObjectType>

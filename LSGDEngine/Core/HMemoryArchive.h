@@ -18,6 +18,9 @@ namespace lsgd
 
 		virtual void Serialize(void* Value, int64 Length) override;
 
+		bool IsEof(int64 Size = 0) const { return Offset + Size > Memory.size(); }
+
 		HArray<uint8>& Memory;
+		int64 Offset;
 	};
 }

@@ -26,7 +26,7 @@ HTcpIpDriverImpl::~HTcpIpDriverImpl()
 #include "..\Core\HThreadManager.h"
 using namespace lsgd::thread;
 
-#define IPDRIVERIMPL_TEST_DEBUG_CODE 1
+#define IPDRIVERIMPL_TEST_DEBUG_CODE 0
 
 // implements a runnable that listens for incoming TCP connections
 class HTcpListener : public HThreadRunnable
@@ -35,6 +35,7 @@ public:
 	HTcpListener(HTcpIpDriverImpl* InOwner)
 		: HThreadRunnable("TcpListener")
 		, Owner(InOwner)
+		, Stopping(false)
 	{
 		// @todo - temporary setting it as 6000
 		int32 PortNumber = 6000;
@@ -51,8 +52,8 @@ public:
 	void Init()
 	{
 #if IPDRIVERIMPL_TEST_DEBUG_CODE
-		//ISocketSubsystem* SocketSubsystem = HSocketSubsystemWindows::Create();
-		//TestCode();
+		ISocketSubsystem* SocketSubsystem = HSocketSubsystemWindows::Create();
+		TestCode();
 #endif
 
 		// create listen socket reader
@@ -307,12 +308,158 @@ public:
 	HTcpIpDriverImpl* Owner;
 };
 
+// the raw packet structure
+struct HPacketHeaderLayout
+{
+	uint16 PacketSize;
+};
+
+// runnable object representing the receive thread, if enabled
+class HTcpReceiver : public HThreadRunnable
+{
+public:
+	HTcpReceiver(HTcpIpDriverImpl* InOwner)
+		: HThreadRunnable("ReceivePacketThread")
+		, Owner(InOwner)
+		, ReceiveQueue(1024*32) // @todo temporary magic number
+	{
+		bIsRunning.store(true);
+	}
+
+	virtual ~HTcpReceiver()
+	{}
+
+	void Init()
+	{
+		// trigger the runnable thread
+		shared_ptr<HThreadRunnable> ThisRunnable = shared_from_this();
+		HThreadManager::GetSingleton()->CreateHardwareThread(ThisRunnable);
+	}
+
+	virtual void Run() override
+	{
+		while (bIsRunning.load() == true)
+		{
+			HArray<HTcpIpDriverImpl::HConnectedSocketState> ConnectedSocketStates;
+			{
+				// getting connected sockets by locking TcpIpDriverImplCS
+				HScopedLock Lock(Owner->TcpIpDriverImplCS);
+				
+				// @todo - note that it can be dangerous for not considering disconnection synchronization with this!
+				for (auto Iter = Owner->ConnectedSockets.begin(); Iter != Owner->ConnectedSockets.end(); ++Iter)
+				{
+					ConnectedSocketStates.push_back(Iter->second);
+				}
+			}
+
+			// make it sleep when there are no connected socket states
+			if (ConnectedSocketStates.size() == 0)
+			{
+				//HGenericPlatformMisc::Sleep(0.02);
+			}
+
+			// @todo - need to use taskgraph and process them with task threads
+			// collect the received raw data from the socket
+			for (auto& State : ConnectedSocketStates)
+			{
+				uint32 PendingDataSize;
+				if (State.Socket->HasPendingData(PendingDataSize))
+				{
+					int32 BytesToRead = 0;
+					
+					// get old size
+					int32 OldSize = State.ReceivedBuffer.size();
+					
+					// resize properly
+					State.ReceivedBuffer.resize(State.ReceivedBuffer.size() + PendingDataSize);
+
+					// get start-address
+					uint8* StartAddress = State.ReceivedBuffer.data() + OldSize;
+
+					// recv packet from socket
+					if (State.Socket->Recv(StartAddress, PendingDataSize, BytesToRead))
+					{
+						check(PendingDataSize == BytesToRead); // should be equal! 
+					}
+					else
+					{
+						check(false); // something wrong happened, need to check!
+					}
+				}
+			}
+
+			// @todo - need to use taskgraph and process them with task threads
+			// process the packet that can be processed
+			for (auto& State : ConnectedSocketStates)
+			{
+				// retrieve the packet
+				HPacketHeaderLayout Layout;
+				int32 LayoutSize = sizeof(HPacketHeaderLayout);
+				
+				HMemoryArchive Archive(State.ReceivedBuffer);
+				Archive.bIsSaving = false;
+
+				while (Archive.IsEof(LayoutSize))
+				{
+					// serialize header layout
+					Archive.Serialize((void*)& Layout, LayoutSize);
+
+					// start offset for serialize real packet data excluding header
+					uint8* SrcStartAddress = State.ReceivedBuffer.data() + sizeof(Layout);
+
+					// generate received packet
+					HReceivePacket ReceivedPacket;
+					ReceivedPacket.PacketBytes.resize(Layout.PacketSize);
+					HGenericMemory::MemCopy(ReceivedPacket.PacketBytes.data(), SrcStartAddress, Layout.PacketSize);
+					ReceivedPacket.PlatformTimeSeconds = HGenericPlatformMisc::GetSeconds();
+					ReceivedPacket.SocketDesc = State.SocketDesc;
+
+					// add received queue
+					ReceiveQueue.Enqueue(ReceivedPacket);
+				}
+			}
+		}
+	}
+
+	virtual void Terminate()
+	{
+		bIsRunning.store(false);
+	}
+
+	// represents a packet received and/or error encountered by the receive thread, if enabled, queued for the game thread to process
+	struct HReceivePacket
+	{
+		// content of the packet as received from the socket
+		HArray<uint8> PacketBytes;
+		// socket description
+		HString SocketDesc;
+		// the error triggered by the socket RecvFrom call
+		HString Error;
+		// FPlatfromTime::Seconds() at which this packet and/or error was received; can be used for more accurate ping calculation
+		double PlatformTimeSeconds;
+	};
+
+	// thread-safe queue of received packets
+	// - the Run() function is the producer
+	// - the consumer thread will be temporary UIpDriver 
+	// @todo - to be multi-threaded
+	container::HCircularQueue<HReceivePacket> ReceiveQueue;
+	HAtomic<bool> bIsRunning;
+
+	// owner
+	HTcpIpDriverImpl* Owner;
+	ISocketSubsystem* SocketSubSystem;
+};
 
 void HTcpIpDriverImpl::Init()
 {
 	// create tcp listener thread
 	TcpListener = make_shared<HTcpListener>(this);
 	TcpListener->Init();
+
+	// create tcp receiver thread
+	TcpReceiver = make_shared<HTcpReceiver>(this);
+	TcpReceiver->Init();
 }
 
 void HTcpIpDriverImpl::Destroy()
@@ -327,11 +474,17 @@ void HTcpIpDriverImpl::Update()
 
 bool HTcpIpDriverImpl::HandleListenerConnectionAccepted(networking::HSocketBSD* InSocket)
 {
+	HScopedLock Lock(TcpIpDriverImplCS);
+
 	bool IsExisted = (ConnectedSockets.find(InSocket->GetDesc()) != ConnectedSockets.end());
 	check(!IsExisted);
 
+	HConnectedSocketState NewState;
+	NewState.SocketDesc = InSocket->GetDesc();
+	NewState.Socket = InSocket;
+
 	// insert the socket
-	ConnectedSockets.insert({ InSocket->GetDesc(), InSocket });
+	ConnectedSockets.insert({ NewState.SocketDesc, NewState });
 
 	// notify callback to owner
 	Owner.HandleListenerConnectionAccepted(InSocket->GetDesc());
@@ -341,6 +494,8 @@ bool HTcpIpDriverImpl::HandleListenerConnectionAccepted(networking::HSocketBSD* 
 
 bool HTcpIpDriverImpl::DisconnectSocket(const HString& SocketDesc)
 {
+	HScopedLock Lock(TcpIpDriverImplCS);
+
 	bool IsExisted = (ConnectedSockets.find(SocketDesc) != ConnectedSockets.end());
 	if (IsExisted)
 	{

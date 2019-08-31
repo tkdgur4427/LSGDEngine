@@ -28,6 +28,8 @@
 
 #include "HConcurrentQueue.h"
 
+#include "HCircularQueue.h"
+
 #include "HCString.h"
 
 #include "HAssert.h"

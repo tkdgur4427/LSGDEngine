@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="HAssert.h" />
     <ClInclude Include="HCastType.h" />
+    <ClInclude Include="HCircularQueue.h" />
     <ClInclude Include="HClassRedirector.h" />
     <ClInclude Include="HClassType.h" />
     <ClInclude Include="HCommonTypeHelper.h" />

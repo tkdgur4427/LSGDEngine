@@ -5,6 +5,8 @@ using namespace lsgd;
 
 IMPLEMENT_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
 
+IMPLEMENT_CLASS_TYPE1(HIocpDummy, HObject)
+
 void HGameInstanceOverride::Reflect()
 {
 
@@ -32,4 +34,9 @@ void HGameInstanceOverride::Tick(float DeltaTime)
 	HGameInstance::Tick(DeltaTime);
 
 	IpDriver->Tick(DeltaTime);
+}
+
+void HIocpDummy::Reflect()
+{
+	reflect::HTypeDatabase::GetSingleton()->AddClassField<HIocpDummy>("Data", &HIocpDummy::Data);
 }

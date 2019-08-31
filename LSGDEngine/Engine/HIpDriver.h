@@ -4,13 +4,19 @@
 
 namespace lsgd {
 
+	// forward declaration
+	namespace networking
+	{
+		class ISocketSubsystem;
+	}
+
 	DECLARE_CLASS_TYPE1(HIpDriver, HObject)
 	class HIpDriver : public HObject
 	{
 	public:
 		GENERATE_CLASS_BODY(HIpDriver)
 
-		HIpDriver() {}
+			HIpDriver() {}
 		virtual ~HIpDriver() {}
 
 		virtual void Initialize();
@@ -39,5 +45,4 @@ namespace lsgd {
 
 		container::HConcurrentQueue<HConnectionCreationDescription> PendingConnections;
 	};
-
 }

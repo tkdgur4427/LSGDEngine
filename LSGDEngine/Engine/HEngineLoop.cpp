@@ -142,11 +142,11 @@ void HEngineLoop::Loop()
 	while (!RawMainThreadRunnabe->IsTerminated())
 	{
 		// create task
-		shared_ptr<HGraphEvent> GraphEvent = HGraphTask<HEngineLoopTickTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndDispatchWhenReady(*this);
-		Prerequisites.push_back(GraphEvent);
+		shared_ptr<HBaseGraphTask> GameTick = HGraphTask<HEngineLoopTickTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndHold(*this);
 
 		// wait until complete the task 'HEngineLoopTickTask'		
-		TaskGraph->WaitUntilTasksComplete(Prerequisites, true, "MainThread");
+		TaskGraph->DispatchAndWaitUntilTaskComplete(GameTick, true, "MainThread");
+		
 		Prerequisites.clear();
 	}
 }
@@ -189,6 +189,6 @@ void HEngineLoop::Tick()
 	}
 
 	// trigger gc
-	gc::HGarbageCollect GarbageCollect;
+	//gc::HGarbageCollect GarbageCollect;
 	//GarbageCollect.MarkAndSweep();
 }

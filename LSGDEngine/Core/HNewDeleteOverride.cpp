@@ -26,30 +26,36 @@ void* operator new[](std::size_t count, std::nothrow_t const& tag)
 
 void operator delete  (void* ptr)
 {
-	HGenericMemory::Deallocate(ptr);
+	if (ptr != nullptr)
+		HGenericMemory::Deallocate(ptr);
 }
 
 void operator delete[](void* ptr)
 {
-	HGenericMemory::Deallocate(ptr);
+	if (ptr != nullptr)
+		HGenericMemory::Deallocate(ptr);
 }
 
 void operator delete  (void* ptr, std::nothrow_t const& tag)
 {
-	HGenericMemory::Deallocate(ptr);
+	if (ptr != nullptr)
+		HGenericMemory::Deallocate(ptr);
 }
 
 void operator delete[](void* ptr, std::nothrow_t const& tag)
 {
-	HGenericMemory::Deallocate(ptr);
+	if (ptr != nullptr)
+		HGenericMemory::Deallocate(ptr);
 }
 
 void operator delete  (void* ptr, std::size_t sz)
 {
-	HGenericMemory::Deallocate(ptr);
+	if (ptr != nullptr)
+		HGenericMemory::Deallocate(ptr);
 }
 
 void operator delete[](void* ptr, std::size_t sz)
 {
-	HGenericMemory::Deallocate(ptr);
+	if (ptr != nullptr)
+		HGenericMemory::Deallocate(ptr);
 }

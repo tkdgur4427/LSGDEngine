@@ -1,6 +1,7 @@
 #pragma once
 
 class HTcpListener;
+class HTcpReceiver;
 
 namespace lsgd { namespace networking {
 
@@ -43,10 +44,23 @@ namespace lsgd
 		virtual bool HandleListenerConnectionAccepted(networking::HSocketBSD* InSocket) override;
 		virtual bool DisconnectSocket(const HString& SocketDesc) override;
 
+		// global locker for HTcpIpDriverImpl
+		HCriticalSection TcpIpDriverImplCS;
+
 		// socket listeners
 		shared_ptr<HTcpListener> TcpListener;
 
-		// connected socket management
-		HHashMap<HString, networking::HSocketBSD*> ConnectedSockets;
+		// receiver thread
+		shared_ptr<HTcpReceiver> TcpReceiver;
+
+		// connected socket states
+		struct HConnectedSocketState
+		{
+			HString SocketDesc;
+			networking::HSocketBSD* Socket;
+			HArray<uint8> ReceivedBuffer;
+		};
+
+		HHashMap<HString, HConnectedSocketState> ConnectedSockets;
 	};
 }
