@@ -321,7 +321,6 @@ public:
 	HTcpReceiver(HTcpIpDriverImpl* InOwner)
 		: HThreadRunnable("ReceivePacketThread")
 		, Owner(InOwner)
-		, ReceiveQueue(1024*32) // @todo temporary magic number
 	{
 		bIsRunning.store(true);
 	}
@@ -355,8 +354,16 @@ public:
 			// make it sleep when there are no connected socket states
 			if (ConnectedSocketStates.size() == 0)
 			{
-				//HGenericPlatformMisc::Sleep(0.02);
+				HGenericPlatformMisc::Sleep(0.02);
+				continue;
 			}
+
+			// resize the ReceivedPackets
+			HArray<HArray<HReceivePacket>> PacketQueuePerConnection;
+			PacketQueuePerConnection.resize(ConnectedSocketStates.size());
+
+			// disconnect connection
+			HArray<HString> ConnectedSocketStatesToDisconnect;
 
 			// @todo - need to use taskgraph and process them with task threads
 			// collect the received raw data from the socket
@@ -379,6 +386,11 @@ public:
 					// recv packet from socket
 					if (State.Socket->Recv(StartAddress, PendingDataSize, BytesToRead))
 					{
+						if (BytesToRead == 0)
+						{
+							ConnectedSocketStatesToDisconnect.push_back(State.SocketDesc);
+						}
+
 						check(PendingDataSize == BytesToRead); // should be equal! 
 					}
 					else
@@ -390,6 +402,7 @@ public:
 
 			// @todo - need to use taskgraph and process them with task threads
 			// process the packet that can be processed
+			int32 StateIndex = 0;
 			for (auto& State : ConnectedSocketStates)
 			{
 				// retrieve the packet
@@ -399,23 +412,155 @@ public:
 				HMemoryArchive Archive(State.ReceivedBuffer);
 				Archive.bIsSaving = false;
 
-				while (Archive.IsEof(LayoutSize))
+				while (!Archive.IsEof(LayoutSize))
 				{
 					// serialize header layout
 					Archive.Serialize((void*)& Layout, LayoutSize);
 
-					// start offset for serialize real packet data excluding header
-					uint8* SrcStartAddress = State.ReceivedBuffer.data() + sizeof(Layout);
-
 					// generate received packet
 					HReceivePacket ReceivedPacket;
 					ReceivedPacket.PacketBytes.resize(Layout.PacketSize);
-					HGenericMemory::MemCopy(ReceivedPacket.PacketBytes.data(), SrcStartAddress, Layout.PacketSize);
+					Archive.Serialize(ReceivedPacket.PacketBytes.data(), Layout.PacketSize);
 					ReceivedPacket.PlatformTimeSeconds = HGenericPlatformMisc::GetSeconds();
 					ReceivedPacket.SocketDesc = State.SocketDesc;
 
 					// add received queue
-					ReceiveQueue.Enqueue(ReceivedPacket);
+					PacketQueuePerConnection[StateIndex].push_back(ReceivedPacket);
+				}
+
+				// keep track it for state index
+				StateIndex++;
+			}
+
+			// single threaded enqueue
+			{
+				// getting connected sockets by locking TcpIpDriverImplCS
+				HScopedLock Lock(Owner->TcpIpDriverImplCS);
+
+				for (int32 StateIndex = 0; StateIndex < PacketQueuePerConnection.size(); ++StateIndex)
+				{
+					for (auto& ReceivePacket : PacketQueuePerConnection[StateIndex])
+					{
+						Owner->ReceiveQueue.push_back(ReceivePacket);
+					}					
+				}
+			}			
+		}
+	}
+
+	virtual void Terminate()
+	{
+		bIsRunning.store(false);
+	}
+
+	HAtomic<bool> bIsRunning;
+
+	// owner
+	HTcpIpDriverImpl* Owner;
+	ISocketSubsystem* SocketSubSystem;
+};
+
+// runnable object representing the receive thread, if enabled
+class HTcpSender : public HThreadRunnable
+{
+public:
+	HTcpSender(HTcpIpDriverImpl* InOwner)
+		: HThreadRunnable("SendPacketThread")
+		, Owner(InOwner)
+	{
+		bIsRunning.store(true);
+	}
+
+	virtual ~HTcpSender()
+	{}
+
+	void Init()
+	{
+		// trigger the runnable thread
+		shared_ptr<HThreadRunnable> ThisRunnable = shared_from_this();
+		HThreadManager::GetSingleton()->CreateHardwareThread(ThisRunnable);
+	}
+
+	virtual void Run() override
+	{
+		while (bIsRunning.load() == true)
+		{
+			HArray<HTcpIpDriverImpl::HConnectedSocketState> ConnectedSocketStates;
+			{
+				// getting connected sockets by locking TcpIpDriverImplCS
+				HScopedLock Lock(Owner->TcpIpDriverImplCS);
+
+				// @todo - note that it can be dangerous for not considering disconnection synchronization with this!
+				for (auto Iter = Owner->ConnectedSockets.begin(); Iter != Owner->ConnectedSockets.end(); ++Iter)
+				{
+					ConnectedSocketStates.push_back(Iter->second);
+				}
+			}
+
+			// make it sleep when there are no connected socket states
+			if (ConnectedSocketStates.size() == 0)
+			{
+				HGenericPlatformMisc::Sleep(0.02);
+				continue;
+			}
+
+			// get the send packets
+			HArray<HSendPacket> PendingSendQueue;
+			Owner->BatchingPendingSendQueue(PendingSendQueue);
+			if (PendingSendQueue.size() == 0)
+			{
+				HGenericPlatformMisc::Sleep(0.02);
+				continue;
+			}
+
+			// generate lookup table for connected socket states
+			HHashMap<HString, int32> SocketDescToConnectedSocketState;
+
+			int32 ConnectedSocketStateIndex = 0;
+			for (auto& ConnectedSocketState : ConnectedSocketStates)
+			{
+				check(SocketDescToConnectedSocketState.find(ConnectedSocketState.SocketDesc) == SocketDescToConnectedSocketState.end());
+				SocketDescToConnectedSocketState.insert({ ConnectedSocketState.SocketDesc, ConnectedSocketStateIndex });
+				ConnectedSocketStateIndex++;
+			}
+
+			// @todo - need to use taskgraph and process them with task threads
+			// accumulate raw packet to send
+			for (auto& SendPacket : PendingSendQueue)
+			{
+				// find the connection state
+				auto ConnectedSocketStateIter = SocketDescToConnectedSocketState.find(SendPacket.SocketDesc);
+				check(ConnectedSocketStateIter != SocketDescToConnectedSocketState.end());
+
+				int32 ConnectedSocketStateIndex = ConnectedSocketStateIter->second;
+				HTcpIpDriverImpl::HConnectedSocketState* ConnectedSocketState = &ConnectedSocketStates[ConnectedSocketStateIndex];
+
+				// serialize to the state's sendbuffer
+				HMemoryArchive Archive(ConnectedSocketState->SendBuffer);
+				Archive.bIsSaving = true;
+
+				// serialize the header
+				HPacketHeaderLayout Layout;
+				Layout.PacketSize = SendPacket.PacketBytes.size();
+				
+				int32 LayoutSize = sizeof(HPacketHeaderLayout);
+				Archive.Serialize(&Layout, LayoutSize);
+
+				// serialize the content
+				Archive.Serialize(SendPacket.PacketBytes.data(), SendPacket.PacketBytes.size());
+			}
+
+			// @todo - need to use taskgraph and process them with task threads
+			for (auto& State : ConnectedSocketStates)
+			{
+				if (State.Socket->HasState(ESocketBSDParam::SP_CanWrite) == ESocketBSDReturn::SR_Yes)
+				{
+					int32 SentBytes = 0;
+					State.Socket->Send(State.SendBuffer.data(), State.SendBuffer.size(), SentBytes);
+				}
+				else
+				{
+					check(false); // something wrong happened, need to check!
 				}
 			}
 		}
@@ -426,24 +571,6 @@ public:
 		bIsRunning.store(false);
 	}
 
-	// represents a packet received and/or error encountered by the receive thread, if enabled, queued for the game thread to process
-	struct HReceivePacket
-	{
-		// content of the packet as received from the socket
-		HArray<uint8> PacketBytes;
-		// socket description
-		HString SocketDesc;
-		// the error triggered by the socket RecvFrom call
-		HString Error;
-		// FPlatfromTime::Seconds() at which this packet and/or error was received; can be used for more accurate ping calculation
-		double PlatformTimeSeconds;
-	};
-
-	// thread-safe queue of received packets
-	// - the Run() function is the producer
-	// - the consumer thread will be temporary UIpDriver 
-	// @todo - to be multi-threaded
-	container::HCircularQueue<HReceivePacket> ReceiveQueue;
 	HAtomic<bool> bIsRunning;
 
 	// owner
@@ -460,6 +587,10 @@ void HTcpIpDriverImpl::Init()
 	// create tcp receiver thread
 	TcpReceiver = make_shared<HTcpReceiver>(this);
 	TcpReceiver->Init();
+
+	// create tcp sender thread
+	TcpSender = make_shared<HTcpSender>(this);
+	TcpSender->Init();
 }
 
 void HTcpIpDriverImpl::Destroy()
@@ -469,7 +600,24 @@ void HTcpIpDriverImpl::Destroy()
 
 void HTcpIpDriverImpl::Update()
 {
+	HScopedLock Lock(TcpIpDriverImplCS);
 
+	// 1. process receive packets
+	HArray<HReceivePacket> PendingReceiveQueue;
+	for (auto& ReceivePacket : ReceiveQueue)
+	{
+		if (!Owner.HandleRecvCommand(ReceivePacket))
+		{
+			PendingReceiveQueue.push_back(ReceivePacket);
+		}		
+	}
+	ReceiveQueue.clear();
+
+	// re-add pending packets
+	for (auto& PendingPacket : PendingReceiveQueue)
+	{
+		ReceiveQueue.push_back(PendingPacket);
+	}
 }
 
 bool HTcpIpDriverImpl::HandleListenerConnectionAccepted(networking::HSocketBSD* InSocket)
@@ -503,4 +651,27 @@ bool HTcpIpDriverImpl::DisconnectSocket(const HString& SocketDesc)
 		return true;
 	}
 	return false;
+}
+
+void HTcpIpDriverImpl::HandlePendingSendPackets(const HArray<HSendPacket>& SendPacketsToHandle)
+{
+	HScopedLock Lock(TcpIpDriverImplCS);
+
+	for (auto& SendPacket : SendPacketsToHandle)
+	{
+		SendQueue.push_back(SendPacket);
+	}
+}
+
+void HTcpIpDriverImpl::BatchingPendingSendQueue(HArray<HSendPacket>& OutPendingSendQueue)
+{
+	HScopedLock Lock(TcpIpDriverImplCS);
+
+	for (auto& SendPacket : SendQueue)
+	{
+		OutPendingSendQueue.push_back(SendPacket);
+	}
+
+	// empty the send queue
+	SendQueue.empty();
 }

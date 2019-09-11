@@ -14,8 +14,8 @@ void HTaskGraph1::Initialize()
 	// generate task graph threads
 	uint32 NumProcssors = HGenericPlatformMisc::GetHardwareThreadNum();
 	
-	// generate task threads 2x than number of processors
-	uint32 TaskThreadNum = NumProcssors * 2; 
+	// generate task threads 1x than number of processors
+	uint32 TaskThreadNum = NumProcssors; 
 	for (uint32 TaskThreadIndex = 0; TaskThreadIndex < TaskThreadNum; ++TaskThreadIndex)
 	{
 		HTaskThreadBase::TaskThreadSharedContext.CreateTaskThread();
