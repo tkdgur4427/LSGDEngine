@@ -27,6 +27,55 @@ HTcpIpDriverImpl::~HTcpIpDriverImpl()
 using namespace lsgd::thread;
 
 #define IPDRIVERIMPL_TEST_DEBUG_CODE 0
+#define IPECHO_TEST_DEBUG_CODE 0
+
+#if IPECHO_TEST_DEBUG_CODE
+class HEchoDebugMock
+{
+public:
+	HCriticalSection SyncObject;
+
+	void AppendBuffer(HArray<uint8> InBuffer)
+	{
+		HScopedLock Lock(SyncObject);
+
+		int32 Offset = RecvBuffer.size();
+		RecvBuffer.resize(RecvBuffer.size() + InBuffer.size());
+		HGenericMemory::MemCopy(RecvBuffer.data() + Offset, InBuffer.data(), InBuffer.size());
+	}
+
+	void AppendBuffer(void* InAddress, size_t InSize)
+	{
+		HScopedLock Lock(SyncObject);
+
+		int32 Offset = RecvBuffer.size();
+		RecvBuffer.resize(RecvBuffer.size() + InSize);
+		HGenericMemory::MemCopy(RecvBuffer.data() + Offset, InAddress, InSize);
+	}
+
+	bool CompareAndRemoveBuffer(HArray<uint8> InBuffer)
+	{
+		HScopedLock Lock(SyncObject);
+
+		int32 Size = InBuffer.size();
+
+		// compare the buffers
+		bool Result = HGenericMemory::MemCmp(RecvBuffer.data(), InBuffer.data(), Size);
+		if (Result == true)
+		{
+			// only when the buffer is same, remove the recv buffer
+			RecvBuffer.erase(RecvBuffer.begin(), RecvBuffer.begin() + Size);
+		}
+
+		return Result;
+	}
+
+	// debug recv buffer to compare
+	HArray<uint8> RecvBuffer;
+};
+
+HEchoDebugMock GEchoDebugMock;
+#endif
 
 // implements a runnable that listens for incoming TCP connections
 class HTcpListener : public HThreadRunnable
@@ -392,6 +441,10 @@ public:
 						}
 
 						check(PendingDataSize == BytesToRead); // should be equal! 
+
+#if IPECHO_TEST_DEBUG_CODE
+						GEchoDebugMock.AppendBuffer(StartAddress, BytesToRead);
+#endif
 					}
 					else
 					{
@@ -417,6 +470,13 @@ public:
 					// serialize header layout
 					Archive.Serialize((void*)& Layout, LayoutSize);
 
+					// if there is not enough buffer received to archive
+					if (Archive.IsEof(Layout.PacketSize))
+					{
+						check(false);
+						break;
+					}
+
 					// generate received packet
 					HReceivePacket ReceivedPacket;
 					ReceivedPacket.PacketBytes.resize(Layout.PacketSize);
@@ -426,6 +486,11 @@ public:
 
 					// add received queue
 					PacketQueuePerConnection[StateIndex].push_back(ReceivedPacket);
+				}
+
+				if (!Archive.IsEof())
+				{
+					check(false);
 				}
 
 				// keep track it for state index
@@ -553,10 +618,21 @@ public:
 			// @todo - need to use taskgraph and process them with task threads
 			for (auto& State : ConnectedSocketStates)
 			{
+				// if there is no need to send the data, skip the state
+				if (State.SendBuffer.size() == 0)
+				{
+					continue;
+				}
+
 				if (State.Socket->HasState(ESocketBSDParam::SP_CanWrite) == ESocketBSDReturn::SR_Yes)
 				{
 					int32 SentBytes = 0;
 					State.Socket->Send(State.SendBuffer.data(), State.SendBuffer.size(), SentBytes);
+					check(SentBytes == State.SendBuffer.size());
+
+#if IPECHO_TEST_DEBUG_CODE
+					check(GEchoDebugMock.CompareAndRemoveBuffer(State.SendBuffer) == true);
+#endif
 				}
 				else
 				{
@@ -673,5 +749,5 @@ void HTcpIpDriverImpl::BatchingPendingSendQueue(HArray<HSendPacket>& OutPendingS
 	}
 
 	// empty the send queue
-	SendQueue.empty();
+	SendQueue.clear();
 }

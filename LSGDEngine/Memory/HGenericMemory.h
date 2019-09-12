@@ -26,4 +26,5 @@ public:
 	// memory operations
 	static void MemZero(void* Dest, int InValue, size_t InSize);
 	static void* MemCopy(void* Dest, void const* Src, size_t InSize);
+	static bool MemCmp(void* Ptr1, void* Ptr2, size_t InSize);
 };

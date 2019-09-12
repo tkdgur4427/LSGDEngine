@@ -147,3 +147,8 @@ void* HGenericMemory::MemCopy(void* Dest, void const* Src, size_t InSize)
 {
 	return memcpy(Dest, Src, InSize);
 }
+
+bool HGenericMemory::MemCmp(void* Ptr1, void* Ptr2, size_t InSize)
+{
+	return memcmp(Ptr1, Ptr2, InSize) == 0;
+}
