@@ -18,6 +18,15 @@ namespace lsgd
 	class HIpDriverImpl
 	{
 	public:
+		// connected socket states
+		struct HConnectedSocketState
+		{
+			HString SocketDesc;
+			networking::HSocketBSD* Socket;
+			HArray<uint8> ReceivedBuffer;
+			HArray<uint8> SendBuffer;
+		};
+
 		HIpDriverImpl(class HIpDriver& InOwner);
 		virtual ~HIpDriverImpl() {}
 
@@ -29,6 +38,9 @@ namespace lsgd
 		virtual bool DisconnectSocket(const HString& SocketDesc) = 0;
 		virtual void HandlePendingSendPackets(const HArray<HSendPacket>& SendPacketsToHandle) = 0;
 		virtual void BatchingPendingSendQueue(HArray<HSendPacket>& OutPendingSendQueue) = 0;
+		virtual void AddPacketsToReceiveQueue(const HArray<HReceivePacket>& InReceivePackets) = 0;
+		virtual void UpdatePendingReceiveBuffer(const HArray<HConnectedSocketState>& InConnectedSocketStates) = 0;
+		virtual void GetConnectedSocketStates(HArray<HConnectedSocketState>& OutConnectedSocketStates) = 0;
 
 		class HIpDriver& Owner;
 	};
@@ -50,6 +62,9 @@ namespace lsgd
 		virtual bool DisconnectSocket(const HString& SocketDesc) override;
 		virtual void HandlePendingSendPackets(const HArray<HSendPacket>& SendPacketsToHandle) override;
 		virtual void BatchingPendingSendQueue(HArray<HSendPacket>& OutPendingSendQueue) override;
+		virtual void AddPacketsToReceiveQueue(const HArray<HReceivePacket>& InReceivePackets) override;
+		virtual void UpdatePendingReceiveBuffer(const HArray<HConnectedSocketState>& InConnectedSocketStates) override;
+		virtual void GetConnectedSocketStates(HArray<HConnectedSocketState>& OutConnectedSocketStates) override;
 
 		// global locker for HTcpIpDriverImpl
 		HCriticalSection TcpIpDriverImplCS;
@@ -62,15 +77,6 @@ namespace lsgd
 
 		// sender thread
 		shared_ptr<HTcpSender> TcpSender;
-
-		// connected socket states
-		struct HConnectedSocketState
-		{
-			HString SocketDesc;
-			networking::HSocketBSD* Socket;
-			HArray<uint8> ReceivedBuffer;
-			HArray<uint8> SendBuffer;
-		};
 
 		HHashMap<HString, HConnectedSocketState> ConnectedSockets;
 

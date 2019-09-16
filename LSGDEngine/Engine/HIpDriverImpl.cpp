@@ -358,10 +358,162 @@ public:
 };
 
 // the raw packet structure
+/*
+	- it uses two keys; private key and random key(public key)
+	- encrypt target is checksum + payload; packet size and rand key are not encrypted!
+	- checksum is; payload's data + 1 per byte and % 256; unsigned char value
+
+	- all data should be processed by uint8
+		1. all key data is small and powerful
+		2. every packet generation, we'd like to change key pattern (rand key)
+		3. hide the encrypted pattern
+		4. wrong key should give wrong result
+*/
 struct HPacketHeaderLayout
 {
+	uint8 Code;
 	uint16 PacketSize;
+	uint8 RandKey;
 };
+
+// packet header serializer
+// @todo - think about the name validity
+struct HPacketSerializer
+{
+public:
+	HPacketSerializer(uint8 InPrivateKey)
+		: PrivateKey(InPrivateKey)
+	{}
+
+	static bool Test()
+	{
+		const char* TestMessage = "aaaaaaaaaabbbbbbbbbbcccccccccc1234567890abcdefghijklmn";
+		int32 TestMessageLen = HCString::Strlen(TestMessage);
+
+		HArray<uint8> TestData;
+		TestData.resize(TestMessageLen + 1);
+		
+		for (int32 Index = 0; Index < TestMessageLen; ++Index)
+		{
+			TestData[Index + 1] = (uint8)TestMessage[Index];
+		}
+
+		bool bResult = false;
+		HPacketSerializer Serializer(0xa9);
+		bResult = Serializer.Encrypt(TestData.data(), TestData.size(), TestData.data() + 1, TestMessageLen, 0x31);
+		if (bResult == false)
+		{
+			return bResult;
+		}
+
+		char* CompTestMessage = nullptr;
+		bResult = Serializer.Decrypt(CompTestMessage, TestData.data(), TestData.size(), 0x31);
+		if (bResult == false)
+		{
+			return bResult;
+		}
+
+		for (int32 Index = 0; Index < TestMessageLen; ++Index)
+		{
+			bResult &= (CompTestMessage[Index] == TestMessage[Index]);
+		}
+
+		return bResult;
+	}
+
+	bool Encrypt(void* OutEncryptData, int32 InEncryptDataSize, void* InPacketData, int32 InSize, uint8 InRandKey)
+	{
+		// encrypt data buffer should be one byte bigger; to include checksum space
+		check(InEncryptDataSize == InSize + 1);
+
+		uint8 CheckSum = 0;
+		uint8* DataPtr = (uint8*)InPacketData;
+		uint8* DataToEncrypt = (uint8*)OutEncryptData;
+		
+		// calculate the checksum
+		for (int32 Index = 0; Index < InSize; ++Index)
+		{
+			const uint8& DataInByte = DataPtr[Index];
+			
+			CheckSum += DataInByte;
+			DataToEncrypt[Index + 1] = DataPtr[Index];
+		}
+		CheckSum %= 256;
+		DataToEncrypt[0] = CheckSum; // put the check sum to the front
+
+		/*
+			 ----------------------------------------------------------------------------------------------------------
+			|          D1           |            D2             |            D3             |             D4            |
+			 ----------------------------------------------------------------------------------------------------------
+			   D1 ^ (RK + 1) = P1   |  D2 ^ (P1 + RK + 2) = P2  |  D3 ^ (P2 + RK + 3) = P3  |  D4 ^ (P3 + RK + 4) = P4  |
+			    P1 ^ (K + 1) = E1   |   P2 ^ (E1 + K + 2) = E2  |   P3 ^ (E2 + K + 3) = E3  |   P4 ^ (E3 + K + 4) = E4  |
+		*/
+		uint8 CurrPValue = 0;
+		uint8 CurrEValue = 0;
+		for (int32 Index = 0; Index < InEncryptDataSize; ++Index)
+		{
+			uint8& DataInByte = DataToEncrypt[Index];
+			uint8 AddPValue = Index + 1 + CurrPValue;
+			uint8 AddEValue = Index + 1 + CurrEValue;
+
+			// encrypt the data
+			// - generate P value
+			uint8 PValue = DataInByte ^ (InRandKey + AddPValue);
+			// - generate E value
+			uint8 EValue = PValue ^ (PrivateKey + AddEValue);
+
+			// update encrypted value
+			DataInByte = EValue;
+			// update curr p/e value
+			CurrPValue = PValue;
+			CurrEValue = EValue;
+		}
+
+		return true;
+	}
+
+	bool Decrypt(void* OutDecryptedData, void* InEncryptedData, int32 InSize, int32 InRandKey)
+	{
+		uint8* DataToDecrypt = (uint8*)InEncryptedData;
+
+		uint8 CurrPValue = 0;
+		uint8 CurrEValue = 0;
+		for (int32 Index = 0; Index < InSize; ++Index)
+		{
+			uint8& DataInByte = DataToDecrypt[Index];
+			uint8 AddPValue = Index + 1 + CurrPValue;
+			uint8 AddEValue = Index + 1 + CurrEValue;
+
+			// decrypt value
+			uint8 EValue = DataInByte;
+			uint8 PValue = EValue ^ (PrivateKey + CurrEValue);
+			uint8 DataDecrypted = PValue ^ (InRandKey + CurrPValue);
+
+			// update encrypted value
+			DataInByte = DataDecrypted;
+			// update curr p/e value
+			CurrPValue = PValue;
+			CurrEValue = EValue;
+		}
+
+		// calculate checksum
+		uint8 CheckSum = 0;
+		for (int32 Index = 1; Index < InSize; ++Index)
+		{
+			uint8& DataInByte = DataToDecrypt[Index];
+			CheckSum += DataInByte;
+		}
+		CheckSum %= 256;
+
+		// set the output to the payload data
+		OutDecryptedData = DataToDecrypt + 1;
+
+		return CheckSum == DataToDecrypt[0];
+	}
+
+	uint8 PrivateKey;
+};
+
 
 // runnable object representing the receive thread, if enabled
 class HTcpReceiver : public HThreadRunnable
@@ -372,6 +524,9 @@ public:
 		, Owner(InOwner)
 	{
 		bIsRunning.store(true);
+
+		// test program
+		check(HPacketSerializer::Test());
 	}
 
 	virtual ~HTcpReceiver()
@@ -390,14 +545,7 @@ public:
 		{
 			HArray<HTcpIpDriverImpl::HConnectedSocketState> ConnectedSocketStates;
 			{
-				// getting connected sockets by locking TcpIpDriverImplCS
-				HScopedLock Lock(Owner->TcpIpDriverImplCS);
-				
-				// @todo - note that it can be dangerous for not considering disconnection synchronization with this!
-				for (auto Iter = Owner->ConnectedSockets.begin(); Iter != Owner->ConnectedSockets.end(); ++Iter)
-				{
-					ConnectedSocketStates.push_back(Iter->second);
-				}
+				Owner->GetConnectedSocketStates(ConnectedSocketStates);
 			}
 
 			// make it sleep when there are no connected socket states
@@ -490,7 +638,7 @@ public:
 
 				if (!Archive.IsEof())
 				{
-					check(false);
+					// it is handled below 'Owner->UpdatePendingReceiveBuffer'
 				}
 
 				// keep track it for state index
@@ -499,16 +647,13 @@ public:
 
 			// single threaded enqueue
 			{
-				// getting connected sockets by locking TcpIpDriverImplCS
-				HScopedLock Lock(Owner->TcpIpDriverImplCS);
-
 				for (int32 StateIndex = 0; StateIndex < PacketQueuePerConnection.size(); ++StateIndex)
 				{
-					for (auto& ReceivePacket : PacketQueuePerConnection[StateIndex])
-					{
-						Owner->ReceiveQueue.push_back(ReceivePacket);
-					}					
+					Owner->AddPacketsToReceiveQueue(PacketQueuePerConnection[StateIndex]);
 				}
+
+				// apply any receive buffer left
+				Owner->UpdatePendingReceiveBuffer(ConnectedSocketStates);
 			}			
 		}
 	}
@@ -552,14 +697,7 @@ public:
 		{
 			HArray<HTcpIpDriverImpl::HConnectedSocketState> ConnectedSocketStates;
 			{
-				// getting connected sockets by locking TcpIpDriverImplCS
-				HScopedLock Lock(Owner->TcpIpDriverImplCS);
-
-				// @todo - note that it can be dangerous for not considering disconnection synchronization with this!
-				for (auto Iter = Owner->ConnectedSockets.begin(); Iter != Owner->ConnectedSockets.end(); ++Iter)
-				{
-					ConnectedSocketStates.push_back(Iter->second);
-				}
+				Owner->GetConnectedSocketStates(ConnectedSocketStates);
 			}
 
 			// make it sleep when there are no connected socket states
@@ -750,4 +888,44 @@ void HTcpIpDriverImpl::BatchingPendingSendQueue(HArray<HSendPacket>& OutPendingS
 
 	// empty the send queue
 	SendQueue.clear();
+}
+
+void HTcpIpDriverImpl::AddPacketsToReceiveQueue(const HArray<HReceivePacket>& InReceivePackets)
+{
+	HScopedLock Lock(TcpIpDriverImplCS);
+
+	for (auto ReceivePacket : InReceivePackets)
+	{
+		ReceiveQueue.push_back(ReceivePacket);
+	}
+}
+
+void HTcpIpDriverImpl::UpdatePendingReceiveBuffer(const HArray<HConnectedSocketState>& InConnectedSocketStates)
+{
+	HScopedLock Lock(TcpIpDriverImplCS);
+
+	for (int32 Index = 0; Index < ConnectedSockets.size(); ++Index)
+	{
+		auto ConnectedSocketStateIter = ConnectedSockets.find(InConnectedSocketStates[Index].SocketDesc);
+		check(ConnectedSocketStateIter != ConnectedSockets.end());
+
+		HConnectedSocketState* ConnectedSocketState = &ConnectedSocketStateIter->second;
+		if (InConnectedSocketStates[Index].ReceivedBuffer.size() > 0)
+		{
+			// there is any recv buffer state to apply!
+			ConnectedSocketState->ReceivedBuffer = InConnectedSocketStates[Index].ReceivedBuffer;
+		}
+	}
+}
+
+void HTcpIpDriverImpl::GetConnectedSocketStates(HArray<HConnectedSocketState>& OutConnectedSocketStates)
+{
+	// getting connected sockets by locking TcpIpDriverImplCS
+	HScopedLock Lock(TcpIpDriverImplCS);
+
+	// @todo - note that it can be dangerous for not considering disconnection synchronization with this!
+	for (auto Iter = ConnectedSockets.begin(); Iter != ConnectedSockets.end(); ++Iter)
+	{
+		OutConnectedSocketStates.push_back(Iter->second);
+	}
 }
