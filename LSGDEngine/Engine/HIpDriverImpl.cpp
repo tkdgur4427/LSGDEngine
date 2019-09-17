@@ -406,13 +406,14 @@ public:
 			return bResult;
 		}
 
-		char* CompTestMessage = nullptr;
-		bResult = Serializer.Decrypt(CompTestMessage, TestData.data(), TestData.size(), 0x31);
+		void* OutMessage = nullptr;
+		bResult = Serializer.Decrypt(OutMessage, TestData.data(), TestData.size(), 0x31);
 		if (bResult == false)
 		{
 			return bResult;
 		}
 
+		char* CompTestMessage = (char*)OutMessage;
 		for (int32 Index = 0; Index < TestMessageLen; ++Index)
 		{
 			bResult &= (CompTestMessage[Index] == TestMessage[Index]);
@@ -472,7 +473,7 @@ public:
 		return true;
 	}
 
-	bool Decrypt(void* OutDecryptedData, void* InEncryptedData, int32 InSize, int32 InRandKey)
+	bool Decrypt(void*& OutDecryptedData, void* InEncryptedData, int32 InSize, int32 InRandKey)
 	{
 		uint8* DataToDecrypt = (uint8*)InEncryptedData;
 
@@ -486,8 +487,8 @@ public:
 
 			// decrypt value
 			uint8 EValue = DataInByte;
-			uint8 PValue = EValue ^ (PrivateKey + CurrEValue);
-			uint8 DataDecrypted = PValue ^ (InRandKey + CurrPValue);
+			uint8 PValue = EValue ^ (PrivateKey + AddEValue);
+			uint8 DataDecrypted = PValue ^ (InRandKey + AddPValue);
 
 			// update encrypted value
 			DataInByte = DataDecrypted;
