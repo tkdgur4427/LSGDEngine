@@ -241,9 +241,6 @@
     <ClInclude Include="HIpDriverImpl.h">
       <Filter>Network\V1</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\httplib\httplib.h">
-      <Filter>Network\Http</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
