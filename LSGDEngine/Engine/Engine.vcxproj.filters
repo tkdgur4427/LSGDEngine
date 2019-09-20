@@ -241,6 +241,9 @@
     <ClInclude Include="HIpDriverImpl.h">
       <Filter>Network\V1</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\httplib\httplib.h">
+      <Filter>Network\Http</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -504,6 +507,9 @@
     </Filter>
     <Filter Include="Network\V1">
       <UniqueIdentifier>{99386de0-738a-4c93-b1c4-ea6a0156d271}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Http">
+      <UniqueIdentifier>{cde051d0-c268-4a45-b306-86ad64180d98}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

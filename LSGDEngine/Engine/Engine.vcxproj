@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\ThirdParty\httplib\httplib.h" />
     <ClInclude Include="HAttribute.h" />
     <ClInclude Include="HBaseEngine.h" />
     <ClInclude Include="HCameraActor.h" />
