@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{8A9530F4-BD85-4A59-8379-12D0040BE51D}</ProjectGuid>
-    <RootNamespace>MasterServer</RootNamespace>
+    <ProjectGuid>{53868C30-7A5D-40AD-A2F0-3EB46B7E4893}</ProjectGuid>
+    <RootNamespace>BattleServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -77,9 +77,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath;../../ThirdParty/imgui</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>HMasterServerPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>HBattleServerPCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath;../../ThirdParty/imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,14 +142,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HBattleServerPCH.h" />
     <ClInclude Include="HGameInstanceOverride.h" />
-    <ClInclude Include="HMasterServerPCH.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HGameInstanceOverride.cpp" />
-    <ClCompile Include="HMasterServerPCH.cpp">
+    <ClCompile Include="HBattleServerPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HBattleServerPCH.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="HGameInstanceOverride.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
