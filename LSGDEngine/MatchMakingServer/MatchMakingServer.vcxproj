@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{35BC5746-DEBF-4B74-9121-D95CB118172D}</ProjectGuid>
-    <RootNamespace>MMOTcpFighter</RootNamespace>
+    <ProjectGuid>{19C43EE8-57D8-4390-AD64-1D16B7E65501}</ProjectGuid>
+    <RootNamespace>MatchMakingServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -42,7 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -78,13 +78,12 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>HMMO_TcpFighterPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>HMatchMakingServerPCH.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/d3dxmath;../../ThirdParty/imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>WinMain</EntryPointSymbol>
-      <NoEntryPoint>false</NoEntryPoint>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
@@ -133,13 +132,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="HGameInstanceOverride.h" />
-    <ClInclude Include="HMMO_TcpFighterPCH.h" />
+    <ClInclude Include="HMatchMakingServerPCH.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HGameInstanceOverride.cpp" />
-    <ClCompile Include="HMMO_TcpFighterPCH.cpp">
+    <ClCompile Include="HMatchMakingServerPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HMMO_TcpFighterPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HMatchMakingServerPCH.h</PrecompiledHeaderFile>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

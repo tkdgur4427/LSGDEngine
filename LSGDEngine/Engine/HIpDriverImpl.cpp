@@ -795,9 +795,30 @@ public:
 
 void HTcpIpDriverImpl::Init()
 {
-	// create tcp listener thread
-	TcpListener = make_shared<HTcpListener>(this);
-	TcpListener->Init();
+	bRunAsServer = Owner.bRunAsServer;
+
+	if (bRunAsServer) // only run the listener thread when its driver run as server
+	{
+		// create tcp listener thread
+		TcpListener = make_shared<HTcpListener>(this);
+		TcpListener->Init();
+	}
+	else
+	{
+		// try to connect to the server
+		shared_ptr<HInternetAddrBSD> ServerAddr = HInternetAddrBSD::CreateInternetAddr();
+		ServerAddr->SetIp(Owner.ServerAddrStr);
+		ServerAddr->SetPort(Owner.ServerPort);
+
+		HSocketBSD* Socket = HTcpSocketBuilder("ServerSocket")
+			.AsReusable()
+			.BoundToEndpoint(ServerAddr)
+			.WithSendBufferSize(2 * 1024 * 1024)
+			.WithReceiveBufferSize(2 * 1024 * 1024);
+
+		// @todo - add connection accepted as server connection
+		HandleListenerConnectionAccepted(Socket);
+	}
 
 	// create tcp receiver thread
 	TcpReceiver = make_shared<HTcpReceiver>(this);

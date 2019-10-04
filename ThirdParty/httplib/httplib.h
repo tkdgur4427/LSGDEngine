@@ -184,6 +184,24 @@ typedef std::vector<MultipartFormData> MultipartFormDataItems;
 typedef std::pair<ssize_t, ssize_t> Range;
 typedef std::vector<Range> Ranges;
 
+// hsh6679 - to make it compile
+#define LSGD 1
+#if LSGD
+template<class T>
+const T& HMin(const T& a, const T& b)
+{
+	return (b < a) ? b : a;
+}
+
+template<class T>
+const T& HMax(const T& a, const T& b)
+{
+	return (b < a) ? b : a;
+}
+
+size_t HMaxSizeForSizeT = ((((size_t)1 << (CHAR_BIT * sizeof(size_t) - 1)) - 1) << 1) + 1;
+#endif
+
 struct Request {
   std::string method;
   std::string path;
@@ -1394,7 +1412,11 @@ inline bool read_content_with_length(Stream &strm, uint64_t len,
   uint64_t r = 0;
   while (r < len) {
     auto read_len = static_cast<size_t>(len - r);
+#if LSGD
+	auto n = strm.read(buf, HMin(read_len, CPPHTTPLIB_RECV_BUFSIZ));
+#else
     auto n = strm.read(buf, std::min(read_len, CPPHTTPLIB_RECV_BUFSIZ));
+#endif
     if (n <= 0) { return false; }
 
     if (!out(buf, n)) { return false; }
@@ -1414,7 +1436,11 @@ inline void skip_content_with_length(Stream &strm, uint64_t len) {
   uint64_t r = 0;
   while (r < len) {
     auto read_len = static_cast<size_t>(len - r);
+#if LSGD
+	auto n = strm.read(buf, HMin(read_len, CPPHTTPLIB_RECV_BUFSIZ));
+#else
     auto n = strm.read(buf, std::min(read_len, CPPHTTPLIB_RECV_BUFSIZ));
+#endif
     if (n <= 0) { return; }
     r += n;
   }
@@ -2939,7 +2965,12 @@ inline bool Client::process_request(Stream &strm, const Request &req,
     }
 
     int dummy_status;
-    if (!detail::read_content(strm, res, std::numeric_limits<size_t>::max(),
+    if (!detail::read_content(strm, res, 
+#if LSGD
+		HMaxSizeForSizeT,
+#else
+		std::numeric_limits<size_t>::max(),
+#endif
                               dummy_status, req.progress, out)) {
       return false;
     }
@@ -2953,7 +2984,11 @@ inline bool Client::process_and_close_socket(
     std::function<bool(Stream &strm, bool last_connection,
                        bool &connection_close)>
         callback) {
+#if LSGD
+  request_count = HMin(request_count, keep_alive_max_count_);
+#else
   request_count = std::min(request_count, keep_alive_max_count_);
+#endif
   return detail::process_and_close_socket(true, sock, request_count, callback);
 }
 
@@ -3494,7 +3529,11 @@ inline bool SSLClient::process_and_close_socket(
                        bool &connection_close)>
         callback) {
 
+#if LSGD
+  request_count = HMin(request_count, keep_alive_max_count_);
+#else
   request_count = std::min(request_count, keep_alive_max_count_);
+#endif
 
   return is_valid() &&
          detail::process_and_close_socket_ssl(

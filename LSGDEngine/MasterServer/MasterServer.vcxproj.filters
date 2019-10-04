@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HMMO_TcpFighterPCH.h">
+    <ClInclude Include="HMasterServerPCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HGameInstanceOverride.h">
@@ -23,7 +23,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="HMMO_TcpFighterPCH.cpp">
+    <ClCompile Include="HMasterServerPCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HGameInstanceOverride.cpp">

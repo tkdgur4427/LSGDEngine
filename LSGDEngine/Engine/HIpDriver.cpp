@@ -3,6 +3,8 @@
 
 #include "HIpDriverImpl.h"
 
+#include "HHttpClient.h"
+
 using namespace lsgd;
 
 IMPLEMENT_CLASS_TYPE1(HIpDriver, HObject)
@@ -13,9 +15,18 @@ void HIpDriver::Reflect()
 }
 
 // HIpDriver
-
-void HIpDriver::Initialize()
+void HIpDriver::Initialize(bool InbRunAsServer)
 {
+	// set the flag
+	bRunAsServer = InbRunAsServer;
+
+	// @todo - just temporary...
+	if (bRunAsServer)
+	{
+		ServerAddrStr = "0.0.0.0";
+		ServerPort = 6000;
+	}
+
 	Implementation = make_shared<HIpDriverImpl, HTcpIpDriverImpl>(*this);
 	Implementation->Init();
 }

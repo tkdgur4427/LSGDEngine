@@ -84,5 +84,7 @@ namespace lsgd
 		HArray<HReceivePacket> ReceiveQueue;
 		// send queue
 		HArray<HSendPacket> SendQueue;
+
+		bool bRunAsServer; // from the owner
 	};
 }

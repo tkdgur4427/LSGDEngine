@@ -18,6 +18,17 @@ void HInternetAddrBSD::SetIp(uint32 InAddr)
 	Addr.ss_family = AF_INET;
 }
 
+void HInternetAddrBSD::SetIp(const HString& InAddr)
+{
+	check(HSocketSubsystemWindows::SocketSingleton != nullptr);
+
+	// convert string addr to address in int32
+	uint32 InAddrAsInt32 = -1;
+	HSocketSubsystemWindows::Get()->GetAddressFromString(InAddr)->GetIp(InAddrAsInt32);
+
+	SetIp(InAddrAsInt32);
+}
+
 void HInternetAddrBSD::SetPort(int32 InPort)
 {
 	((sockaddr_in*)& Addr)->sin_port = htons(InPort);
@@ -75,6 +86,11 @@ void HInternetAddrBSD::Clear()
 {
 	HGenericMemory::MemZero(&Addr, 0, sizeof(Addr));
 	Addr.ss_family = AF_UNSPEC;
+}
+
+void HInternetAddrBSD::Set(const sockaddr_storage& AddrData)
+{
+	Addr = AddrData;
 }
 
 HSocketBSD::HSocketBSD(SOCKET InSocket, ESocketType InSocketType, const HString& InSocketDesc, ESocketProtocolFamily InSocketProtocol, ISocketSubsystem* InSocketSubsystem)
@@ -462,6 +478,28 @@ ESocketErrors HSocketSubsystemBSD::TranslateErrorCode(int32 Code)
 	check(false); // not implemented!
 	// @todo - not implemented
 	return ESocketErrors::SE_NO_ERROR;
+}
+
+shared_ptr<HInternetAddrBSD> HSocketSubsystemBSD::GetAddressFromString(const HString& InAddress)
+{
+	sockaddr_storage NetworkBuffer;
+	HGenericMemory::MemZero(&NetworkBuffer, 0, sizeof(sockaddr_storage));
+
+	void* UniversalNetBufferPtr = nullptr;
+	int32 AddrFamily = AF_INET;
+
+	UniversalNetBufferPtr = &(((sockaddr_in*)& NetworkBuffer)->sin_addr);
+	NetworkBuffer.ss_family = AddrFamily;
+
+	if (inet_pton(AddrFamily, InAddress.c_str(), UniversalNetBufferPtr))
+	{
+		shared_ptr<HInternetAddrBSD> ReturnAddress = HInternetAddrBSD::CreateInternetAddr();
+		ReturnAddress->Set(NetworkBuffer);
+		return ReturnAddress;
+	}
+
+	//ESocketErrors LastError = GetLastErrorCode();
+	return nullptr;
 }
 
 HSocketSubsystemWindows* HSocketSubsystemWindows::Create()

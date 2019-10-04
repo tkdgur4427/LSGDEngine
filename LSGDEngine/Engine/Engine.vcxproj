@@ -134,6 +134,7 @@
     <ClInclude Include="HDeferredCleanupInterface.h" />
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
+    <ClInclude Include="HHttpClient.h" />
     <ClInclude Include="HGlobalShaderTypeCompiler.h" />
     <ClInclude Include="HImGui.h" />
     <ClInclude Include="HImGuiDevice.h" />

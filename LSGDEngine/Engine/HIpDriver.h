@@ -39,7 +39,7 @@ namespace lsgd {
 		HIpDriver() {}
 		virtual ~HIpDriver() {}
 
-		virtual void Initialize();
+		virtual void Initialize(bool InbRunAsServer = true);
 		virtual void Destroy();
 		virtual void Tick(float DeltaTime);
 
@@ -73,6 +73,12 @@ namespace lsgd {
 			HNetConnection* ClientConnection;
 			HArray<HSendPacket> SendPackets;
 		};
+
+		// @todo - need to wrap this up
+		// whether this IpDriver is used as server or not
+		bool bRunAsServer;
+		HString ServerAddrStr;
+		int32 ServerPort;
 
 		// implementation
 		shared_ptr<class HIpDriverImpl> Implementation;

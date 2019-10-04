@@ -129,8 +129,10 @@ namespace lsgd { namespace networking {
 
 		void Clear();
 
+		void Set(const sockaddr_storage& AddrData);
 		int32 GetStorageSize() const;
 		void SetIp(uint32 InAddr);
+		void SetIp(const HString& InAddr);
 		void SetPort(int32 InPort);
 		void GetIp(uint32& OutAddr) const;
 		int32 GetPort() const;
@@ -207,6 +209,7 @@ namespace lsgd { namespace networking {
 		}
 		virtual HSocketBSD* InternalBSDSocketFactory(SOCKET Socket, ESocketType InSocketType, const HString& InSocketDescription, ESocketProtocolFamily InSocketProtocol) = 0;
 		virtual ESocketErrors TranslateErrorCode(int32 Code) = 0;
+		virtual shared_ptr<HInternetAddrBSD> GetAddressFromString(const HString& InAddress) = 0;
 	};
 
 	// standard bsd specific socket system implementation
@@ -217,6 +220,7 @@ namespace lsgd { namespace networking {
 		virtual HSocketBSD* CreateSocket(const HString& InSocketType, const HString& InSocketDescription, ESocketProtocolFamily ProtocolType) override;
 		virtual HSocketBSD* InternalBSDSocketFactory(SOCKET Socket, ESocketType InSocketType, const HString& InSocketDescription, ESocketProtocolFamily InSocketProtocol) override;
 		virtual ESocketErrors TranslateErrorCode(int32 Code) override;
+		virtual shared_ptr<HInternetAddrBSD> GetAddressFromString(const HString& InAddress) override;
 	};
 
 	// standard windows socket system implementation
