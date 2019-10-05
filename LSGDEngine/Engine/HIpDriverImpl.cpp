@@ -655,11 +655,6 @@ public:
 					// erase the check sum from the packetbytes
 					ReceivedPacket.PacketBytes.erase(ReceivedPacket.PacketBytes.begin());
 
-					HMemoryArchive TempArchive(ReceivedPacket.PacketBytes);
-					TempArchive.bIsSaving = false;
-					int16 Type;
-					TempArchive << Type;
-
 					// add received queue
 					PacketQueuePerConnection[StateIndex].push_back(ReceivedPacket);
 				}
