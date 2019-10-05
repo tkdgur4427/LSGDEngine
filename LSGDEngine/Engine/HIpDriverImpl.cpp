@@ -374,6 +374,8 @@ struct HPacketHeaderLayout
 	uint8 Code;
 	uint16 PacketSize;
 	uint8 RandKey;
+
+	static const int16 CheckSumSize = 1;
 };
 
 // packet header serializer
@@ -607,6 +609,12 @@ public:
 			int32 StateIndex = 0;
 			for (auto& State : ConnectedSocketStates)
 			{
+				// if there is no received buffer, just skip!
+				if (State.ReceivedBuffer.size() == 0)
+				{
+					continue;
+				}
+
 				// retrieve the packet
 				HPacketHeaderLayout Layout;
 				int32 LayoutSize = sizeof(HPacketHeaderLayout);
@@ -617,7 +625,9 @@ public:
 				while (!Archive.IsEof(LayoutSize))
 				{
 					// serialize header layout
-					Archive.Serialize((void*)& Layout, LayoutSize);
+					Archive << Layout.Code;
+					Archive << Layout.PacketSize;
+					Archive << Layout.RandKey;
 
 					// if there is not enough buffer received to archive
 					if (Archive.IsEof(Layout.PacketSize))
@@ -627,11 +637,28 @@ public:
 					}
 
 					// generate received packet
+					int16 PacketSize = Layout.PacketSize + HPacketHeaderLayout::CheckSumSize;
 					HReceivePacket ReceivedPacket;
-					ReceivedPacket.PacketBytes.resize(Layout.PacketSize);
-					Archive.Serialize(ReceivedPacket.PacketBytes.data(), Layout.PacketSize);
+					ReceivedPacket.PacketBytes.resize(PacketSize);
+					Archive.Serialize(ReceivedPacket.PacketBytes.data(), PacketSize);
 					ReceivedPacket.PlatformTimeSeconds = HGenericPlatformMisc::GetSeconds();
 					ReceivedPacket.SocketDesc = State.SocketDesc;
+
+					// decrypt the packet
+					HPacketSerializer Serializer(50);
+					void* OutDecrptMessage = nullptr;
+					if (!Serializer.Decrypt(OutDecrptMessage, ReceivedPacket.PacketBytes.data(), ReceivedPacket.PacketBytes.size(), Layout.RandKey))
+					{
+						check(false); // fail to decrypt packet!!
+					}
+
+					// erase the check sum from the packetbytes
+					ReceivedPacket.PacketBytes.erase(ReceivedPacket.PacketBytes.begin());
+
+					HMemoryArchive TempArchive(ReceivedPacket.PacketBytes);
+					TempArchive.bIsSaving = false;
+					int16 Type;
+					TempArchive << Type;
 
 					// add received queue
 					PacketQueuePerConnection[StateIndex].push_back(ReceivedPacket);
