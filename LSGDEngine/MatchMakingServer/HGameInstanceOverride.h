@@ -8,14 +8,16 @@
 namespace lsgd
 {
 	// packet dummy
-	DECLARE_CLASS_TYPE(HIocpDummy)
-	class HIocpDummy : public HObject
+	DECLARE_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_LOGIN, HObject)
+	class HPACKET_CS_MATCH_REQ_LOGIN : public HObject
 	{
 	public:
-		GENERATE_CLASS_BODY(HIocpDummy)
+		GENERATE_CLASS_BODY(HPACKET_CS_MATCH_REQ_LOGIN)
 
-		// data to echo data
-		HArray<uint8> Data;
+		uint16 Type;
+		int64 AccountNo;
+		char SessionKey[64];
+		uint32 Ver_Code;
 	};
 
 	DECLARE_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)

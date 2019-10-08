@@ -5,7 +5,15 @@ using namespace lsgd;
 
 IMPLEMENT_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
 
-IMPLEMENT_CLASS_TYPE1(HIocpDummy, HObject)
+IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_LOGIN, HObject)
+
+void HPACKET_CS_MATCH_REQ_LOGIN::Reflect()
+{
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Type", &HPACKET_CS_MATCH_REQ_LOGIN::Type);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("AccountNo", &HPACKET_CS_MATCH_REQ_LOGIN::AccountNo);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("SessionKey", &HPACKET_CS_MATCH_REQ_LOGIN::SessionKey);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Ver_Code", &HPACKET_CS_MATCH_REQ_LOGIN::Ver_Code);
+}
 
 void HGameInstanceOverride::Reflect()
 {
@@ -34,9 +42,4 @@ void HGameInstanceOverride::Tick(float DeltaTime)
 	HGameInstance::Tick(DeltaTime);
 
 	IpDriver->Tick(DeltaTime);
-}
-
-void HIocpDummy::Reflect()
-{
-	reflect::HTypeDatabase::GetSingleton()->AddClassField<HIocpDummy>("Data", &HIocpDummy::Data);
 }

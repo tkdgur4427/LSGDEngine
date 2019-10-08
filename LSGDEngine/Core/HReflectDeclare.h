@@ -15,6 +15,7 @@
 		static bool IsNumber() { return IsNumberHelper<PrimitiveType>::Value; } \
 		static bool IsBoolean() { return IsBooleanHelper<PrimitiveType>::Value; } \
 		static bool IsString() { return IsStringHelper<PrimitiveType>::Value; } \
+		static bool IsStaticArray() { return false; } \
 		static HCommonTypeHelperInterface* GetCommonTypeHelper() { static HCommonTypeHelper<PrimitiveType> CommonTypeHelper; return &CommonTypeHelper; } \
 	};	\
 	class HStatic##PrimitiveType	\
@@ -22,7 +23,7 @@
 	public:	\
 		HStatic##PrimitiveType();	\
 	};	\
-	extern HStatic##PrimitiveType Static##PrimitiveType; 
+	extern HStatic##PrimitiveType Static##PrimitiveType;
 
 #define GENERATE_CLASS_BODY(ClassType) \
 	static lsgd::HString GetClassName() { return #ClassType; } \

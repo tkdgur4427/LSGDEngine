@@ -6,6 +6,8 @@ using namespace lsgd;
 using namespace lsgd::reflect;
 
 // declare basic primitive types and register types
+IMPLEMENT_PRIMITIVE_TYPE(char)
+
 IMPLEMENT_PRIMITIVE_TYPE(int8)
 IMPLEMENT_PRIMITIVE_TYPE(int16)
 IMPLEMENT_PRIMITIVE_TYPE(int32)

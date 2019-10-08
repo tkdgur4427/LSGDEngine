@@ -322,6 +322,9 @@ namespace lsgd { namespace reflect {
 		template <class ClassType, class FieldType>
 		void AddClassField(const HString& InFieldName, HArray<FieldType> ClassType::*InField);
 
+		template <class ClassType, class FieldType, uint32 N>
+		void AddClassField(const HString& InFieldName, FieldType(ClassType::*InField)[N]);
+
 		template <class ClassMethodType>
 		void AddClassMethod(const HString& InMethodName, ClassMethodType InMethod);
 
@@ -748,6 +751,41 @@ namespace lsgd { namespace reflect {
 		if (HPrimitiveTypeHelper<FieldType>::IsPrimitiveType())
 		{
 			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+		}
+		else if (HIsObjectHandleUnique<FieldType>::Value)
+		{
+			using ObjectType = typename HRemoveObjectHandleUnique<FieldType>::Type;
+			NewProperty = HMove(CreateObjectProperty<ObjectType>(InFieldName, FieldOffset));
+		}
+		else if (HClassTypeHelper<FieldType>::IsClassType())
+		{
+			check(ExistClass(HClassTypeHelper<FieldType>::GetClassName()));
+
+			FieldSize = GetClassCommonTypeHelper(HClassTypeHelper<FieldType>::GetClassName())->GetSize();
+			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize));
+		}
+		else
+		{
+			check(0);
+		}
+
+		LinkProperty(ClassIndex, NewProperty);
+	}
+
+	template <class ClassType, class FieldType, uint32 N>
+	void HTypeDatabase::AddClassField(const HString& InFieldName, FieldType(ClassType::*InField)[N])
+	{
+		HString ClassName = ClassType::GetClassName();
+		check(ExistClass(ClassName));
+
+		int32 ClassIndex = GetClassIndex(ClassName);
+		int32 FieldOffset = (int32)StructOffsetOf(InField);
+		int32 FieldSize = sizeof(FieldType);
+
+		unique_ptr<HProperty> NewProperty;
+		if (HPrimitiveTypeHelper<FieldType>::IsPrimitiveType())
+		{
+			NewProperty = HMove(CreatePropertyByType<FieldType>(InFieldName, FieldOffset, FieldSize, N));
 		}
 		else if (HIsObjectHandleUnique<FieldType>::Value)
 		{

@@ -5,6 +5,8 @@
 // declare basic primitive types and register types
 namespace lsgd { namespace reflect {
 
+	DECLARE_PRIMITIVE_TYPE(char)
+
 	DECLARE_PRIMITIVE_TYPE(int8)
 	DECLARE_PRIMITIVE_TYPE(int16)
 	DECLARE_PRIMITIVE_TYPE(int32)

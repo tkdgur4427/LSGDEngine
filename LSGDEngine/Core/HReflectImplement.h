@@ -15,7 +15,6 @@
 	}	\
 	HStatic##PrimitiveType Static##PrimitiveType;
 
-
 #define IMPLEMENT_CLASS_TYPE(ClassType, ...) \
 	HStatic##ClassType::HStatic##ClassType() \
 	{ \
