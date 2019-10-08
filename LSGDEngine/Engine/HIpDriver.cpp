@@ -44,10 +44,6 @@ void HIpDriver::Destroy()
 
 void HIpDriver::Tick(float DeltaTime)
 {
-	//shared_ptr<HNetworkEvents> Handler = make_shared<HNetworkEvents, HNetworkEventHandler>();
-	//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::QueueEvent(&HNetworkEventHandler::Execute, Handler);
-	//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::ExecuteQueuedEvents();
-
 	check(Implementation);
 
 	// process pending connections
@@ -119,6 +115,11 @@ void HIpDriver::ProcessPendingReceivePackets()
 	// @todo - temporary... echo sending!
 	for (auto& PendingConnectionState : PendingConnectionStatesToReceive)
 	{
+		//shared_ptr<HNetworkEvents> Handler = make_shared<HNetworkEvents, HNetworkEventHandler>();
+		//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::QueueEvent(&HNetworkEventHandler::Execute, Handler);
+		//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::ExecuteQueuedEvents();
+
+		/*
 		// just echo the packet
 		HPendingConnectionStateToSend NewConnectionState;
 		NewConnectionState.ClientConnection = PendingConnectionState.ClientConnection;
@@ -133,6 +134,7 @@ void HIpDriver::ProcessPendingReceivePackets()
 		}
 
 		PendingConnectionStatesToSend.push_back(NewConnectionState);
+		*/
 	}
 
 	// empty pending connection state

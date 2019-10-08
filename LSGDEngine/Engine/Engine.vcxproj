@@ -244,6 +244,7 @@
     <ClCompile Include="HLevel.cpp" />
     <ClCompile Include="HLocalPlayer.cpp" />
     <ClCompile Include="HNetConnection.cpp" />
+    <ClCompile Include="HNetworkEvents.cpp" />
     <ClCompile Include="HPawn.cpp" />
     <ClCompile Include="HPlatformDeviceMisc.cpp" />
     <ClCompile Include="HPlayer.cpp" />

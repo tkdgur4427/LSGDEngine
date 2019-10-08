@@ -11,24 +11,22 @@ namespace lsgd
 		HNetworkEvents() {}
 		virtual ~HNetworkEvents() {}
 
-		virtual void HandleEvent() = 0;
-
+		// handler node type with shared_ptr (managed by reference counting)
 		using HandlerNodeType = shared_ptr<HNetworkEvents>;
 
-		static void Execute(shared_ptr<HNetworkEvents> InNetworkEvents)
-		{
-			InNetworkEvents->HandleEvent();
-		}
+		// holder to execute network events
+		static void Execute(HObjectHandleWeak<class HNetConnection> NetConnection, shared_ptr<HNetworkEvents> InNetworkEvents);
+
+	protected:
+		virtual void HandleEvent(class HNetConnection*) = 0;
 	};
 
 	// the EBus for network events
 	typedef HEBus<HNetworkEvents> HNetworkEventsBus;
 
-	struct HNetworkEventHandler : public HNetworkEventsBus::SingleEventHandlerType
+	class HNetworkEventHandler : public HNetworkEventsBus::SingleEventHandlerType
 	{
-		virtual void HandleEvent() override
-		{
-			// do something
-		}
+	protected:
+		// note that still need to override HandleEvent()
 	};
 }

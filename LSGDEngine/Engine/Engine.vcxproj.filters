@@ -428,6 +428,9 @@
     <ClCompile Include="HIpDriverImpl.cpp">
       <Filter>Network\V1</Filter>
     </ClCompile>
+    <ClCompile Include="HNetworkEvents.cpp">
+      <Filter>Network\V1</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
