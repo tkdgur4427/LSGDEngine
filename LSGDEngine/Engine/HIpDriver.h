@@ -2,6 +2,9 @@
 
 #include "HNetConnection.h"
 
+// Network Event
+#include "HNetworkEvents.h"
+
 namespace lsgd {
 
 	// forward declaration

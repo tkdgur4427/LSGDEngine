@@ -30,14 +30,14 @@ namespace lsgd
 		static void Connect(const BusIdType& InBusId, HandlerNodeType& InHandler)
 		{
 			ContextType& Context = ContextPolicy::GetGlobalContext();
-			check(Context.Exist(InBusId));
+			check(Context.BusContainer.Exist(InBusId));
 			Context.BusContainer.Buses[InBusId]->Register(InHandler);
 		}
 
 		static void Disconnect(const BusIdType& InBusId, HandlerNodeType& InHandler)
 		{
 			ContextType& Context = ContextPolicy::GetGlobalContext();
-			check(Context.Exist(InBusId));
+			check(Context.BusContainer.Exist(InBusId));
 			Context.BusContainer.Buses[InBusId]->Unregister(InHandler);
 		}
 

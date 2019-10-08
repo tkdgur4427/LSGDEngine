@@ -768,12 +768,27 @@ public:
 				// serialize the header
 				HPacketHeaderLayout Layout;
 				Layout.PacketSize = SendPacket.PacketBytes.size();
+
+				// encrypt packets
+				HPacketSerializer Serializer(50);
+
+				// @todo - need to randomize the randkey generation
+				uint8 RandKey = 211;
+
+				// for code readiness
+				int32 PacketSize = SendPacket.PacketBytes.size();
+
+				HArray<uint8> EncryptedSendPacketData;
+				EncryptedSendPacketData.resize(PacketSize + 1);
+				Serializer.Encrypt(EncryptedSendPacketData.data(), EncryptedSendPacketData.size(), SendPacket.PacketBytes.data(), SendPacket.PacketBytes.size(), RandKey);
 				
-				int32 LayoutSize = sizeof(HPacketHeaderLayout);
-				Archive.Serialize(&Layout, LayoutSize);
+				Archive << Layout.Code;
+				Archive << Layout.PacketSize;
+				Archive << Layout.RandKey;
+				Archive << EncryptedSendPacketData[0]; // add checksum
 
 				// serialize the content
-				Archive.Serialize(SendPacket.PacketBytes.data(), SendPacket.PacketBytes.size());
+				Archive.Serialize(EncryptedSendPacketData.data() + 1, PacketSize);
 			}
 
 			// @todo - need to use taskgraph and process them with task threads

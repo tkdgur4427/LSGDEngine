@@ -5,6 +5,9 @@
 
 #include "HHttpClient.h"
 
+// @todo - temp
+#include "HEQueuePolicy.h"
+
 using namespace lsgd;
 
 IMPLEMENT_CLASS_TYPE1(HIpDriver, HObject)
@@ -41,6 +44,10 @@ void HIpDriver::Destroy()
 
 void HIpDriver::Tick(float DeltaTime)
 {
+	//shared_ptr<HNetworkEvents> Handler = make_shared<HNetworkEvents, HNetworkEventHandler>();
+	//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::QueueEvent(&HNetworkEventHandler::Execute, Handler);
+	//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::ExecuteQueuedEvents();
+
 	check(Implementation);
 
 	// process pending connections

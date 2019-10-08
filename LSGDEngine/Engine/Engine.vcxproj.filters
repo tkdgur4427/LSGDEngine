@@ -244,6 +244,9 @@
     <ClInclude Include="HHttpClient.h">
       <Filter>Network\Http</Filter>
     </ClInclude>
+    <ClInclude Include="HNetworkEvents.h">
+      <Filter>Network\V1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />

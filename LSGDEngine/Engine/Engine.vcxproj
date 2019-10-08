@@ -147,6 +147,7 @@
     <ClInclude Include="HIpDriverImpl.h" />
     <ClInclude Include="HMaterialCommon.h" />
     <ClInclude Include="HNetConnection.h" />
+    <ClInclude Include="HNetworkEvents.h" />
     <ClInclude Include="HPlatformDeviceMisc.h" />
     <ClInclude Include="HRefCountPtr.h" />
     <ClInclude Include="HRHICommon.h" />

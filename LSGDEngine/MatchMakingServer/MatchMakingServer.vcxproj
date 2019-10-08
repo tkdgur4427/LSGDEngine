@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CommonProtocol.h" />
     <ClInclude Include="HGameInstanceOverride.h" />
     <ClInclude Include="HMatchMakingServerPCH.h" />
   </ItemGroup>

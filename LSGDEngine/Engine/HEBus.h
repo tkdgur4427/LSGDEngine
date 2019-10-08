@@ -47,7 +47,7 @@ namespace lsgd
 			}
 		}
 
-		bool IsConnected() const { return Connector.HandlerNode; }
+		bool IsConnected() const { return Connector.HandlerNode != nullptr; }
 
 		void Connect(BusIdType InBusId = 0)
 		{
