@@ -963,7 +963,7 @@ void HTcpIpDriverImpl::UpdatePendingReceiveBuffer(const HArray<HConnectedSocketS
 {
 	HScopedLock Lock(TcpIpDriverImplCS);
 
-	for (int32 Index = 0; Index < ConnectedSockets.size(); ++Index)
+	for (int32 Index = 0; Index < InConnectedSocketStates.size(); ++Index)
 	{
 		auto ConnectedSocketStateIter = ConnectedSockets.find(InConnectedSocketStates[Index].SocketDesc);
 		check(ConnectedSocketStateIter != ConnectedSockets.end());

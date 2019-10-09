@@ -38,6 +38,14 @@ namespace lsgd
 			GetPacketGeneratorContainer().insert({PacketType::GetId(), NewPacketGenerator});
 		}
 
+		static HObjectHandleUnique<HObject> CreatePacketWithId(uint16 Id)
+		{
+			auto PacketGenerator = GetPacketGeneratorContainer().find(Id);
+			check(PacketGenerator != GetPacketGeneratorContainer().end());
+
+			return HMove(PacketGenerator->second->CreatePacket());
+		}
+
 		typedef uint16 HPacketTypeId;
 		typedef HHashMap<HPacketTypeId, shared_ptr<HPacketGeneratorInterface>> HPacketGeneratorContainer;
 

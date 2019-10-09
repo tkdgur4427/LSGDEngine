@@ -16,6 +16,7 @@ uint16 HPacketUtils::SeekAndGetType(HArray<uint8>& InData)
 {
 	// get the packet type only
 	HMemoryArchive Archive(InData);
+	Archive.bIsSaving = false;
 	uint16 Type;
 	Archive << Type;
 	return Type;
@@ -128,6 +129,9 @@ void HIpDriver::ProcessPendingReceivePackets()
 		{
 			// inspect the packet type
 			uint16 PacketType = HPacketUtils::SeekAndGetType(ReceivePacket.PacketBytes);
+
+			// create packet
+			HObjectHandleUnique<HObject> NewPacket = HPacketRegisterSystem::CreatePacketWithId(PacketType);
 		}
 
 		//shared_ptr<HNetworkEvents> Handler = make_shared<HNetworkEvents, HNetworkEventHandler>();
