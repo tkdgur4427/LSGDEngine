@@ -4,6 +4,8 @@
 
 // Network Event
 #include "HNetworkEvents.h"
+// Packet Registrator
+#include "HPacketRegister.h"
 
 namespace lsgd {
 
@@ -31,6 +33,13 @@ namespace lsgd {
 	{
 		HString SocketDesc;
 		HArray<uint8> PacketBytes;
+	};
+
+	class HPacketUtils
+	{
+	public:
+		// helper interface method for seek and get packet type
+		static uint16 SeekAndGetType(HArray<uint8>& InData);
 	};
 
 	DECLARE_CLASS_TYPE1(HIpDriver, HObject)

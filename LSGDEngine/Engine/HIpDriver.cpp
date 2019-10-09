@@ -12,6 +12,15 @@ using namespace lsgd;
 
 IMPLEMENT_CLASS_TYPE1(HIpDriver, HObject)
 
+uint16 HPacketUtils::SeekAndGetType(HArray<uint8>& InData)
+{
+	// get the packet type only
+	HMemoryArchive Archive(InData);
+	uint16 Type;
+	Archive << Type;
+	return Type;
+}
+
 void HIpDriver::Reflect()
 {
 
@@ -115,6 +124,12 @@ void HIpDriver::ProcessPendingReceivePackets()
 	// @todo - temporary... echo sending!
 	for (auto& PendingConnectionState : PendingConnectionStatesToReceive)
 	{
+		for (auto& ReceivePacket : PendingConnectionState.ReceivePackets)
+		{
+			// inspect the packet type
+			uint16 PacketType = HPacketUtils::SeekAndGetType(ReceivePacket.PacketBytes);
+		}
+
 		//shared_ptr<HNetworkEvents> Handler = make_shared<HNetworkEvents, HNetworkEventHandler>();
 		//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::QueueEvent(&HNetworkEventHandler::Execute, Handler);
 		//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::ExecuteQueuedEvents();

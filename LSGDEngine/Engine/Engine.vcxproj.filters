@@ -247,6 +247,9 @@
     <ClInclude Include="HNetworkEvents.h">
       <Filter>Network\V1</Filter>
     </ClInclude>
+    <ClInclude Include="HPacketRegister.h">
+      <Filter>Network\V1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
