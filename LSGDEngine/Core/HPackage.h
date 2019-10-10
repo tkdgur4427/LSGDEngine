@@ -24,4 +24,5 @@ namespace lsgd
 	};
 
 	extern HPackage* GTransientPackage;
+	extern HPackage* GPersistentPackage;
 }

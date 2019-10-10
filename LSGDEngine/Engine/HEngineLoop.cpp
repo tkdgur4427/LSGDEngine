@@ -190,5 +190,5 @@ void HEngineLoop::Tick()
 
 	// trigger gc
 	gc::HGarbageCollect GarbageCollect;
-	//GarbageCollect.MarkAndSweep();
+	GarbageCollect.MarkAndSweep();
 }

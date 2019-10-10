@@ -140,7 +140,7 @@ void HIpDriver::ProcessPendingReceivePackets()
 			// serialize the packet
 			NewPacket->Serialize(Archive);
 
-			HObject* Temp = NewPacket.Get();
+
 		}
 
 		//shared_ptr<HNetworkEvents> Handler = make_shared<HNetworkEvents, HNetworkEventHandler>();

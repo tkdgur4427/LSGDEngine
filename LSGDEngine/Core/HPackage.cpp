@@ -5,6 +5,8 @@ namespace lsgd
 {
 	static HTranscientPackageForTest GlobalTransientPackage;
 	HPackage* GTransientPackage = &GlobalTransientPackage;
+
+	HPackage* GPersistentPackage = &GlobalTransientPackage;
 }
 
 using namespace lsgd;

@@ -18,7 +18,7 @@ namespace lsgd
 
 		virtual HObjectHandleUnique<HObject> CreatePacket() override
 		{
-			HObjectHandleUnique<HObject> NewPacket(AllocateHObject(PacketType::GetClassName()));
+			HObjectHandleUnique<HObject> NewPacket(AllocateHObject(PacketType::GetClassName(), GPersistentPackage));
 			return HMove(NewPacket);
 		}
 	};
