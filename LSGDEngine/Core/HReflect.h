@@ -312,6 +312,15 @@ namespace lsgd { namespace reflect {
 		virtual ~HBoolProperty() {}
 	};
 
+	class HCharProperty : public HProperty
+	{
+	public:
+		HCharProperty(const HString& InVariableName, int32 InOffset, int32 InElementSize, int32 InArrayDim = 1)
+			: HProperty(InVariableName, InOffset, InElementSize, InArrayDim)
+		{}
+		virtual ~HCharProperty() {}
+	};
+
 	class HStringProperty : public HProperty
 	{
 	public:

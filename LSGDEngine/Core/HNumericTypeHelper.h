@@ -84,4 +84,17 @@ namespace lsgd { namespace reflect {
 		static const bool Value = true;
 	};
 
+	// char
+	template <class Type>
+	struct IsCharHelper
+	{
+		static const bool Value = false;
+	};
+
+	template <>
+	struct IsCharHelper<char>
+	{
+		static const bool Value = true;
+	};
+
 } }

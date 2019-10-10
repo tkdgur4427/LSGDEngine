@@ -695,6 +695,10 @@ namespace lsgd { namespace reflect {
 		{
 			NewProperty = make_unique<HProperty, HBoolProperty>(InVariableName, InOffset, InSize, InArrayDim);
 		}
+		else if (HPrimitiveTypeHelper<Type>::IsChar())
+		{
+			NewProperty = make_unique<HProperty, HCharProperty>(InVariableName, InOffset, InSize, InArrayDim);
+		}
 		else if (HPrimitiveTypeHelper<Type>::IsString())
 		{
 			NewProperty = make_unique<HProperty, HStringProperty>(InVariableName, InOffset, InSize, InArrayDim);

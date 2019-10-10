@@ -14,6 +14,7 @@ namespace lsgd { namespace reflect {
 		static bool IsNumber() { return false; }
 		static bool IsBoolean() { return false; }
 		static bool IsString() { return false; }
+		static bool IsChar() { return false; }
 		static class HCommonTypeHelperInterface* GetCommonTypeHelper() { return nullptr; }
 	};
 

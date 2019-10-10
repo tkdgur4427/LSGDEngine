@@ -15,7 +15,7 @@
 		static bool IsNumber() { return IsNumberHelper<PrimitiveType>::Value; } \
 		static bool IsBoolean() { return IsBooleanHelper<PrimitiveType>::Value; } \
 		static bool IsString() { return IsStringHelper<PrimitiveType>::Value; } \
-		static bool IsStaticArray() { return false; } \
+		static bool IsChar() { return IsCharHelper<PrimitiveType>::Value; } \
 		static HCommonTypeHelperInterface* GetCommonTypeHelper() { static HCommonTypeHelper<PrimitiveType> CommonTypeHelper; return &CommonTypeHelper; } \
 	};	\
 	class HStatic##PrimitiveType	\
