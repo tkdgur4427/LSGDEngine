@@ -35,6 +35,7 @@
     <ClInclude Include="HFileArchive.h" />
     <ClInclude Include="HFrameProduceConsumeBuffer.h" />
     <ClInclude Include="HGarbageCollect.h" />
+    <ClInclude Include="HGCObject.h" />
     <ClInclude Include="HGCSweepExecutor.h" />
     <ClInclude Include="HGeneratePrimitiveReflect.h" />
     <ClInclude Include="HGenericPlatformMisc.h" />
@@ -96,6 +97,7 @@
     <ClCompile Include="HEvent.cpp" />
     <ClCompile Include="HFileArchive.cpp" />
     <ClCompile Include="HGarbageCollect.cpp" />
+    <ClCompile Include="HGCObject.cpp" />
     <ClCompile Include="HGCSweepExecutor.cpp" />
     <ClCompile Include="HGeneratePrimitiveReflect.cpp" />
     <ClCompile Include="HGuid_crossguid.cpp" />
