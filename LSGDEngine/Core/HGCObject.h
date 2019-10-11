@@ -14,6 +14,8 @@ namespace lsgd
 		void AddObject(class HGCObject* InObject);
 		void RemoveObject(class HGCObject* InObject);
 
+		static void AddReferencedObjects(HObjectHandleWeak<HObject> InObject, class HReferenceCollector& Collector);
+
 		HArray<HGCObject*> ReferencedObjects;
 		HCriticalSection ReferencedObjectsCritical;
 	};
@@ -25,7 +27,25 @@ namespace lsgd
 
 		void Init()
 		{
-			
+			StaticInit();
+			check(GCObjectReferencer.IsValid());
+
+			// add this instance to the reference list
+			GCObjectReferencer->AddObject(this);
+			bReferencedAdded = true;
+		}
+
+		HGCObject()
+		{
+			Init();
+		}
+
+		virtual ~HGCObject()
+		{
+			if (GCObjectReferencer.IsValid() && bReferencedAdded)
+			{
+				GCObjectReferencer->RemoveObject(this);
+			}
 		}
 
 		static void StaticInit()
