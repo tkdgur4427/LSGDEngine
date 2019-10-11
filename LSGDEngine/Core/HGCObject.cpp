@@ -1,23 +1,36 @@
 #include "HCorePCH.h"
 #include "HGCObject.h"
 
+// HCast
+#include "HCastType.h"
+#include "HReflectImplement.h"
+
 using namespace lsgd;
+
+HObjectHandleUnique<HGCObjectReferencer> HGCObject::GCObjectReferencer;
 
 IMPLEMENT_CLASS_TYPE1(HGCObjectReferencer, HObject)
 
 void HGCObjectReferencer::Reflect()
 {
-	reflect::HTypeDatabase::GetSingleton()->AddClassField("ReferencedObjects", &HGCObjectReferencer::ReferencedObjects);
+	
 }
 
-void HGCObjectReferencer::AddReferencedObjects(HObjectHandleWeak<HObject> InObject, class HReferenceCollector& Collector)
+void HGCObjectReferencer::AddReferencedObjects(HObject* InObject, gc::HReferenceCollector& Collector)
 {
-
+	HGCObjectReferencer* ObjectReferencer = HCast<HObject, HGCObjectReferencer>(InObject);
+	if (ObjectReferencer != nullptr)
+	{
+		for (HGCObject* Object : ObjectReferencer->ReferencedObjects)
+		{
+			Object->AddReferencedObjects(Collector);
+		}
+	}
 }
 
 void HGCObjectReferencer::AddObject(HGCObject* InObject)
 {
-	ReferencedObjects.push_back(InObject)
+	ReferencedObjects.push_back(InObject);
 }
 
 void HGCObjectReferencer::RemoveObject(HGCObject* InObject)

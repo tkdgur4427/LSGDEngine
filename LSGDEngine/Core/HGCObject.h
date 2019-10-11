@@ -1,12 +1,15 @@
 #pragma once
 
+#include "HObject.h"
+#include "HReferenceCollector.h"
+
 namespace lsgd
 {
 	DECLARE_CLASS_TYPE1(HGCObjectReferencer, HObject)
 	class HGCObjectReferencer : public HObject
 	{
 	public:
-		GENERATE_CLASS_BODY(HGCObjectReferencer);
+		GENERATE_CLASS_BODY(HGCObjectReferencer)
 
 		HGCObjectReferencer() {}
 		virtual ~HGCObjectReferencer() {}
@@ -14,7 +17,7 @@ namespace lsgd
 		void AddObject(class HGCObject* InObject);
 		void RemoveObject(class HGCObject* InObject);
 
-		static void AddReferencedObjects(HObjectHandleWeak<HObject> InObject, class HReferenceCollector& Collector);
+		static void AddReferencedObjects(HObject* InObject, gc::HReferenceCollector& Collector);
 
 		HArray<HGCObject*> ReferencedObjects;
 		HCriticalSection ReferencedObjectsCritical;
@@ -52,10 +55,12 @@ namespace lsgd
 		{
 			if (!GCObjectReferencer.IsValid())
 			{
-				GCObjectReferencer = AllocateHObject(HGCObjectReferencer::GetClassName());
+				GCObjectReferencer = HMove(HObjectHandleUnique<HGCObjectReferencer>(AllocateHObject(HGCObjectReferencer::GetClassName())));
 				GCObjectReferencer.SetRoot();
 			}
 		}
+
+		virtual void AddReferencedObjects(gc::HReferenceCollector& Collector) = 0;
 
 		static HObjectHandleUnique<HGCObjectReferencer> GCObjectReferencer;
 	};

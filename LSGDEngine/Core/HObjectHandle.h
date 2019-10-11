@@ -23,6 +23,8 @@ namespace lsgd
 			Index = -1;
 		}
 
+		bool IsValid() const { return !(SerialNumber == -1 && Index == -1); }
+
 		uint32 SerialNumber;	// object's unique number
 		uint32 Index;			// GObjectArray's index
 	};
@@ -47,7 +49,7 @@ namespace lsgd
 		// whether the handle has ownership of a object
 		bool IsOwned() const { return bIsOwned; }
 		// whether object handle is valid or not
-		bool IsValid() const { return HObjectHelper::GetObjectZ(Data.Index, Data.SerialNumber) != nullptr; }
+		bool IsValid() const { return Data.IsValid() && HObjectHelper::GetObjectZ(Data.Index, Data.SerialNumber) != nullptr; }
 
 		// get the object
 		template <typename ObjectType>
