@@ -139,8 +139,6 @@ void HIpDriver::ProcessPendingReceivePackets()
 
 			// serialize the packet
 			NewPacket->Serialize(Archive);
-
-
 		}
 
 		//shared_ptr<HNetworkEvents> Handler = make_shared<HNetworkEvents, HNetworkEventHandler>();
