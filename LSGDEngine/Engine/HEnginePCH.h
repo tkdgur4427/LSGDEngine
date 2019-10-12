@@ -35,3 +35,6 @@
 
 // @todo - temporary windows platform
 #define SGD_PLATFORM_WINDOWS 1
+
+// pix
+#pragma comment(lib, "WinPixEventRuntime.lib")

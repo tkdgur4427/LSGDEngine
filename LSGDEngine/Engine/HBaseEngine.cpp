@@ -34,6 +34,8 @@ void HBaseEngine::Destroy()
 
 void HBaseEngine::Tick(float DeltaTime)
 {
+	SGD_SCOPED_SIMPLE_PROFILER(HBaseEngine_Tick);
+
 	// ticking game instance
 	GameInstance->Tick(DeltaTime);
 

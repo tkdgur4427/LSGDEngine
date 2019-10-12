@@ -52,7 +52,7 @@ void HEngineLoop::Init()
 	HGenericPlatformMisc::Initialize();
 
 	// note that simple profiler should be executed after HGenericPlatformMisc::Initialize
-	SGD_SCOPED_SIMPLE_PROFILER(HEngineLoop::Init);
+	SGD_SCOPED_SIMPLE_PROFILER(HEngineLoop_Init);
 
 	// load simple
 	HString SimpleConfigPath = HGenericPlatformMisc::GetConfigDir() + "SimpleConfig.txt";
@@ -119,6 +119,7 @@ public:
 
 	void Execute()
 	{
+		SGD_SCOPED_SIMPLE_PROFILER(HEngineLoopTickTask_Execute);
 		EngineLoopRef.Tick();
 	}
 
@@ -141,6 +142,8 @@ void HEngineLoop::Loop()
 
 	while (!RawMainThreadRunnabe->IsTerminated())
 	{
+		SGD_SCOPED_SIMPLE_PROFILER(HEngineLoop_Loop);
+
 		// create task
 		shared_ptr<HBaseGraphTask> GameTick = HGraphTask<HEngineLoopTickTask>::CreateTask(Prerequisites, true, "MainThread").ConstructAndHold(*this);
 
@@ -180,6 +183,8 @@ void HEngineLoop::DestroyInNamedThread()
 
 void HEngineLoop::Tick()
 {
+	SGD_SCOPED_SIMPLE_PROFILER(HEngineLoop_Tick);
+
 	EngineInstance->Tick(0.f);
 
 	// world tick
@@ -189,6 +194,10 @@ void HEngineLoop::Tick()
 	}
 
 	// trigger gc
-	gc::HGarbageCollect GarbageCollect;
-	GarbageCollect.MarkAndSweep();
+	{
+		SGD_SCOPED_SIMPLE_PROFILER(HGarbageCollect);
+
+		gc::HGarbageCollect GarbageCollect;
+		GarbageCollect.MarkAndSweep();
+	}	
 }

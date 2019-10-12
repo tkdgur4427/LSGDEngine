@@ -39,6 +39,7 @@ public:
 
 	void Execute()
 	{
+		SGD_SCOPED_SIMPLE_PROFILER(FTriggerEventGraphTasks_Execute);
 		Event->Trigger();
 	}
 

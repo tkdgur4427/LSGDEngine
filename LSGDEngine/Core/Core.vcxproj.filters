@@ -217,6 +217,9 @@
     <ClInclude Include="HGCObject.h">
       <Filter>GC</Filter>
     </ClInclude>
+    <ClInclude Include="HPixWindows.h">
+      <Filter>Profiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HCorePCH.cpp" />

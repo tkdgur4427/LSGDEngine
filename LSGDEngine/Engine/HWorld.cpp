@@ -28,6 +28,8 @@ void HWorld::Destroy()
 
 void HWorld::Tick(float DeltaTime)
 {
+	SGD_SCOPED_SIMPLE_PROFILER(HWorld_Tick);
+
 	// get the levels
 	HArray<HLevel*> LevelsToTick;
 	for (auto& LevelHandle : Levels)

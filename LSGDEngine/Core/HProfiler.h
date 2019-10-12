@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HPixWindows.h"
+
 namespace lsgd
 {
 	// real profiler data
@@ -76,4 +78,5 @@ namespace lsgd
 }
 
 #define SGD_SCOPED_SIMPLE_PROFILER(Name) \
-	HScopedSimpleProfiler(#Name); 
+	HScopedSimpleProfiler ScopedSimpleProfiler##Name(#Name); \
+	HScopedPix ScopedPix##Name(#Name);

@@ -53,6 +53,7 @@
     <ClInclude Include="HObjectArray.h" />
     <ClInclude Include="HObjectHandle.h" />
     <ClInclude Include="HPackage.h" />
+    <ClInclude Include="HPixWindows.h" />
     <ClInclude Include="HPrimitiveType.h" />
     <ClInclude Include="HNumericTypeHelper.h" />
     <ClInclude Include="HProfiler.h" />
@@ -221,7 +222,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>HCorePCH.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../../ThirdParty;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../ThirdParty;../../ThirdParty/pix/Include/WinPixEventRuntime;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
