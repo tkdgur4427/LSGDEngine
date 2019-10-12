@@ -56,6 +56,9 @@ void HIpDriver::Tick(float DeltaTime)
 {
 	check(Implementation);
 
+	// process queued events
+	EQueuePolicy<HNetworkEventsBus::ContextPolicy>::ExecuteQueuedEvents();
+
 	// process pending connections
 	ProcessPendingConnections();
 
@@ -125,13 +128,14 @@ void HIpDriver::ProcessPendingReceivePackets()
 	// @todo - temporary... echo sending!
 	for (auto& PendingConnectionState : PendingConnectionStatesToReceive)
 	{
+		HObjectHandleWeak<HNetConnection> NetConnection(PendingConnectionState.ClientConnection->GetObjectArrayData());
 		for (auto& ReceivePacket : PendingConnectionState.ReceivePackets)
 		{
 			// inspect the packet type
 			uint16 PacketType = HPacketUtils::SeekAndGetType(ReceivePacket.PacketBytes);
 
 			// create packet
-			HObjectHandleUnique<HObject> NewPacket = HPacketRegisterSystem::CreatePacketWithId(PacketType);
+			HObjectHandleUnique<HNetworkPacket> NewPacket = HPacketRegisterSystem::CreatePacketWithId(PacketType);
 			
 			// create archive
 			HMemoryArchive Archive(ReceivePacket.PacketBytes);
@@ -139,28 +143,13 @@ void HIpDriver::ProcessPendingReceivePackets()
 
 			// serialize the packet
 			NewPacket->Serialize(Archive);
+
+			// create new network handler and queue to the EBus
+			shared_ptr<HNetworkEventHandler> Handler = HMakeShared<HNetworkEventHandler>(HMove(NewPacket));
+
+			// queue event
+			EQueuePolicy<HNetworkEventsBus::ContextPolicy>::QueueEvent(&HNetworkEventHandler::Execute, NetConnection, Handler);
 		}
-
-		//shared_ptr<HNetworkEvents> Handler = make_shared<HNetworkEvents, HNetworkEventHandler>();
-		//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::QueueEvent(&HNetworkEventHandler::Execute, Handler);
-		//EQueuePolicy<HNetworkEventsBus::ContextPolicy>::ExecuteQueuedEvents();
-
-		/*
-		// just echo the packet
-		HPendingConnectionStateToSend NewConnectionState;
-		NewConnectionState.ClientConnection = PendingConnectionState.ClientConnection;
-		
-		for (auto& ReceivePacket : PendingConnectionState.ReceivePackets)
-		{
-			HSendPacket NewPacket;
-			NewPacket.SocketDesc = ReceivePacket.SocketDesc;
-			NewPacket.PacketBytes = ReceivePacket.PacketBytes;
-
-			NewConnectionState.SendPackets.push_back(NewPacket);
-		}
-
-		PendingConnectionStatesToSend.push_back(NewConnectionState);
-		*/
 	}
 
 	// empty pending connection state

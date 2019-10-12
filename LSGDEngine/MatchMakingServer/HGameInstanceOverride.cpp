@@ -5,7 +5,7 @@ using namespace lsgd;
 
 // implement HObject
 IMPLEMENT_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
-IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_LOGIN, HObject)
+IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_LOGIN, HNetworkPacket)
 
 // packet registration
 REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_REQ_LOGIN)
@@ -46,4 +46,9 @@ void HGameInstanceOverride::Tick(float DeltaTime)
 	HGameInstance::Tick(DeltaTime);
 
 	IpDriver->Tick(DeltaTime);
+}
+
+void HPACKET_CS_MATCH_REQ_LOGIN::HandleEvent(class HNetConnection* InConnection)
+{
+
 }

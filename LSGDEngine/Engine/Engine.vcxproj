@@ -148,6 +148,7 @@
     <ClInclude Include="HMaterialCommon.h" />
     <ClInclude Include="HNetConnection.h" />
     <ClInclude Include="HNetworkEvents.h" />
+    <ClInclude Include="HNetworkPacket.h" />
     <ClInclude Include="HPacketRegister.h" />
     <ClInclude Include="HPlatformDeviceMisc.h" />
     <ClInclude Include="HRefCountPtr.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="HLocalPlayer.cpp" />
     <ClCompile Include="HNetConnection.cpp" />
     <ClCompile Include="HNetworkEvents.cpp" />
+    <ClCompile Include="HNetworkPacket.cpp" />
     <ClCompile Include="HPawn.cpp" />
     <ClCompile Include="HPlatformDeviceMisc.cpp" />
     <ClCompile Include="HPlayer.cpp" />

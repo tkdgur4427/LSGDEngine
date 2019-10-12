@@ -193,7 +193,12 @@ namespace lsgd
 			// do nothing (done by GC)
 		}
 
-		HObjectHandleWeak(HObjectHandleWeak const&) = delete;
+		HObjectHandleWeak(HObjectHandleWeak const& InOther)
+			: HObjectHandle(InOther.Data, false)
+		{
+			
+		}
+
 		HObjectHandleWeak& operator=(HObjectHandleWeak const&) = delete;
 
 		ObjectType* operator->() const { return GetObject<ObjectType>(); }
@@ -261,7 +266,9 @@ template <class ObjectType>
 lsgd::reflect::HReflectionContext& operator<<(lsgd::reflect::HReflectionContext& InContext, lsgd::HObjectHandleUnique<ObjectType>& InObjectHandleUnique)
 {
 	// only serialize for unique object handle
-	InContext << *InObjectHandleUnique;
+	HObject* ObjectThis = InObjectHandleUnique.Get();
+	InContext << ObjectThis;
+	return InContext;
 }
 
 template <class ObjectType>

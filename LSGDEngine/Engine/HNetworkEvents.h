@@ -4,6 +4,8 @@
 #include "HEBus.h"
 // GCObject
 #include "..\Core\HGCObject.h"
+// HNetworkPacket
+#include "HNetworkPacket.h"
 
 namespace lsgd
 {
@@ -26,17 +28,14 @@ namespace lsgd
 	// the EBus for network events
 	typedef HEBus<HNetworkEvents> HNetworkEventsBus;
 
-	template <typename PacketType>
 	class HNetworkEventHandler : public HNetworkEventsBus::SingleEventHandlerType, public HGCObject
 	{
-	protected:
-		HNetworkEventHandler(HObjectHandleUnique<PacketType> InPacket)
+	public:
+		HNetworkEventHandler(HObjectHandleUnique<HNetworkPacket>&& InPacket)
 			// default constructor trigger
 			: HGCObject()
 			, HNetworkEventsBus::SingleEventHandlerType()
 		{
-			// compile-time checker
-			static_assert(reflect::ExistClass<PacketType>() == true);
 			Packet = HMove(InPacket);
 		}
 
@@ -45,6 +44,8 @@ namespace lsgd
 			Collector << Packet;
 		}
 
-		HObjectHandleUnique<PacketType> Packet;
+		virtual void HandleEvent(class HNetConnection* InConnection) override;
+
+		HObjectHandleUnique<HNetworkPacket> Packet;
 	};
 }

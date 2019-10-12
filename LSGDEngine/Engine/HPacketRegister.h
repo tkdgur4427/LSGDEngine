@@ -1,5 +1,7 @@
 #pragma once
 
+#include "HNetworkPacket.h"
+
 namespace lsgd
 {
 	class HPacketGeneratorInterface
@@ -7,7 +9,7 @@ namespace lsgd
 	public:
 		virtual ~HPacketGeneratorInterface() {}
 
-		virtual HObjectHandleUnique<HObject> CreatePacket() = 0;
+		virtual HObjectHandleUnique<HNetworkPacket> CreatePacket() = 0;
 	};
 
 	template <class PacketType>
@@ -16,9 +18,9 @@ namespace lsgd
 	public:
 		virtual ~HPacketGenerator() {}
 
-		virtual HObjectHandleUnique<HObject> CreatePacket() override
+		virtual HObjectHandleUnique<HNetworkPacket> CreatePacket() override
 		{
-			HObjectHandleUnique<HObject> NewPacket(AllocateHObject(PacketType::GetClassName(), GPersistentPackage));
+			HObjectHandleUnique<HNetworkPacket> NewPacket(AllocateHObject(PacketType::GetClassName(), GPersistentPackage));
 			return HMove(NewPacket);
 		}
 	};
@@ -38,7 +40,7 @@ namespace lsgd
 			GetPacketGeneratorContainer().insert({PacketType::GetId(), NewPacketGenerator});
 		}
 
-		static HObjectHandleUnique<HObject> CreatePacketWithId(uint16 Id)
+		static HObjectHandleUnique<HNetworkPacket> CreatePacketWithId(uint16 Id)
 		{
 			auto PacketGenerator = GetPacketGeneratorContainer().find(Id);
 			check(PacketGenerator != GetPacketGeneratorContainer().end());

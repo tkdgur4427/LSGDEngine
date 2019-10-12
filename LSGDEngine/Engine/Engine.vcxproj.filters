@@ -250,6 +250,9 @@
     <ClInclude Include="HPacketRegister.h">
       <Filter>Network\V1</Filter>
     </ClInclude>
+    <ClInclude Include="HNetworkPacket.h">
+      <Filter>Network\V1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -432,6 +435,9 @@
       <Filter>Network\V1</Filter>
     </ClCompile>
     <ClCompile Include="HNetworkEvents.cpp">
+      <Filter>Network\V1</Filter>
+    </ClCompile>
+    <ClCompile Include="HNetworkPacket.cpp">
       <Filter>Network\V1</Filter>
     </ClCompile>
   </ItemGroup>

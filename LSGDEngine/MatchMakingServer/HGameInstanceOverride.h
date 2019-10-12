@@ -7,8 +7,8 @@
 
 namespace lsgd
 {
-	DECLARE_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_LOGIN, HObject)
-	class HPACKET_CS_MATCH_REQ_LOGIN : public HObject
+	DECLARE_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_LOGIN, HNetworkPacket)
+	class HPACKET_CS_MATCH_REQ_LOGIN : public HNetworkPacket
 	{
 	public:
 		GENERATE_CLASS_BODY(HPACKET_CS_MATCH_REQ_LOGIN)
@@ -17,6 +17,8 @@ namespace lsgd
 
 		HPACKET_CS_MATCH_REQ_LOGIN() {}
 		virtual ~HPACKET_CS_MATCH_REQ_LOGIN() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override;
 
 		// packet data
 		uint16 Type;
