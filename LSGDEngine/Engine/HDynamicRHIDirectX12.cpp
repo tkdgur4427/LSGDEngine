@@ -297,7 +297,7 @@ void HDynamicRHI::RenderEnd()
 
 	D3D12CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&D3D12CommandList);
 
-	D3D12SwapChain->Present(1, 0);
+	D3D12SwapChain->Present(0, 0);
 
 	UINT64 FenceValue = D3D12FenceLastSignaledValue + 1;
 	D3D12CommandQueue->Signal(D3D12Fence, FenceValue);

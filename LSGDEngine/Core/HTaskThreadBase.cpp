@@ -4,6 +4,8 @@
 // thread manager
 #include "HThreadManager.h"
 
+#include "HProfiler.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
@@ -152,16 +154,22 @@ void HTaskThreadBase::Run()
 {
 	while (!(bTerminate.GetValue()))
 	{
+		SGD_SCOPED_SIMPLE_PROFILER(HTaskThreadBase_Run)
+
 		// get the graph task
 		shared_ptr<HBaseGraphTask> NewTask = TaskThreadSharedContext.GetNextTask();
 
 		if (NewTask == nullptr)
 		{
-			// if there is no available task, make it stalled (2ms)
-			HGenericPlatformMisc::Sleep(0.002);
+			SGD_SCOPED_SIMPLE_PROFILER(Sleep)
+
+			// if there is no available task, make it stalled (1ms)
+			HGenericPlatformMisc::Sleep(0.001);
 		}		
 		else
 		{
+			SGD_SCOPED_SIMPLE_PROFILER(NewTask_Execute)
+
 			// execute the task
 			NewTask->Execute();
 		}
@@ -222,20 +230,26 @@ void HNamedTaskThread::Run()
 {
 	while (!(bTerminate.GetValue()))
 	{
+		SGD_SCOPED_SIMPLE_PROFILER(HNamedTaskThread_Run)
+
 		// get the graph task (its own task from its own tasks)
 		shared_ptr<HBaseGraphTask> NewTask;
 
 		if (!Tasks.TryPop(&NewTask))
 		{
+			SGD_SCOPED_SIMPLE_PROFILER(Sleep)
+
 			// @todo ; if new task is nullptr, get job stealing from common tasks queue for task threads
 
-			// if there is no available task, make it stalled (2ms)
-			HGenericPlatformMisc::Sleep(0.002);
+			// if there is no available task, make it stalled (1ms)
+			HGenericPlatformMisc::Sleep(0.001);
 
 			continue;
 		}
 
 		{
+			SGD_SCOPED_SIMPLE_PROFILER(NewTask_Execute)
+
 			// execute the task
 #if SGD_BASEGRAPHTASK_DEBUG
 			check(NewTask->bExecuted == false);

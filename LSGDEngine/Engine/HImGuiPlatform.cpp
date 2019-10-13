@@ -37,6 +37,8 @@ bool HImGuiPlatform::Initialize(void* InHandle)
 
 void HImGuiPlatform::Tick()
 {
+	SGD_SCOPED_SIMPLE_PROFILER(HImGuiPlatform_Tick)
+
 	ImGuiRenderDevice->Tick();
 	ImGuiDevice->Tick();
 	ImGui::NewFrame();

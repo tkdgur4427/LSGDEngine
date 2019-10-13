@@ -19,6 +19,8 @@ void HEditorEngine::Destroy()
 
 void HEditorEngine::Tick(float DeltaTime)
 {
+	SGD_SCOPED_SIMPLE_PROFILER(HEditorEngine_Tick)
+
 	HBaseEngine::Tick(DeltaTime);
 
 	if (bWindowFrameMessageUpdated)
@@ -29,7 +31,10 @@ void HEditorEngine::Tick(float DeltaTime)
 	// update ImGui
 	ImGuiPlatform->Tick();
 
-	GDynamicRHI->RenderBegin();
-	ImGuiPlatform->Render();
-	GDynamicRHI->RenderEnd();
+	{
+		SGD_SCOPED_SIMPLE_PROFILER(ImGuiPlatform_Render)
+		GDynamicRHI->RenderBegin();
+		ImGuiPlatform->Render();
+		GDynamicRHI->RenderEnd();
+	}
 }

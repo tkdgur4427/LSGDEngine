@@ -78,5 +78,10 @@ namespace lsgd
 }
 
 #define SGD_SCOPED_SIMPLE_PROFILER(Name) \
+	HScopedPix ScopedPix##Name(#Name);
+
+/*
+#define SGD_SCOPED_SIMPLE_PROFILER(Name) \
 	HScopedSimpleProfiler ScopedSimpleProfiler##Name(#Name); \
 	HScopedPix ScopedPix##Name(#Name);
+*/

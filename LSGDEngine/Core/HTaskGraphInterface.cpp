@@ -4,6 +4,8 @@
 // task thread runnable
 #include "HTaskThreadBase.h"
 
+#include "HProfiler.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
