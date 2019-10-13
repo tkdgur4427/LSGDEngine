@@ -18,6 +18,12 @@ void HPACKET_CS_MATCH_REQ_LOGIN::Reflect()
 	reflect::HTypeDatabase::GetSingleton()->AddClassField("Ver_Code", &HPACKET_CS_MATCH_REQ_LOGIN::Ver_Code);
 }
 
+void HPACKET_CS_MATCH_RES_LOGIN::Reflect()
+{
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Type", &HPACKET_CS_MATCH_RES_LOGIN::Type);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Status", &HPACKET_CS_MATCH_RES_LOGIN::Status);
+}
+
 void HGameInstanceOverride::Reflect()
 {
 
