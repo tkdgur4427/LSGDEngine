@@ -23,8 +23,8 @@ HReflectionContext& HReferenceCollector::operator<<(HObject*& Value)
 #if ENABLE_PROFILE_SERIALIZE_HOBJECT
 		HString NameString = Value->Name.ToString();
 		SGD_COPED_PIX_PROFILER_VARS("Serialize_%s", NameString.c_str());
-		Value->Serialize(*this);
 #endif
+		Value->Serialize(*this);
 	}
 	return *this;
 }
