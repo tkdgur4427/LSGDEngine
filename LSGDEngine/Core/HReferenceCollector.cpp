@@ -5,9 +5,13 @@
 // GCObject
 #include "HGCObject.h"
 
+#include "HProfiler.h"
+
 using namespace lsgd;
 using namespace lsgd::reflect;
 using namespace lsgd::gc;
+
+#define ENABLE_PROFILE_SERIALIZE_HOBJECT 0
 
 HReflectionContext& HReferenceCollector::operator<<(HObject*& Value)
 {
@@ -15,7 +19,13 @@ HReflectionContext& HReferenceCollector::operator<<(HObject*& Value)
 	HObjectHelper::MarkGC(Value->GetObjectArrayData());
 
 	// serialize the object
-	Value->Serialize(*this);
+	{
+#if ENABLE_PROFILE_SERIALIZE_HOBJECT
+		HString NameString = Value->Name.ToString();
+		SGD_COPED_PIX_PROFILER_VARS("Serialize_%s", NameString.c_str());
+		Value->Serialize(*this);
+#endif
+	}
 	return *this;
 }
 

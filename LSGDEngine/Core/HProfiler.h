@@ -80,7 +80,11 @@ namespace lsgd
 #define SGD_SCOPED_SIMPLE_PROFILER(Name) \
 	HScopedPix ScopedPix##Name(#Name);
 
+#define SGD_COPED_PIX_PROFILER_VARS(FormatName, ...) \
+	HScopedPix ScopedPix(FormatName, __VA_ARGS__);
+
 /*
+//@todo - need to uncomment this; enable the functionality
 #define SGD_SCOPED_SIMPLE_PROFILER(Name) \
 	HScopedSimpleProfiler ScopedSimpleProfiler##Name(#Name); \
 	HScopedPix ScopedPix##Name(#Name);
