@@ -6,9 +6,13 @@ using namespace lsgd;
 // implement HObject
 IMPLEMENT_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
 IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_LOGIN, HNetworkPacket)
+IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_RES_LOGIN, HNetworkPacket)
 
 // packet registration
 REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_REQ_LOGIN)
+REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_RES_LOGIN)
+
+HObjectHandleWeak<HIpDriver> HGameInstanceOverride::CachedIpDriver;
 
 void HPACKET_CS_MATCH_REQ_LOGIN::Reflect()
 {
@@ -37,6 +41,9 @@ void HGameInstanceOverride::Initialize()
 	IpDriver.SetRoot();
 
 	IpDriver->Initialize();
+
+	// cache the IpDriver
+	CachedIpDriver = HObjectHandleWeak<HIpDriver>(IpDriver->GetObjectArrayData());
 }
 
 void HGameInstanceOverride::Destroy()

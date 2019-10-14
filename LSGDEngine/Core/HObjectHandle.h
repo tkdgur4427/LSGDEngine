@@ -199,7 +199,15 @@ namespace lsgd
 			
 		}
 
-		HObjectHandleWeak& operator=(HObjectHandleWeak const&) = delete;
+		HObjectHandleWeak& operator=(HObjectHandleWeak const& InOther)
+		{
+			Data = InOther.Data;
+			bIsRootSet = InOther.bIsRootSet;
+			bIsOwned = InOther.bIsOwned;
+			bIsInvalidate = InOther.bIsInvalidate;
+
+			return *this;
+		}
 
 		ObjectType* operator->() const { return GetObject<ObjectType>(); }
 		ObjectType& operator*() const { return *GetObject<ObjectType>(); }

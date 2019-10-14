@@ -59,6 +59,8 @@ namespace lsgd
 		virtual void Tick(float DeltaTime) override;
 
 		HObjectHandleUnique<HIpDriver> IpDriver;
+
+		static HObjectHandleWeak<HIpDriver> CachedIpDriver;
 	};
 }
 
