@@ -35,14 +35,39 @@ namespace lsgd
 
 		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_MATCH_RES_LOGIN; }
 
-		HPACKET_CS_MATCH_RES_LOGIN() {}
-		virtual ~HPACKET_CS_MATCH_RES_LOGIN() {}
+		HPACKET_CS_MATCH_RES_LOGIN()
+			: Type(GetId())
+		{}
+		virtual ~HPACKET_CS_MATCH_RES_LOGIN() 
+		{
+		}
 
 		virtual void HandleEvent(class HNetConnection* InConnection) override {}
 
 		// packet data
 		uint16 Type;
 		uint8 Status;
+	};
+
+	DECLARE_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_GAME_ROOM, HNetworkPacket)
+	class HPACKET_CS_MATCH_REQ_GAME_ROOM : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_MATCH_REQ_GAME_ROOM)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_MATCH_REQ_GAME_ROOM; }
+
+		HPACKET_CS_MATCH_REQ_GAME_ROOM()
+			: Type(GetId())
+		{}
+		virtual ~HPACKET_CS_MATCH_REQ_GAME_ROOM()
+		{
+		}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override;
+
+		// packet data
+		uint16 Type;
 	};
 
 	DECLARE_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)

@@ -767,6 +767,7 @@ public:
 
 				// serialize the header
 				HPacketHeaderLayout Layout;
+				Layout.Code = 119;
 				Layout.PacketSize = SendPacket.PacketBytes.size();
 
 				// encrypt packets
@@ -774,13 +775,14 @@ public:
 
 				// @todo - need to randomize the randkey generation
 				uint8 RandKey = 211;
+				Layout.RandKey = RandKey;
 
 				// for code readiness
 				int32 PacketSize = SendPacket.PacketBytes.size();
 
 				HArray<uint8> EncryptedSendPacketData;
 				EncryptedSendPacketData.resize(PacketSize + 1);
-				Serializer.Encrypt(EncryptedSendPacketData.data(), EncryptedSendPacketData.size(), SendPacket.PacketBytes.data(), SendPacket.PacketBytes.size(), RandKey);
+				Serializer.Encrypt(EncryptedSendPacketData.data(), EncryptedSendPacketData.size(), SendPacket.PacketBytes.data(), SendPacket.PacketBytes.size(), Layout.RandKey);
 				
 				Archive << Layout.Code;
 				Archive << Layout.PacketSize;
