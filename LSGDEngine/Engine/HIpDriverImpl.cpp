@@ -783,6 +783,13 @@ public:
 				HArray<uint8> EncryptedSendPacketData;
 				EncryptedSendPacketData.resize(PacketSize + 1);
 				Serializer.Encrypt(EncryptedSendPacketData.data(), EncryptedSendPacketData.size(), SendPacket.PacketBytes.data(), SendPacket.PacketBytes.size(), Layout.RandKey);
+
+#if 0
+				HArray<uint8> DecrpytedTestBuffer = EncryptedSendPacketData;
+				void* OutDecrpytedData = nullptr;
+				check(Serializer.Decrypt(OutDecrpytedData, DecrpytedTestBuffer.data(), PacketSize + 1, 211));
+				check(HGenericMemory::MemCmp(OutDecrpytedData, SendPacket.PacketBytes.data(), PacketSize));
+#endif
 				
 				Archive << Layout.Code;
 				Archive << Layout.PacketSize;
