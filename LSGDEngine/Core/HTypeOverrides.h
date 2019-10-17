@@ -2,6 +2,8 @@
 
 #include "HReflectionContextDeclareMacro.h"
 
+typedef wchar_t wchar;
+
 typedef signed char        int8;
 typedef short              int16;
 typedef int                int32;

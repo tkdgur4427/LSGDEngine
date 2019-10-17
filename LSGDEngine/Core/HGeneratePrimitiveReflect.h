@@ -6,6 +6,7 @@
 namespace lsgd { namespace reflect {
 
 	DECLARE_PRIMITIVE_TYPE(char)
+	DECLARE_PRIMITIVE_TYPE(wchar)
 
 	DECLARE_PRIMITIVE_TYPE(int8)
 	DECLARE_PRIMITIVE_TYPE(int16)

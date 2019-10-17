@@ -97,4 +97,10 @@ namespace lsgd { namespace reflect {
 		static const bool Value = true;
 	};
 
+	template <>
+	struct IsCharHelper<wchar>
+	{
+		static const bool Value = true;
+	};
+
 } }
