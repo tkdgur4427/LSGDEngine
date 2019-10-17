@@ -661,7 +661,18 @@ public:
 
 				if (!Archive.IsEof())
 				{
+					// reset the ReceivedBuffer for processed packets
+					check(Archive.Offset <= State.ReceivedBuffer.size());
+					uint32 EndOffset = Archive.Offset;
+					State.ReceivedBuffer.erase(State.ReceivedBuffer.begin(), State.ReceivedBuffer.begin() + EndOffset);
+
 					// it is handled below 'Owner->UpdatePendingReceiveBuffer'
+					//	 - for rest of received buffer update to IpDriver
+				}
+				else
+				{
+					// otherwise, clear the received buffer
+					State.ReceivedBuffer.clear();
 				}
 
 				// keep track it for state index
