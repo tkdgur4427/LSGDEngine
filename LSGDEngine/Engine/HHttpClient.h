@@ -21,19 +21,15 @@ namespace lsgd { namespace networking {
 
 		static void Test()
 		{
-			// temporary create the thread for http server
-			std::thread HttpServer([] {
-					httplib::Server Server;
-					Server.Post("/hi", [](const httplib::Request& req, httplib::Response& res) {
-						res.set_content(req.body, "text/plain");
-						});
-					Server.listen("localhost", 1234);
-				});			
-
-			HHttpClient Client("localhost", 1234);
-			Client.Post("testtest");
-
-			HttpServer.join();
+			httplib::Server server;
+			server.Get("/ConnectToMatchmakingServer", [](const httplib::Request& req, httplib::Response& res)
+				{
+					const HString Content(
+						"{""result"":1, ""serverno"":2, ""ip"":""10.99.1.21"",""port"":6000,}"
+					);
+					res.set_content(Content, "application/json");
+				});
+			server.listen("localhost", 5999);
 		}
 
 		httplib::Client HttpClientObject;

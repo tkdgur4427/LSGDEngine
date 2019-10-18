@@ -18,5 +18,8 @@ namespace lsgd
 		virtual void Tick(float DeltaTime);
 
 		HArray<HObjectHandleUnique<HLocalPlayer>> LocalPlayers;
+
+		//@todo... ha... omg...
+		bool bExecuteHttpClientTest = false;
 	};
 }

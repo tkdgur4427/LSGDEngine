@@ -12,9 +12,11 @@ using namespace lsgd::reflect;
 
 void HProperty::SerializeItem(HReflectionContext& InContext, uint8* OutData)
 {
+	int32 CurrOffset = Offset;
 	for (int32 Index = 0; Index < ArrayDim; ++Index)
 	{
-		InContext.Serialize(OutData + Offset, ElementSize);
+		InContext.Serialize(OutData + CurrOffset, ElementSize);
+		CurrOffset += ElementSize;
 	}	
 }
 

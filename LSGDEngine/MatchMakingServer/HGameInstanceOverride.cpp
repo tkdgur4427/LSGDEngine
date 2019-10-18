@@ -125,6 +125,8 @@ void HPACKET_CS_MATCH_REQ_GAME_ROOM::HandleEvent(class HNetConnection* InConnect
 	PACKET_CS_MATCH_RES_GAME_ROOM->ChatServerPort = 1;
 	PACKET_CS_MATCH_RES_GAME_ROOM->ClientKey = 1;
 
+	HPACKET_CS_MATCH_RES_GAME_ROOM* Temp = PACKET_CS_MATCH_RES_GAME_ROOM.Get();
+
 	// create memory archive
 	HArray<uint8> SendData;
 	HMemoryArchive Archive(SendData);

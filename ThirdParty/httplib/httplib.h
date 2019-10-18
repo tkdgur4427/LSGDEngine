@@ -20,6 +20,7 @@
 #define CPPHTTPLIB_REDIRECT_MAX_COUNT 20
 #define CPPHTTPLIB_PAYLOAD_MAX_LENGTH (std::numeric_limits<size_t>::max)()
 #define CPPHTTPLIB_RECV_BUFSIZ size_t(4096u)
+
 #define CPPHTTPLIB_THREAD_POOL_COUNT 8
 #define CPPHTTPLIB_USE_POLL
 
