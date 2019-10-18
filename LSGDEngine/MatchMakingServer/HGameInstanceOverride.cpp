@@ -110,14 +110,14 @@ void HPACKET_CS_MATCH_REQ_GAME_ROOM::HandleEvent(class HNetConnection* InConnect
 
 	// arbitrary send it as success
 	HStringW TempIPInWChar;
-	HString TempIP("0.0.0.0");
+	HString TempIP("10.99.1.21");
 	HStringToStringW(TempIPInWChar, TempIP);
 	HString TempToken("g");
 
 	PACKET_CS_MATCH_RES_GAME_ROOM->Status = 1;
 	PACKET_CS_MATCH_RES_GAME_ROOM->BattleServerNo = 1;
 	HGenericMemory::MemCopy(&(PACKET_CS_MATCH_RES_GAME_ROOM->IP[0]), TempIPInWChar.data(), sizeof(wchar) * TempIPInWChar.size());
-	PACKET_CS_MATCH_RES_GAME_ROOM->Port = 1;
+	PACKET_CS_MATCH_RES_GAME_ROOM->Port = 6001;
 	PACKET_CS_MATCH_RES_GAME_ROOM->RoomNo = 1;
 	HGenericMemory::MemCopy(&(PACKET_CS_MATCH_RES_GAME_ROOM->ConnectToken[0]), TempToken.data(), sizeof(char) * TempToken.size());
 	HGenericMemory::MemCopy(&(PACKET_CS_MATCH_RES_GAME_ROOM->EnterToken[0]), TempToken.data(), sizeof(char) * TempToken.size());
