@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{207d82c0-dd96-4828-8ed3-2c52e92cc450}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HMasterServerPCH.h">
@@ -20,6 +23,9 @@
     </ClInclude>
     <ClInclude Include="HGameInstanceOverride.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\BattleServer\CommonProtocol.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

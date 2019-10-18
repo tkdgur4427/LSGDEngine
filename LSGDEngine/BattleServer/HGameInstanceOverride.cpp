@@ -4,12 +4,35 @@
 using namespace lsgd;
 
 IMPLEMENT_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
+IMPLEMENT_CLASS_TYPE1(HPACKET_CS_GAME_REQ_LOGIN, HNetworkPacket)
+IMPLEMENT_CLASS_TYPE1(HPACKET_CS_GAME_RES_LOGIN, HNetworkPacket)
 
-IMPLEMENT_CLASS_TYPE1(HIocpDummy, HObject)
+// packet registration
+REGISTER_PACKET_TYPE(HPACKET_CS_GAME_REQ_LOGIN)
+REGISTER_PACKET_TYPE(HPACKET_CS_GAME_RES_LOGIN)
+
+HObjectHandleWeak<HIpDriver> HGameInstanceOverride::CachedIpDriver;
 
 void HGameInstanceOverride::Reflect()
 {
 
+}
+
+void HPACKET_CS_GAME_REQ_LOGIN::Reflect()
+{
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Type", &HPACKET_CS_GAME_REQ_LOGIN::Type);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("AccountNo", &HPACKET_CS_GAME_REQ_LOGIN::AccountNo);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("SessionKey", &HPACKET_CS_GAME_REQ_LOGIN::SessionKey);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("ConnectedToken", &HPACKET_CS_GAME_REQ_LOGIN::ConnectedToken);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Ver_Code", &HPACKET_CS_GAME_REQ_LOGIN::Ver_Code);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("ClientKey", &HPACKET_CS_GAME_REQ_LOGIN::ClientKey);
+}
+
+void HPACKET_CS_GAME_RES_LOGIN::Reflect()
+{
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Type", &HPACKET_CS_GAME_RES_LOGIN::Type);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("AccountNo", &HPACKET_CS_GAME_RES_LOGIN::AccountNo);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Result", &HPACKET_CS_GAME_RES_LOGIN::Result);
 }
 
 void HGameInstanceOverride::Initialize()
@@ -19,7 +42,11 @@ void HGameInstanceOverride::Initialize()
 	IpDriver = HObjectHandleUnique<HIpDriver>(AllocateHObject(HIpDriver::GetClassName()));
 	IpDriver.SetRoot();
 
-	IpDriver->Initialize();
+	// set port number as 6001
+	IpDriver->Initialize(6001);
+
+	// cache the IpDriver
+	CachedIpDriver = HObjectHandleWeak<HIpDriver>(IpDriver->GetObjectArrayData());
 }
 
 void HGameInstanceOverride::Destroy()
@@ -36,7 +63,22 @@ void HGameInstanceOverride::Tick(float DeltaTime)
 	IpDriver->Tick(DeltaTime);
 }
 
-void HIocpDummy::Reflect()
+void HPACKET_CS_GAME_REQ_LOGIN::HandleEvent(class HNetConnection* InConnection)
 {
-	reflect::HTypeDatabase::GetSingleton()->AddClassField<HIocpDummy>("Data", &HIocpDummy::Data);
+	HObjectHandleUnique<HPACKET_CS_GAME_RES_LOGIN> PACKET_CS_MATCH_RES_LOGIN(AllocateHObject(HPACKET_CS_GAME_RES_LOGIN::GetClassName(), GPersistentPackage));
+
+	// arbitrary send it as success
+	PACKET_CS_MATCH_RES_LOGIN->AccountNo = AccountNo;
+	PACKET_CS_MATCH_RES_LOGIN->Result = 1;
+
+	// create memory archive
+	HArray<uint8> SendData;
+	HMemoryArchive Archive(SendData);
+	Archive.bIsSaving = true;
+
+	// serialize the packet into Archive
+	PACKET_CS_MATCH_RES_LOGIN->Serialize(Archive);
+
+	// send the packet data
+	HGameInstanceOverride::CachedIpDriver->SendPacket(InConnection, SendData);
 }

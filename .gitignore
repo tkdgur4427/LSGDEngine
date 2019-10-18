@@ -27,3 +27,5 @@
 /LSGDEngine/MasterServer/x64/Debug
 /LSGDEngine/MatchMakingServer/x64/Debug
 /LSGDEngine/BattleServer/x64/Debug
+/LSGDEngine/x64/Temp
+/LSGDEngine/x64/ThirdParty/d3d

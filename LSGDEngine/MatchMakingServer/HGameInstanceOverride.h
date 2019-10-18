@@ -15,7 +15,7 @@ namespace lsgd
 
 		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_MATCH_REQ_LOGIN; }
 
-		HPACKET_CS_MATCH_REQ_LOGIN() {}
+		HPACKET_CS_MATCH_REQ_LOGIN() : Type(GetId()) {}
 		virtual ~HPACKET_CS_MATCH_REQ_LOGIN() {}
 
 		virtual void HandleEvent(class HNetConnection* InConnection) override;

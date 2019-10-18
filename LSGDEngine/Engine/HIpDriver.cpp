@@ -28,7 +28,7 @@ void HIpDriver::Reflect()
 }
 
 // HIpDriver
-void HIpDriver::Initialize(bool InbRunAsServer)
+void HIpDriver::Initialize(int32 InPortNumber, bool InbRunAsServer)
 {
 	// set the flag
 	bRunAsServer = InbRunAsServer;
@@ -37,7 +37,7 @@ void HIpDriver::Initialize(bool InbRunAsServer)
 	if (bRunAsServer)
 	{
 		ServerAddrStr = "0.0.0.0";
-		ServerPort = 6000;
+		ServerPort = InPortNumber;
 	}
 
 	Implementation = make_shared<HIpDriverImpl, HTcpIpDriverImpl>(*this);

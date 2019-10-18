@@ -7,15 +7,45 @@
 
 namespace lsgd
 {
-	// packet dummy
-	DECLARE_CLASS_TYPE(HIocpDummy)
-	class HIocpDummy : public HObject
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_REQ_LOGIN, HNetworkPacket)
+	class HPACKET_CS_GAME_REQ_LOGIN : public HNetworkPacket
 	{
 	public:
-		GENERATE_CLASS_BODY(HIocpDummy)
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_REQ_LOGIN)
 
-		// data to echo data
-		HArray<uint8> Data;
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_REQ_LOGIN; }
+
+		HPACKET_CS_GAME_REQ_LOGIN() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_REQ_LOGIN() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override;
+
+		// packet data
+		uint16 Type;
+		int64 AccountNo;
+		char SessionKey[64];
+		char ConnectedToken[32];
+		uint32 Ver_Code;
+		int64 ClientKey;
+	};
+
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_RES_LOGIN, HNetworkPacket)
+	class HPACKET_CS_GAME_RES_LOGIN : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_RES_LOGIN)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_RES_LOGIN; }
+
+		HPACKET_CS_GAME_RES_LOGIN() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_RES_LOGIN() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override {}
+
+		// packet data
+		uint16 Type;
+		int64 AccountNo;
+		uint8 Result;
 	};
 
 	DECLARE_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
@@ -32,6 +62,8 @@ namespace lsgd
 		virtual void Tick(float DeltaTime) override;
 
 		HObjectHandleUnique<HIpDriver> IpDriver;
+
+		static HObjectHandleWeak<HIpDriver> CachedIpDriver;
 	};
 }
 

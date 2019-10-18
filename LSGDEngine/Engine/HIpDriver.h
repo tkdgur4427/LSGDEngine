@@ -51,7 +51,7 @@ namespace lsgd {
 		HIpDriver() {}
 		virtual ~HIpDriver() {}
 
-		virtual void Initialize(bool InbRunAsServer = true);
+		virtual void Initialize(int32 InPortNumber = 6000, bool InbRunAsServer = true);
 		virtual void Destroy();
 		virtual void Tick(float DeltaTime);
 
