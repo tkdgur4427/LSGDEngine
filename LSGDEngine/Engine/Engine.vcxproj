@@ -234,6 +234,7 @@
     <ClCompile Include="HGameInstance.cpp" />
     <ClCompile Include="HGlobalShader.cpp" />
     <ClCompile Include="HGlobalShaderTypeCompiler.cpp" />
+    <ClCompile Include="HHttpClient.cpp" />
     <ClCompile Include="HHUD.cpp" />
     <ClCompile Include="HImGui.cpp" />
     <ClCompile Include="HImGuiDevice.cpp" />

@@ -440,6 +440,9 @@
     <ClCompile Include="HNetworkPacket.cpp">
       <Filter>Network\V1</Filter>
     </ClCompile>
+    <ClCompile Include="HHttpClient.cpp">
+      <Filter>Network\Http</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">

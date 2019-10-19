@@ -1,38 +1,23 @@
 #pragma once
 
-// httplib 3rd library
-#include "..\..\LSGDEngine\ThirdParty\httplib\httplib.h"
-// thread for ::Test
-#include <thread>
+// forward declaration
+namespace httplib
+{
+	class Client;
+}
 
 namespace lsgd { namespace networking {
 
 	class HHttpClient
 	{
 	public:
-		HHttpClient(const HString& InAddress, uint32 InPortNumber)
-			: HttpClientObject(InAddress.c_str(), InPortNumber)
-		{}
+		HHttpClient(const HString& InAddress, uint32 InPortNumber);
 
-		void Post(const HString& InContent)
-		{			
-			HttpClientObject.Post("/hi", InContent, "text/plain");
-		}
+		void Post(const HString& InContent);
 
-		static void Test()
-		{
-			httplib::Server server;
-			server.Get("/ConnectToMatchmakingServer", [](const httplib::Request& req, httplib::Response& res)
-				{
-					const HString Content(
-						"{""result"":1, ""serverno"":2, ""ip"":""10.99.1.21"",""port"":6000,}"
-					);
-					res.set_content(Content, "application/json");
-				});
-			server.listen("localhost", 5999);
-		}
+		static void Test();
 
-		httplib::Client HttpClientObject;
+		shared_ptr<httplib::Client> HttpClientObject;
 	};
 
 } }

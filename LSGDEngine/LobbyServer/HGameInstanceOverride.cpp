@@ -22,5 +22,7 @@ void HGameInstanceOverride::Destroy()
 
 void HGameInstanceOverride::Tick(float DeltaTime)
 {
+	bExecuteHttpClientTest = true;
+
 	HGameInstance::Tick(DeltaTime);
 }

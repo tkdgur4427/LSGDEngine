@@ -86,8 +86,7 @@ public:
 		, Owner(InOwner)
 		, Stopping(false)
 	{
-		// @todo - temporary setting it as 6000
-		int32 PortNumber = 6000;
+		int32 PortNumber = Owner->Owner.ServerPort;
 
 		shared_ptr<HInternetAddrBSD> LocalAddress = HInternetAddrBSD::CreateInternetAddr(0, PortNumber);
 		Endpoint = LocalAddress;
