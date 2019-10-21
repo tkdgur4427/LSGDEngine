@@ -173,4 +173,21 @@ void HPACKET_CS_GAME_REQ_ENTER_ROOM::HandleEvent(class HNetConnection* InConnect
 
 	// send the packet data
 	HGameInstanceOverride::CachedIpDriver->SendPacket(InConnection, SendData);
+
+	// @todo - temporary start the game right away
+	HObjectHandleUnique<HPACKET_CS_GAME_RES_PLAY_START> PACKET_CS_GAME_RES_PLAY_START(AllocateHObject(HPACKET_CS_GAME_RES_PLAY_START::GetClassName(), GPersistentPackage));
+
+	// arbitrary send it as success
+	PACKET_CS_GAME_RES_PLAY_START->RoomNo = RoomNo;
+
+	// create memory archive
+	HArray<uint8> SendData1;
+	HMemoryArchive Archive1(SendData1);
+	Archive.bIsSaving = true;
+
+	// serialize the packet into Archive
+	PACKET_CS_GAME_RES_PLAY_START->Serialize(Archive1);
+
+	// send the packet data
+	HGameInstanceOverride::CachedIpDriver->SendPacket(InConnection, SendData1);
 }
