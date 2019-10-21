@@ -48,6 +48,147 @@ namespace lsgd
 		uint8 Result;
 	};
 
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_REQ_ENTER_ROOM, HNetworkPacket)
+	class HPACKET_CS_GAME_REQ_ENTER_ROOM : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_REQ_ENTER_ROOM)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_REQ_ENTER_ROOM; }
+
+		HPACKET_CS_GAME_REQ_ENTER_ROOM() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_REQ_ENTER_ROOM() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override;
+
+		// packet data
+		uint16 Type;
+		int64 AccountNo;
+		int32 RoomNo;
+		char EnterToken[32];
+	};
+
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_RES_ENTER_ROOM, HNetworkPacket)
+	class HPACKET_CS_GAME_RES_ENTER_ROOM : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_RES_ENTER_ROOM)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_RES_ENTER_ROOM; }
+
+		HPACKET_CS_GAME_RES_ENTER_ROOM() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_RES_ENTER_ROOM() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override {}
+
+		// packet data
+		uint16 Type;
+		int64 AccountNo;
+		int32 RoomNo;
+		uint8 MaxUser;
+		uint8 Result;
+	};
+
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_RES_PLAY_READY, HNetworkPacket)
+	class HPACKET_CS_GAME_RES_PLAY_READY : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_RES_PLAY_READY)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_RES_PLAY_READY; }
+
+		HPACKET_CS_GAME_RES_PLAY_READY() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_RES_PLAY_READY() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override {}
+
+		// packet data
+		uint16 Type;
+		int32 RoomNo;
+		uint8 ReadySec;
+	};
+
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_RES_PLAY_START, HNetworkPacket)
+	class HPACKET_CS_GAME_RES_PLAY_START : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_RES_PLAY_START)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_RES_PLAY_START; }
+
+		HPACKET_CS_GAME_RES_PLAY_START() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_RES_PLAY_START() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override {}
+
+		// packet data
+		uint16 Type;
+		int32 RoomNo;
+	};
+
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_RES_ADD_USER, HNetworkPacket)
+	class HPACKET_CS_GAME_RES_ADD_USER : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_RES_PLAY_START)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_RES_ADD_USER; }
+
+		HPACKET_CS_GAME_RES_ADD_USER() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_RES_ADD_USER() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override {}
+
+		// packet data
+		uint16 Type;
+		int32 RoomNo;
+		int64 AccountNo;
+		wchar Nickname[20];
+
+		int32 Record_PlayCount;
+		int32 Record_PlayTime;
+		int32 Record_Kill;
+		int32 Record_Die;
+		int32 Record_Win;
+	};
+
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_RES_REMOVE_USER, HNetworkPacket)
+	class HPACKET_CS_GAME_RES_REMOVE_USER : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_RES_REMOVE_USER)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_RES_REMOVE_USER; }
+
+		HPACKET_CS_GAME_RES_REMOVE_USER() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_RES_REMOVE_USER() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override {}
+
+		// packet data
+		uint16 Type;
+		int32 RoomNo;
+		int64 AccountNo;
+	};
+
+	// common...
+	DECLARE_CLASS_TYPE1(HPACKET_CS_GAME_REQ_HEARTBEAT, HNetworkPacket)
+	class HPACKET_CS_GAME_REQ_HEARTBEAT : public HNetworkPacket
+	{
+	public:
+		GENERATE_CLASS_BODY(HPACKET_CS_GAME_RES_REMOVE_USER)
+
+		static uint16 GetId() { return en_PACKET_TYPE::en_PACKET_CS_GAME_REQ_HEARTBEAT; }
+
+		HPACKET_CS_GAME_REQ_HEARTBEAT() : Type(GetId()) {}
+		virtual ~HPACKET_CS_GAME_REQ_HEARTBEAT() {}
+
+		virtual void HandleEvent(class HNetConnection* InConnection) override {}
+
+		// packet data
+		uint16 Type;
+	};
+
 	DECLARE_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
 	class HGameInstanceOverride : public HGameInstance
 	{
