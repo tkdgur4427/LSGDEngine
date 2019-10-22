@@ -22,10 +22,10 @@ void HHttpClient::Post(const HString& InContent)
 void HHttpClient::Test()
 {
 	httplib::Server server;
-	server.Get("/ConnectToMatchmakingServer", [](const httplib::Request& req, httplib::Response& res)
+	server.Post("/ConnectToMatchmakingServer", [](const httplib::Request& req, httplib::Response& res)
 		{
 			const HString Content(
-				"{""result"":1, ""serverno"":2, ""ip"":""10.99.1.21"",""port"":6000,}"
+				"{\"result\":1, \"serverno\":2, \"ip\":\"10.99.1.21\", \"port\":6000}"
 			);
 			res.set_content(Content, "application/json");
 		});
