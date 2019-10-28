@@ -189,6 +189,40 @@ namespace lsgd
 		uint16 Type;
 	};
 
+	/*
+		I make the HGameRoom have HNetConnections
+		for the game-play, I use HLevel
+		make a relationship with HNetConnection with HActor for supporting gameplay
+	*/
+
+	// util to make connection between game-room
+	class HBattleServerUtil
+	{
+	public:
+		// create level and attach to the GWorld
+		static HObjectHandleWeak<class HLevel> CreateNewLevelForGameRoom();
+		// get the spawn locations (random position)
+		HArray<HVector2> GetSpawnLocations() const;
+	};
+
+	// game room with level
+	class HGameRoom
+	{
+	public:
+		// make connection with netconnection and actor
+		struct HNetConnectionAndActorPair
+		{
+			HObjectHandleWeak<class HNetConnection> NetConnection;
+			HObjectHandleWeak<class HActor> Actor;
+		};
+
+		// note that we use netconnection as weak handle (unique handle is reside in HIpDriver)
+		HArray<HNetConnectionAndActorPair> Players;
+
+		// each game room have HLevel
+		HObjectHandleWeak<class HLevel> Level;
+	};
+
 	DECLARE_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
 	class HGameInstanceOverride : public HGameInstance
 	{

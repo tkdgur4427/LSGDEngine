@@ -1,6 +1,9 @@
 #include "HBattleServerPCH.h"
 #include "HGameInstanceOverride.h"
 
+// HLevel & HWorld
+#include "..\Engine\HWorld.h"
+
 using namespace lsgd;
 
 IMPLEMENT_CLASS_TYPE1(HGameInstanceOverride, HGameInstance)
@@ -190,4 +193,21 @@ void HPACKET_CS_GAME_REQ_ENTER_ROOM::HandleEvent(class HNetConnection* InConnect
 
 	// send the packet data
 	HGameInstanceOverride::CachedIpDriver->SendPacket(InConnection, SendData1);
+}
+
+HObjectHandleWeak<HLevel> HBattleServerUtil::CreateNewLevelForGameRoom()
+{
+	check(GWorld != nullptr);
+	HObjectHandleWeak<HLevel> Result = GWorld->AddLevel();
+	return Result;
+}
+
+HArray<HVector2> HBattleServerUtil::GetSpawnLocations() const
+{
+	HArray<HVector2> Result;
+	for (int32 Count = 0; Count < 10; ++Count)
+	{
+		Result.push_back(HVector2(g_Data_Position[Count][0], g_Data_Position[Count][1]));
+	}
+	return Result;
 }

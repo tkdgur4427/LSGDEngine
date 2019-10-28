@@ -144,10 +144,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonProtocol.h" />
+    <ClInclude Include="ContentsData.h" />
     <ClInclude Include="HBattleServerPCH.h" />
     <ClInclude Include="HGameInstanceOverride.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ContentsData.cpp" />
     <ClCompile Include="HBattleServerPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HBattleServerPCH.h</PrecompiledHeaderFile>

@@ -82,6 +82,8 @@ namespace lsgd
 
 		reflect::HReflectionContext& Serialize(reflect::HReflectionContext& InContext);
 
+		friend bool operator==(const HName& Name0, const HName& Name1);
+
 	protected:
 		const HNameEntry* GetNameEntry() const;
 

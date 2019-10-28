@@ -18,6 +18,11 @@ namespace lsgd
 
 		void Tick(float DeltaTime);
 
+		// level utils
+		HObjectHandleWeak<HLevel> AddLevel();
+		int32 FindLevel(HObjectHandleWeak<HLevel> InLevel);
+		void RemoveLevel(HObjectHandleWeak<HLevel> InLevel);
+
 		// levels
 		HArray<HObjectHandleUnique<HLevel>> Levels;
 

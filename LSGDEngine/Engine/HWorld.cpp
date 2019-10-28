@@ -46,3 +46,39 @@ void HWorld::Tick(float DeltaTime)
 
 	TickTaskManager->EndFrame();
 }
+
+HObjectHandleWeak<HLevel> HWorld::AddLevel()
+{
+	HObjectHandleUnique<HLevel> NewLevel(AllocateHObject(HLevel::GetClassName(), GPersistentPackage));
+
+	// add new level to the current world
+	Levels.push_back(HMove(NewLevel));
+
+	HObjectHandleWeak<HLevel> Result(Levels.back()->GetObjectArrayData());
+	return Result;
+}
+
+int32 HWorld::FindLevel(HObjectHandleWeak<HLevel> InLevel)
+{
+	int32 FoundIndex = -1;
+
+	int32 CurrIndex = 0;
+	for (auto& Level : Levels)
+	{
+		if (InLevel->Name.ToString() == Level->Name.ToString())
+		{
+			FoundIndex = CurrIndex;
+			break;
+		}
+
+		CurrIndex++;
+	}
+
+	return FoundIndex;
+}
+
+void HWorld::RemoveLevel(HObjectHandleWeak<HLevel> InLevel)
+{
+	int32 FoundLevelIndex = FindLevel(InLevel);
+	Levels.erase(Levels.begin() + FoundLevelIndex);
+}

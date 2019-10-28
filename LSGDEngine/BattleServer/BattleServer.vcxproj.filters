@@ -27,6 +27,9 @@
     <ClInclude Include="CommonProtocol.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="ContentsData.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HBattleServerPCH.cpp">
@@ -34,6 +37,9 @@
     </ClCompile>
     <ClCompile Include="HGameInstanceOverride.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentsData.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
