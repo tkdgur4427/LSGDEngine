@@ -14,9 +14,9 @@ void HActor::Reflect()
 
 // HActorTickFunction
 
-HActorTickFunction::HActorTickFunction()
+HActorTickFunction::HActorTickFunction(HObjectHandleWeak<HActor>& InTarget)
 {
-
+	Target = InTarget;
 }
 
 HActorTickFunction::~HActorTickFunction()
@@ -31,9 +31,16 @@ void HActorTickFunction::Execute()
 
 // HActor
 
+HActor::HActor()
+{
+	
+}
+
 void HActor::Initialize()
 {
-
+	// create primary tick function for action tick function
+	HObjectHandleWeak<HActor> Actor(GetObjectArrayData());
+	PrimaryTickFunction = HMakeShared<HActorTickFunction>(Actor);
 }
 
 void HActor::Destroy()

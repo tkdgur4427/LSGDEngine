@@ -29,6 +29,7 @@ namespace lsgd {
 		unique_ptr<class HBaseEngine> EngineInstance;
 		unique_ptr<async::HTaskGraphInterface> TaskGraph;
 		unique_ptr<class HShaderCompilingManager> ShaderCompilingManager;
+		unique_ptr<class HDeltaTimeExecutor> DeltaTimeExecutor;
 
 		bool bTerminate;
 	};

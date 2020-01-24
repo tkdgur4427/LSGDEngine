@@ -23,6 +23,8 @@ namespace lsgd
 			Index = -1;
 		}
 
+		friend bool operator==(const HObjectArrayData& ObjectArrayData0, const HObjectArrayData& ObjectArrayData1);
+
 		bool IsValid() const { return !(SerialNumber == -1 && Index == -1); }
 
 		uint32 SerialNumber;	// object's unique number
@@ -94,6 +96,7 @@ namespace lsgd
 
 		HObjectHandle(const HObjectArrayData& InData, bool InbIsOwned)
 			: Data(InData)
+			, bIsRootSet(false)
 			, bIsOwned(InbIsOwned)
 		{}
 
@@ -268,6 +271,11 @@ namespace lsgd
 	{
 		using Type = ObjectType;
 	};
+
+	inline bool operator==(const lsgd::HObjectArrayData& ObjectArrayData0, const lsgd::HObjectArrayData& ObjectArrayData1)
+	{
+		return (ObjectArrayData0.Index == ObjectArrayData1.Index) && (ObjectArrayData0.SerialNumber == ObjectArrayData1.SerialNumber);
+	}
 }
 
 template <class ObjectType>

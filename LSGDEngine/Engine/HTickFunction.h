@@ -86,7 +86,7 @@ namespace lsgd {
 	class HActorTickFunction : public HTickFunction
 	{
 	public:
-		HActorTickFunction();
+		HActorTickFunction(HObjectHandleWeak<class HActor>& InTarget);
 		virtual ~HActorTickFunction();
 
 		virtual void Execute();

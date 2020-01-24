@@ -45,6 +45,10 @@ namespace lsgd
 	template <class ValueType, int Size>
 	using HFixedArray = std::array<ValueType, Size>;
 
+	// priority queue
+	template <class ValueType, class Predicate>
+	using HSortedArray = std::priority_queue<ValueType, HArray<ValueType>, Predicate>;
+
 	// hash_map
 	template <class KeyType, class ValueType, class Hash = std::hash<KeyType>, class KeyEqual = std::equal_to<KeyType>>
 	using HHashMap = std::unordered_map<KeyType, ValueType, Hash, KeyEqual, HStdAllocator<std::pair<const KeyType, ValueType>>>;

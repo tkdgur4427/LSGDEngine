@@ -132,6 +132,7 @@
     <ClInclude Include="HD3D12ShaderCommon.h" />
     <ClInclude Include="HD3D12Shaders.h" />
     <ClInclude Include="HDeferredCleanupInterface.h" />
+    <ClInclude Include="HDeltaTimeExecutor.h" />
     <ClInclude Include="HDXMath.h" />
     <ClInclude Include="HDynamicRHI.h" />
     <ClInclude Include="HHttpClient.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="HTickTaskManager.h" />
     <ClInclude Include="HTickTaskSequencer.h" />
     <ClInclude Include="HMath.h" />
+    <ClInclude Include="HTimerManager.h" />
     <ClInclude Include="HUniformBufferStruct.h" />
     <ClInclude Include="HVertexFactory.h" />
     <ClInclude Include="HWindowFrame.h" />
@@ -219,6 +221,7 @@
     <ClCompile Include="HCharacter.cpp" />
     <ClCompile Include="HController.cpp" />
     <ClCompile Include="HDeferredCleanupInterface.cpp" />
+    <ClCompile Include="HDeltaTimeExecutor.cpp" />
     <ClCompile Include="HDXMath.cpp" />
     <ClCompile Include="HDynamicRHI.cpp" />
     <ClCompile Include="HDynamicRHIDirectX12.cpp">
@@ -276,6 +279,7 @@
     <ClCompile Include="HTickTaskLevel.cpp" />
     <ClCompile Include="HTickTaskManager.cpp" />
     <ClCompile Include="HTickTaskSequencer.cpp" />
+    <ClCompile Include="HTimerManager.cpp" />
     <ClCompile Include="HVertexFactory.cpp" />
     <ClCompile Include="HWindowFrameWindows.cpp" />
     <ClCompile Include="HWindowsLaunch.cpp" />

@@ -253,6 +253,10 @@
     <ClInclude Include="HNetworkPacket.h">
       <Filter>Network\V1</Filter>
     </ClInclude>
+    <ClInclude Include="HTimerManager.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="HDeltaTimeExecutor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HEnginePCH.cpp" />
@@ -443,6 +447,10 @@
     <ClCompile Include="HHttpClient.cpp">
       <Filter>Network\Http</Filter>
     </ClCompile>
+    <ClCompile Include="HTimerManager.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="HDeltaTimeExecutor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Platform">
@@ -528,6 +536,9 @@
     </Filter>
     <Filter Include="Network\Http">
       <UniqueIdentifier>{cde051d0-c268-4a45-b306-86ad64180d98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{c471d4e6-0465-4abf-8b82-b6240598bcd3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

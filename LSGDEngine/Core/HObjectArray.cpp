@@ -27,6 +27,12 @@ void HObjectItem::Bind(unique_ptr<HObject>& InObject, uint64 InFlag, uint32 InIn
 	Object->State.ObjectArrayData = HObjectArrayData(UniqueNumber, InIndex);
 }
 
+#define DEBUG_UNBIND 1
+#if DEBUG_UNBIND
+// @todo - fix this 
+static HString DebugObjectName;
+#endif
+
 void HObjectItem::Unbind()
 {
 	// reset the unique number and flags
@@ -37,7 +43,9 @@ void HObjectItem::Unbind()
 	if ((bool)Object)
 	{
 		Object->State.ObjectArrayData.Reset();
-
+#if DEBUG_UNBIND
+		DebugObjectName = Object->Name.ToString();
+#endif
 		// release the Object binded in this item slot
 		Object.reset();
 	}	

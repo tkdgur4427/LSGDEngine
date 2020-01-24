@@ -21,6 +21,9 @@ namespace lsgd
 
 		void QueueAllTicks();
 
+		void RemoveTickFunction(shared_ptr<HTickFunction>& InTickFunction);
+		int32 FindTickFunction(shared_ptr<HTickFunction>& InTickFunction);
+
 		HArray<shared_ptr<HTickFunction>> AllEnabledTickFunctions;
 		HArray<shared_ptr<HTickFunction>> AllCoolingDownTickFunctions;
 		HArray<shared_ptr<HTickFunction>> AllDisabledTickFunctions;

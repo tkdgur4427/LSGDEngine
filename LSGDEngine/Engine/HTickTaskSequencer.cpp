@@ -59,7 +59,7 @@ void HTickTaskSequencer::DispatchTickGroup()
 void HTickTaskSequencer::ResetTickGroup()
 {
 	// waiting until task is finished
-	GTaskGraphInterface->WaitUntilTasksComplete(TickCompletionEvents);
+	//GTaskGraphInterface->WaitUntilTasksComplete(TickCompletionEvents);
 
 	// clearing completion events
 	for (auto& CompletionEvent : TickCompletionEvents)
@@ -83,9 +83,6 @@ void HTickTaskSequencer::ReleaseTickGroup()
 	// add reset tick group event as waiting tasks complete
 	WaitEvents.push_back(ResetTickGroupTaskEvent);
 
-	// finally trigger the dispatch tick group task
-	DispatchTickGroupTask->Unlock();
-
 	// waiting until it finishes HResetTickGroupTask
-	GTaskGraphInterface->WaitUntilTasksComplete(WaitEvents);
+	GTaskGraphInterface->DispatchAndWaitUntilTaskComplete(DispatchTickGroupTask);
 }

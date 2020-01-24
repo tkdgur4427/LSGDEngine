@@ -17,6 +17,10 @@ HEvent::~HEvent()
 void HEvent::Trigger()
 {
 	EventObject->Trigger();
+
+#if EVENT_DEBUG
+	IsTriggered = true;
+#endif
 }
 
 void HEvent::Reset()

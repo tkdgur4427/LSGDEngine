@@ -10,8 +10,13 @@ namespace lsgd
 	public:
 		GENERATE_CLASS_BODY(HLevel);
 
-		HLevel() {}
+		HLevel();
 		virtual ~HLevel() {}
+
+		// add actor to the level
+		HObjectHandleWeak<HActor> AddActor(HObjectHandleUnique<HActor>& InActor);
+		void RemoveActor(HObjectHandleWeak<HActor>& InActor);
+		int32 FindActor(HObjectHandleWeak<HActor>& InActor);
 
 		HArray<HObjectHandleUnique<HActor>> Actors;
 

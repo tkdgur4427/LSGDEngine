@@ -2,10 +2,11 @@
 #include "HWorld.h"
 
 #include "HTickTaskManager.h"
+#include "HTimerManager.h"
 
 using namespace lsgd;
 
-HWorld* GWorld = nullptr;
+lsgd::HObjectHandleUnique<HWorld> GWorld;
 
 IMPLEMENT_CLASS_TYPE1(HWorld, HObject)
 
@@ -13,22 +14,23 @@ void HWorld::Reflect(){}
 
 void HWorld::Initialize()
 {
-	check(GWorld == nullptr);
-
 	// create tick task manager
 	TickTaskManager = make_shared<HTickTaskManager>();
 
-	GWorld = this;
+	TimerManager = HMakeShared<HTimerManager>();
 }
 
 void HWorld::Destroy()
 {
-	GWorld = nullptr;
+	
 }
 
 void HWorld::Tick(float DeltaTime)
 {
 	SGD_SCOPED_SIMPLE_PROFILER(HWorld_Tick);
+
+	// timer manager
+	TimerManager->Tick(DeltaTime);
 
 	// get the levels
 	HArray<HLevel*> LevelsToTick;

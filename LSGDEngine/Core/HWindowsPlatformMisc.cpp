@@ -147,7 +147,7 @@ double HGenericPlatformMisc::GetSeconds()
 	check(QueryPerformanceCounter(&HighResTime));
 
 	// calculate time
-	double TimeInSeconds = (double)HighResTime.QuadPart / (CPUFrequency * 1000.0f) /* converting to seconds */;
+	double TimeInSeconds = (double)(HighResTime.QuadPart) / (CPUFrequency);
 	return TimeInSeconds;
 }
 

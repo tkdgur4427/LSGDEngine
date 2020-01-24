@@ -9,12 +9,16 @@ IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_LOGIN, HNetworkPacket)
 IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_RES_LOGIN, HNetworkPacket)
 IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_GAME_ROOM, HNetworkPacket)
 IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_RES_GAME_ROOM, HNetworkPacket)
+IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_REQ_GAME_ROOM_ENTER, HNetworkPacket)
+IMPLEMENT_CLASS_TYPE1(HPACKET_CS_MATCH_RES_GAME_ROOM_ENTER, HNetworkPacket)
 
 // packet registration
 REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_REQ_LOGIN)
 REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_RES_LOGIN)
 REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_REQ_GAME_ROOM)
 REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_RES_GAME_ROOM)
+REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_REQ_GAME_ROOM_ENTER)
+REGISTER_PACKET_TYPE(HPACKET_CS_MATCH_RES_GAME_ROOM_ENTER)
 
 HObjectHandleWeak<HIpDriver> HGameInstanceOverride::CachedIpDriver;
 
@@ -50,6 +54,18 @@ void HPACKET_CS_MATCH_RES_GAME_ROOM::Reflect()
 	reflect::HTypeDatabase::GetSingleton()->AddClassField("ChatServerIP", &HPACKET_CS_MATCH_RES_GAME_ROOM::ChatServerIP);
 	reflect::HTypeDatabase::GetSingleton()->AddClassField("ChatServerPort", &HPACKET_CS_MATCH_RES_GAME_ROOM::ChatServerPort);
 	reflect::HTypeDatabase::GetSingleton()->AddClassField("ClientKey", &HPACKET_CS_MATCH_RES_GAME_ROOM::ClientKey);
+}
+
+void HPACKET_CS_MATCH_REQ_GAME_ROOM_ENTER::Reflect()
+{
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Type", &HPACKET_CS_MATCH_REQ_GAME_ROOM_ENTER::Type);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("BattleServerNo", &HPACKET_CS_MATCH_REQ_GAME_ROOM_ENTER::BattleServerNo);
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("RoomNo", &HPACKET_CS_MATCH_REQ_GAME_ROOM_ENTER::RoomNo);
+}
+
+void HPACKET_CS_MATCH_RES_GAME_ROOM_ENTER::Reflect()
+{
+	reflect::HTypeDatabase::GetSingleton()->AddClassField("Type", &HPACKET_CS_MATCH_RES_GAME_ROOM_ENTER::Type);
 }
 
 void HGameInstanceOverride::Reflect()
@@ -110,7 +126,7 @@ void HPACKET_CS_MATCH_REQ_GAME_ROOM::HandleEvent(class HNetConnection* InConnect
 
 	// arbitrary send it as success
 	HStringW TempIPInWChar;
-	HString TempIP("10.99.1.21");
+	HString TempIP("127.0.0.1");
 	HStringToStringW(TempIPInWChar, TempIP);
 	HString TempToken("g");
 
@@ -134,6 +150,23 @@ void HPACKET_CS_MATCH_REQ_GAME_ROOM::HandleEvent(class HNetConnection* InConnect
 
 	// serialize the packet into Archive
 	PACKET_CS_MATCH_RES_GAME_ROOM->Serialize(Archive);
+
+	// send the packet data
+	HGameInstanceOverride::CachedIpDriver->SendPacket(InConnection, SendData);
+}
+
+void HPACKET_CS_MATCH_REQ_GAME_ROOM_ENTER::HandleEvent(class HNetConnection* InConnection)
+{
+	// @todo - temporary start the game right away
+	HObjectHandleUnique<HPACKET_CS_MATCH_RES_GAME_ROOM_ENTER> PACKET_CS_MATCH_RES_GAME_ROOM_ENTER(AllocateHObject(HPACKET_CS_MATCH_RES_GAME_ROOM_ENTER::GetClassName(), GPersistentPackage));
+
+	// create memory archive
+	HArray<uint8> SendData;
+	HMemoryArchive Archive(SendData);
+	Archive.bIsSaving = true;
+
+	// serialize the packet into Archive
+	PACKET_CS_MATCH_RES_GAME_ROOM_ENTER->Serialize(Archive);
 
 	// send the packet data
 	HGameInstanceOverride::CachedIpDriver->SendPacket(InConnection, SendData);

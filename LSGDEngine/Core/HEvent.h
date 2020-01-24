@@ -2,6 +2,8 @@
 
 using namespace lsgd;
 
+#define EVENT_DEBUG 1
+
 namespace lsgd {
 
 	class HPlatformEvent;
@@ -22,6 +24,10 @@ namespace lsgd { namespace thread {
 
 	protected:
 		unique_ptr<HPlatformEvent> EventObject;
+		
+#if EVENT_DEBUG
+		bool IsTriggered = false;
+#endif
 	};
 
 } }

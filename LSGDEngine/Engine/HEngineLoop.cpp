@@ -32,6 +32,9 @@
 // shader compiler util
 #include "HShaderCompilerUtil.h"
 
+// delta time executor
+#include "HDeltaTimeExecutor.h"
+
 using namespace lsgd;
 using namespace lsgd::async;
 
@@ -93,6 +96,8 @@ void HEngineLoop::Init()
 	HShaderCompilerUtil::InitializeShaderTypes();
 
 	HShaderCompilerUtil::CompileGlobalShaderMap(HShaderPlatform::SP_SM5, false);
+
+	DeltaTimeExecutor = HMakeUnique<HDeltaTimeExecutor>();
 }
 
 class HEngineLoopInitializeTask
@@ -185,12 +190,15 @@ void HEngineLoop::Tick()
 {
 	SGD_SCOPED_SIMPLE_PROFILER(HEngineLoop_Tick);
 
-	EngineInstance->Tick(0.f);
+	// delta time executor
+	double DeltaTime = DeltaTimeExecutor->Execute();
+
+	EngineInstance->Tick(DeltaTime);
 
 	// world tick
 	if (GWorld)
 	{
-		GWorld->Tick(0.f);
+		GWorld->Tick(DeltaTime);
 	}
 
 	// trigger gc

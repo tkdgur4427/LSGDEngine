@@ -28,7 +28,10 @@ namespace lsgd
 
 		// tick task manager
 		shared_ptr<class HTickTaskManager> TickTaskManager;
+
+		// timer manager
+		shared_ptr<class HTimerManager> TimerManager;
 	};
 }
 
-extern lsgd::HWorld* GWorld;
+extern lsgd::HObjectHandleUnique<HWorld> GWorld;

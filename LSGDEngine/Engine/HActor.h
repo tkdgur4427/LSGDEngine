@@ -10,7 +10,7 @@ namespace lsgd
 	public:
 		GENERATE_CLASS_BODY(HActor);
 
-		HActor() {}
+		HActor();
 		virtual ~HActor() {}
 
 		virtual void Initialize();
