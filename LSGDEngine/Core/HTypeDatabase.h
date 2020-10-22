@@ -358,6 +358,24 @@ namespace lsgd { namespace reflect {
 		void LinkMethod(int32 InClassIndex, unique_ptr<HNativeFunctionObject>& InNativeFunctionObject);
 	};
 
+	// utility functions for HTypeDatabase, highly recommend to use this static methods
+	class HTypeDatabaseUtils
+	{
+	public:
+		template <typename Type>
+		static HTypeDescriptor GetTypeDescriptor();
+
+		static HTypeDescriptor GetTypeDescriptor(const HString& InTypeName);
+
+		static const HCommonTypeHelperInterface* GetClassCommonTypeHelper(const HString& InTypeName);
+
+		template <typename FunctionType>
+		static HFunctionDecomposeResult DecomposeFunction();
+
+		template <typename ClassType>
+		static bool ExistClass();
+	};
+
 	// function decomposer implementations
 
 	template <typename ReturnType>
@@ -854,6 +872,24 @@ namespace lsgd { namespace reflect {
 
 		int32 ClassIndex = GetClassIndex(NewNativeFunctionObject->GetClassName());
 		LinkMethod(ClassIndex, NewNativeFunctionObject);
+	}
+
+	template <typename Type>
+	HTypeDescriptor HTypeDatabaseUtils::GetTypeDescriptor()
+	{
+		return GetTypeDescriptor(HTypeDatabase::GetSingleton()->GetTypeName<Type>());
+	}
+
+	template <typename FunctionType>
+	static HFunctionDecomposeResult HTypeDatabaseUtils::DecomposeFunction()
+	{
+		return HFunctionDecomposer<FunctionType>().Decompose();
+	}
+
+	template <typename ClassType>
+	bool HTypeDatabaseUtils::ExistClass()
+	{
+		return GetTypeDescriptor<ClassType>().ClassType != nullptr;
 	}
 }
 }

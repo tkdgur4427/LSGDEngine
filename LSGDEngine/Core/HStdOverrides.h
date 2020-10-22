@@ -110,9 +110,9 @@ namespace lsgd
 	using HFunctionObject = std::function<FunctionType>;
 
 	template <class F, class... Args>
-	void HBind(F&& f, Args&& ... Args)
+	void HBind(F&& f, Args&& ... InArgs)
 	{
-		std::bind(f, Args...);
+		std::bind(f, InArgs...);
 	}
 
 	// enable_shared_from_this
