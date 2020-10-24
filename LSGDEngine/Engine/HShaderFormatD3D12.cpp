@@ -404,6 +404,7 @@ void HShaderFormatD3D12::CompileShader(const HShaderCompilerInput& Input, HShade
 			// generate the final output
 			{
 				HMemoryArchive Archive(Output.ShaderCode.ShaderCodeWithOptionalData);
+				Archive.bIsSaving = true;
 				Archive.Serialize(CompressedData->GetBufferPointer(), CompressedData->GetBufferSize());
 			}			
 
