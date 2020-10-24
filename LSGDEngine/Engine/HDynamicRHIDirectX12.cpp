@@ -19,22 +19,22 @@ uint32 FrameIndex = 0;
 #define NUM_BACK_BUFFERS 3
 #define DX12_ENABLE_DEBUG_LAYER 1
 
-static ID3D12Device* D3D12Device = nullptr;
-static ID3D12DescriptorHeap* D3D12RtvDescriptorHeap = nullptr;
-static ID3D12DescriptorHeap* D3D12SrvDescriptorHeap = nullptr;
+ID3D12Device* D3D12Device = nullptr;
+ID3D12DescriptorHeap* D3D12RtvDescriptorHeap = nullptr;
+ID3D12DescriptorHeap* D3D12SrvDescriptorHeap = nullptr;
 
-static ID3D12Resource* D3D12MainRenderTargetResource[NUM_BACK_BUFFERS] = { 0, };
-static D3D12_CPU_DESCRIPTOR_HANDLE D3D12MainRenderTargetDescriptors[NUM_BACK_BUFFERS] = {};
+ID3D12Resource* D3D12MainRenderTargetResource[NUM_BACK_BUFFERS] = { 0, };
+D3D12_CPU_DESCRIPTOR_HANDLE D3D12MainRenderTargetDescriptors[NUM_BACK_BUFFERS] = {};
 
-static ID3D12CommandQueue* D3D12CommandQueue = nullptr;
-static ID3D12GraphicsCommandList* D3D12CommandList = nullptr;
-static ID3D12Fence* D3D12Fence = nullptr;
-static HANDLE D3D12FenceEvent = nullptr;
+ID3D12CommandQueue* D3D12CommandQueue = nullptr;
+ID3D12GraphicsCommandList* D3D12CommandList = nullptr;
+ID3D12Fence* D3D12Fence = nullptr;
+HANDLE D3D12FenceEvent = nullptr;
 
-static IDXGISwapChain3* D3D12SwapChain = nullptr;
-static HANDLE D3D12SwapChainWaitableObject = nullptr;
+IDXGISwapChain3* D3D12SwapChain = nullptr;
+HANDLE D3D12SwapChainWaitableObject = nullptr;
 
-static uint64 D3D12FenceLastSignaledValue = 0;
+uint64 D3D12FenceLastSignaledValue = 0;
 
 unique_ptr<lsgd::HDynamicRHI> GDynamicRHI;
 
